@@ -1,5 +1,6 @@
 --Debugging peer_id 4 for peer 5
 function ClientNetworkSession:on_join_request_reply(reply, my_peer_id, my_character, level_index, difficulty_index, state_index, server_character, user_id, mission, job_id_index, job_stage, alternative_job_stage, interupt_job_stage_level_index, xuid, auth_ticket, sender)
+	--my_peer_id, my_character = unpack(json.decode(my_character))
 	logger("[ClientNetworkSession :on_join_request_reply] My Peer ID: " .. tostring(my_peer_id) .. ", my character: " .. tostring(my_character))
 	-- if not self._server_peer:begin_ticket_session(auth_ticket) then
 	-- 	logger("[ClientNetworkSession :on_join_request_reply] AUTH_HOST_FAILED")
@@ -191,7 +192,7 @@ end
 
 function ClientNetworkSession:on_peer_synched(peer_id)
 	local peer = self._peers[peer_id]
-	logger("[ClientNetworkSession :on_peer_synched] peer: " .. tostring(peer) .. ", id: " .. tostring(peer_id))
+	logger("[ClientNetworkSession :on_peer_synched] peer: " .. tostring(peer:name()) .. ", id: " .. tostring(peer_id))
 	if not peer then
 		logger("[ClientNetworkSession :on_peer_synched] Unknown peer")
 		cat_error("multiplayer_base", "[ClientNetworkSession:on_peer_synched] Unknown Peer:", peer_id)
@@ -201,4 +202,18 @@ function ClientNetworkSession:on_peer_synched(peer_id)
 	peer:set_synched(true)
 	logger("[ClientNetworkSession :on_peer_synched] Peer sync complete!")
 	self:on_peer_sync_complete(peer, peer_id)
+end
+
+function ClientNetworkSession:on_peer_requested_info(peer_id)
+	local other_peer = self._peers[peer_id]
+	if not other_peer then
+		return
+	end
+	logger("[ClientNetworkSession :on_peer_requested_info] I am peer: " .. tostring(self._local_peer:id()) .. " - " .. tostring(self._local_peer:name()))
+	logger("[ClientNetworkSession :on_peer_requested_info] for peer: " .. tostring(other_peer:id()) .. " - " .. tostring(other_peer:name()))
+	other_peer:set_ip_verified(true)
+	self._local_peer:sync_lobby_data(other_peer)
+	self._local_peer:sync_data(other_peer)
+	other_peer:send("set_loading_state", self._local_peer:loading(), self._load_counter or 1)
+	other_peer:send("peer_exchange_info", self._local_peer:id())
 end

@@ -181,7 +181,7 @@ function client_on_join_request_reply(data)
         if not managers.network:session()._server_peer:begin_ticket_session(auth_ticket) then
     		log("[BigLobbyGlobals-ClientNetworkSession :on_join_request_reply] AUTH_HOST_FAILED")
     		managers.network:session():remove_peer(managers.network:session()._server_peer, 1)
-    		cb("AUTH_HOST_FAILED")
+    		cb("AUTH_HOST_FAILED") --no cb again! failed auth!
     		return
     	end
     	log("[BigLobbyGlobals-ClientNetworkSession :on_join_request_reply] AUTH_HOST_OK")
@@ -203,7 +203,7 @@ function client_on_join_request_reply(data)
 			Global.game_settings.world_setting = managers.job:current_world_setting()
 			managers.network:session()._server_peer:verify_job(job_id)
 		end
-		cb(state_index == 1 and "JOINED_LOBBY" or "JOINED_GAME", level_index, difficulty_index, state_index)
+		cb(state_index == 1 and "JOINED_LOBBY" or "JOINED_GAME", level_index, difficulty_index, state_index) --no cb for player crashed them on this line
 	elseif reply == 2 then
 		managers.network:session():remove_peer(managers.network:session()._server_peer, 1)
 		cb("KICKED")

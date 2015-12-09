@@ -223,15 +223,18 @@ function HostNetworkSession:on_peer_save_received(event, event_data)
 	end
 	local peer = self:peer_by_ip(event_data.ip_address)
 	if not peer then
+		logger("[HostNetworkSession: on_peer_save_received] A nonregistered peer confirmed save packet.")
 		Application:error("[HostNetworkSession:on_peer_save_received] A nonregistered peer confirmed save packet.")
 		return
 	end
 	if event_data.index then
 		local packet_index = event_data.index
 		local total_nr_packets = event_data.total
+		if packet_index == total_nr_packets then logger("[HostNetworkSession: on_peer_save_received] 100% packets loaded! is_playing:" .. tostring(BaseNetworkHandler._gamestate_filter.any_ingame_playing[game_state_machine:last_queued_state_name()]) .. " - " .. tostring(BaseNetworkHandler._gamestate_filter.any_ingame[game_state_machine:last_queued_state_name()])) end
 		local progress_ratio = packet_index / total_nr_packets
 		local progress_percentage = math.floor(math.clamp(progress_ratio * 100, 0, 100))
 		local is_playing = BaseNetworkHandler._gamestate_filter.any_ingame_playing[game_state_machine:last_queued_state_name()]
+		logger("[HostNetworkSession: on_peer_save_received] peer: " .. tostring(peer:id()) .. " - " .. tostring(peer:name()) .. ", progress: " .. tostring(progress_percentage))
 		if is_playing then
 			managers.menu:update_person_joining(peer:id(), progress_percentage)
 		elseif BaseNetworkHandler._gamestate_filter.any_ingame[game_state_machine:last_queued_state_name()] then
@@ -286,20 +289,24 @@ function HostNetworkSession:chk_initiate_dropin_pause(dropin_peer)
 		return
 	end
 	if not self:chk_peer_handshakes_complete(dropin_peer) then
+		logger("[HostNetworkSession: chk_initiate_dropin_pause] " .. "misses handshakes")
 		print("misses handshakes")
 		return
 	end
 	if not self:all_peers_done_loading_outfits() then
+		logger("[HostNetworkSession: chk_initiate_dropin_pause] " .. "peers still streaming outfits")
 		print("peers still streaming outfits")
 		return
 	end
 	if not dropin_peer:other_peer_outfit_loaded_status() then
+		logger("[HostNetworkSession: chk_initiate_dropin_pause] " .. "dropin peer has not loaded outfits")
 		print("dropin peer has not loaded outfits")
 		return
 	end
 	for peer_id, peer in pairs(self._peers) do
 		local is_expecting = peer:is_expecting_pause_confirmation(dropin_peer:id())
 		if is_expecting then
+			logger("[HostNetworkSession: chk_initiate_dropin_pause] peer: " .. tostring(peer_id) .. " is still to confirm, is_expecting: " .. tostring(is_expecting))
 			print(" peer", peer_id, "is still to confirm", is_expecting)
 			return
 		end
@@ -311,6 +318,7 @@ function HostNetworkSession:chk_initiate_dropin_pause(dropin_peer)
 		end
 	end
 	if not self._local_peer:is_expecting_pause_confirmation(dropin_peer:id()) then
+		logger("[HostNetworkSession: chk_initiate_dropin_pause] is_expecting_pause_confirmation")
 		self._local_peer:set_expecting_drop_in_pause_confirmation(dropin_peer:id(), "paused")
 		self:on_drop_in_pause_request_received(dropin_peer:id(), dropin_peer:name(), true)
 	end

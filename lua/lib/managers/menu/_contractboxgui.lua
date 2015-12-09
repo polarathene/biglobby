@@ -349,7 +349,7 @@ function ContractBoxGui:create_contract_box()
 			1
 		}
 	})
-	logger("()()()()()()()()()()()()()()()CONTRACTBOXGUI")
+	--logger("()()()()()()()()()()()()()()()CONTRACTBOXGUI")
 	for i = 1, num_player_slots do
 		local peer = managers.network:session():peer(i)
 		if peer then

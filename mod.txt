@@ -94,6 +94,10 @@
     {
       "hook_id": "lib/managers/group_ai_states/groupaistatebase",
       "script_path": "lua/lib/managers/group_ai_states/_groupaistatebase.lua"
+    },
+    {
+      "hook_id": "lib/network/base/handlers/connectionnetworkhandler",
+      "script_path": "lib/network/base/handlers/_connectionnetworkhandler.lua"
     }
 ],
 "persist_scripts" : [

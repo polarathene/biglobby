@@ -11,7 +11,7 @@ function BaseNetworkSession:all_peers()
 end
 
 function BaseNetworkSession:add_peer(name, rpc, in_lobby, loading, synched, id, character, user_id, xuid, xnaddr)
-	--logger("$$$$$$$$$$$$$$$$$$$$" .. tostring(name) .. " - " .. tostring(id))
+	logger("$$$$$$$$$$$$$$$$$$$$" .. tostring(name) .. " - " .. tostring(id))
 	logger("[BaseNetworkSession: add_peer]")
 	print("[BaseNetworkSession:add_peer]", name, rpc, in_lobby, loading, synched, id, character, user_id, xuid, xnaddr)
 	local peer = NetworkPeer:new(name, rpc, id, loading, synched, in_lobby, character, user_id)
@@ -43,10 +43,11 @@ function BaseNetworkSession:on_peer_sync_complete(peer, peer_id)
 		return
 	end
 	if not peer:ip_verified() then
+		logger("[BaseNetworkSession :on_peer_sync_complete] peer ip is not verified, syncing data. Peer: " .. tostring(peer:id()) .. " - " .. tostring(peer:name()))
 		return
 	end
 	if peer:ip_verified() then
-		logger("[BaseNetworkSession: on_peer_sync_complete] peer ip is verified, syncing data. Peer: " .. tostring(peer:id()) .. " - " .. tostring(peer:name()))
+		logger("[BaseNetworkSession :on_peer_sync_complete] peer ip is verified, syncing data. Peer: " .. tostring(peer:id()) .. " - " .. tostring(peer:name()))
 		self._local_peer:sync_lobby_data(peer)
 		self._local_peer:sync_data(peer)
 	end
@@ -57,7 +58,7 @@ function BaseNetworkSession:on_peer_sync_complete(peer, peer_id)
 end
 
 function BaseNetworkSession:chk_send_connection_established(name, user_id, peer)
-	logger("[BaseNetworkSession: chk_send_connection_established]")
+	logger("[BaseNetworkSession :chk_send_connection_established]")
 	if SystemInfo:platform() == Idstring("PS3") or SystemInfo:platform() == Idstring("PS4") then
 		peer = self:peer_by_name(name)
 		if not peer then
@@ -304,7 +305,7 @@ function BaseNetworkSession:_has_client(peer)
 	return false
 end
 function BaseNetworkSession:on_peer_loading(peer, state)
-	logger("@@@@@@@@@@@@[BaseNetworkSession: on_peer_loading]")
+	logger("@@@@@@@@@@@@[BaseNetworkSession: on_peer_loading] peer: " .. tostring(peer:id()) .. " - " .. tostring(peer:name()))
 	cat_print("multiplayer_base", "[BaseNetworkSession:on_peer_loading]", inspect(peer), state)
 	if Network:is_server() and not state then
 		if not self:_has_client(peer) then
@@ -443,6 +444,42 @@ function BaseNetworkSession:_update_peer_ready_gui(peer)
 			kit_menu.renderer:set_slot_ready(peer, peer:id())
 		else
 			kit_menu.renderer:set_slot_not_ready(peer, peer:id())
+		end
+	end
+end
+
+
+
+function BaseNetworkSession:on_streaming_progress_received(peer, progress)
+	if not peer:synched() then
+		return
+	end
+	if progress == 100 then
+		self:_update_peer_ready_gui(peer)
+		if Network:is_server() then
+			self:chk_spawn_member_unit(peer, peer:id())
+		end
+	else
+		local kit_menu = managers.menu:get_menu("kit_menu")
+		if kit_menu and kit_menu.renderer:is_open() then
+			kit_menu.renderer:set_dropin_progress(peer:id(), peer:streaming_status(), "load")
+		end
+	end
+end
+
+function BaseNetworkSession:on_dropin_progress_received(dropin_peer_id, progress_percentage)
+	local peer = self:peer(dropin_peer_id)
+	if peer:synched() then
+		return
+	end
+	logger("[BaseNetworkSession :on_dropin_progress_received] peer: " .. tostring(peer:id()) .. " - " .. tostring(peer:name()) .. ", progress: " .. tostring(progress_percentage))
+	local old_drop_in_prog = peer:drop_in_progress()
+	if not old_drop_in_prog or progress_percentage > old_drop_in_prog then
+		peer:set_drop_in_progress(progress_percentage)
+		if game_state_machine:last_queued_state_name() == "ingame_waiting_for_players" then
+			managers.menu:get_menu("kit_menu").renderer:set_dropin_progress(dropin_peer_id, progress_percentage, "join")
+		else
+			managers.menu:update_person_joining(dropin_peer_id, progress_percentage)
 		end
 	end
 end
