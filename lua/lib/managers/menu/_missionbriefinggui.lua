@@ -255,6 +255,8 @@ end
 end
 ]]
 
+
+--Force ready script
 orig_MissionBriefingGui = orig_MissionBriefingGui or {}
 orig_MissionBriefingGui.init = orig_MissionBriefingGui.init or MissionBriefingGui.init
 
@@ -277,7 +279,7 @@ function MissionBriefingGui.on_ready_pressed(self, ...)
             end
             if not peer:synched() then
 				logger("((((((((((((((((PEER: " .. tostring(peer:id()) .. " - " .. tostring(peer:name()) .. " IS NOT SYNCHED!")
-				--peer:set_synched(true)
+				peer:set_synched(true) --TODO: you shouldn't do this normally, this is for testing to force the synced property...but should sync properly!
             end
         end
         for k, peer in pairs(managers.network:session():peers()) do

@@ -34,8 +34,8 @@
 
 	-- Make sure we have enough colours to support the number of player slots, creates random colours
 	if #tweak_data.peer_vector_colors < num_player_slots then
+		--math.randomseed( os.time() ) --Will improve randomness of the PRNG
 		for i = #tweak_data.peer_vector_colors, num_player_slots do
-			--math.randomseed( os.time() ) --Will improve randomness of the PRNG
 			local red, blue, green --rgb channels
 			local random_colour
 			red   = math.random(0, 255)

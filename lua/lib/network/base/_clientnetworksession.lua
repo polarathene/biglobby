@@ -1,6 +1,22 @@
+--Use global version later? Possible issue with gtrace in some instances
+local log_data = true
+function logger(content, use_chat)
+	if log_data then
+		if not content then return end
+		if use_chat then
+			managers.chat:_receive_message(ChatManager.GAME, "BigLobby", content, tweak_data.system_chat_color)
+		end
+		-- if BigLobbyGlobals:Hook() == "pd2hook" then
+		-- 	io.stdout:write(content .. "\n")
+		-- else
+			log(content)
+		-- end
+	end
+end
+
 --Debugging peer_id 4 for peer 5
 function ClientNetworkSession:on_join_request_reply(reply, my_peer_id, my_character, level_index, difficulty_index, state_index, server_character, user_id, mission, job_id_index, job_stage, alternative_job_stage, interupt_job_stage_level_index, xuid, auth_ticket, sender)
-	--my_peer_id, my_character = unpack(json.decode(my_character))
+	my_peer_id, my_character = unpack(json.decode(my_character))
 	logger("[ClientNetworkSession :on_join_request_reply] My Peer ID: " .. tostring(my_peer_id) .. ", my character: " .. tostring(my_character))
 	-- if not self._server_peer:begin_ticket_session(auth_ticket) then
 	-- 	logger("[ClientNetworkSession :on_join_request_reply] AUTH_HOST_FAILED")
@@ -15,13 +31,13 @@ function ClientNetworkSession:on_join_request_reply(reply, my_peer_id, my_charac
 		return
 	end
 	if self._server_peer:ip() and sender:ip_at_index(0) ~= self._server_peer:ip() then
-		print("[BigLobbyGlobals-ClientNetworkSession:on_join_request_reply] wrong host replied", self._server_peer:ip(), sender:ip_at_index(0))
+		--print("[BigLobbyGlobals-ClientNetworkSession:on_join_request_reply] wrong host replied", self._server_peer:ip(), sender:ip_at_index(0))
 		return
 	end
 	self._last_join_request_t = nil
 	if SystemInfo:platform() == self._ids_WIN32 then
 		if self._server_peer:user_id() and user_id ~= self._server_peer:user_id() then
-			print("[BigLobbyGlobals-ClientNetworkSession:on_join_request_reply] wrong host replied", self._server_peer:user_id(), user_id)
+			--print("[BigLobbyGlobals-ClientNetworkSession:on_join_request_reply] wrong host replied", self._server_peer:user_id(), user_id)
 			return
 		else
 			if sender:protocol_at_index(0) == "STEAM" then
@@ -47,7 +63,7 @@ function ClientNetworkSession:on_join_request_reply(reply, my_peer_id, my_charac
 	--BigLobbyGlobals:sender(sender) --not needed anymore
 	local Net = _G.LuaNetworking
 	logger("[ClientNetworkSession :on_join_request_reply] Sending request for JSON to host")
-	Net:SendToPeer(1, "request_json_data", "nothing")
+	Net:SendToPeer(1, "request_json_data", "nothing v" .. tostring(BigLobbyGlobals:version()))
 
 	--[[print("[ClientNetworkSession:on_join_request_reply] ", self._server_peer and self._server_peer:user_id(), user_id, sender:ip_at_index(0), sender:protocol_at_index(0))
 	if not self._server_peer or not self._cb_find_game then
@@ -191,13 +207,15 @@ function ClientNetworkSession:peer_handshake(name, peer_id, peer_user_id, in_lob
 end
 
 function ClientNetworkSession:on_peer_synched(peer_id)
+	logger("[ClientNetworkSession :on_peer_synched] id: " .. tostring(peer_id))
 	local peer = self._peers[peer_id]
-	logger("[ClientNetworkSession :on_peer_synched] peer: " .. tostring(peer:name()) .. ", id: " .. tostring(peer_id))
+
 	if not peer then
 		logger("[ClientNetworkSession :on_peer_synched] Unknown peer")
 		cat_error("multiplayer_base", "[ClientNetworkSession:on_peer_synched] Unknown Peer:", peer_id)
 		return
 	end
+	logger("[ClientNetworkSession :on_peer_synched] peer: " .. tostring(peer:name()))
 	peer:set_loading(false)
 	peer:set_synched(true)
 	logger("[ClientNetworkSession :on_peer_synched] Peer sync complete!")
@@ -216,4 +234,77 @@ function ClientNetworkSession:on_peer_requested_info(peer_id)
 	self._local_peer:sync_data(other_peer)
 	other_peer:send("set_loading_state", self._local_peer:loading(), self._load_counter or 1)
 	other_peer:send("peer_exchange_info", self._local_peer:id())
+end
+
+
+function ClientNetworkSession:on_peer_save_received(event, event_data)
+	log("[ClientNetworkSession :on_peer_save_received]")
+	if managers.network:stopping() then
+		return
+	end
+	local packet_index = event_data.index
+	local total_nr_packets = event_data.total
+	print("[ClientNetworkSession:on_peer_save_received]", packet_index, "/", total_nr_packets)
+	local kit_menu = managers.menu:get_menu("kit_menu")
+	if not kit_menu or not kit_menu.renderer:is_open() then
+		return
+	end
+	if packet_index == total_nr_packets then
+		local is_ready = self._local_peer:waiting_for_player_ready()
+		if is_ready then
+			kit_menu.renderer:set_slot_ready(self._local_peer, self._local_peer:id())
+		else
+			kit_menu.renderer:set_slot_not_ready(self._local_peer, self._local_peer:id())
+		end
+		self._local_peer:set_synched(true)
+	else
+		local progress_ratio = packet_index / total_nr_packets
+		local progress_percentage = math.floor(math.clamp(progress_ratio * 100, 0, 100))
+		managers.menu:get_menu("kit_menu").renderer:set_dropin_progress(self._local_peer:id(), progress_percentage, "join")
+	end
+end
+
+
+function ClientNetworkSession:chk_send_outfit_loading_status()
+	log("[ClientNetworkSession :chk_send_outfit_loading_status] check_me2")
+
+	print("[ClientNetworkSession:chk_send_outfit_loading_status]\n", inspect(self._notify_host_when_outfits_loaded), "\n", "self:_get_peer_outfit_versions_str()", self:_get_peer_outfit_versions_str())
+	if self._notify_host_when_outfits_loaded and self._notify_host_when_outfits_loaded.outfit_versions_str == self:_get_peer_outfit_versions_str() and self:are_all_peer_assets_loaded() then
+		print("answering to request")
+		log("[ClientNetworkSession :chk_send_outfit_loading_status] check_me2 :: local peer_id: " .. tostring(self._local_peer:id()) .. "? answering to request")
+		self:send_to_host("set_member_ready", self._local_peer:id(), self._notify_host_when_outfits_loaded.request_id, 3, self._notify_host_when_outfits_loaded.outfit_versions_str)
+		self._notify_host_when_outfits_loaded = nil
+		return true
+	end
+end
+function ClientNetworkSession:notify_host_when_outfits_loaded(request_id, outfit_versions_str)
+	log("[ClientNetworkSession :notify_host_when_outfits_loaded] check_me2.1 :: request_id: " .. tostring(request_id) .. ", outfit_str: " .. tostring(outfit_versions_str))
+	print("[ClientNetworkSession:notify_host_when outfits_loaded] request_id", request_id)
+	self._notify_host_when_outfits_loaded = {request_id = request_id, outfit_versions_str = outfit_versions_str}
+	self:chk_send_outfit_loading_status()
+end
+function ClientNetworkSession:on_peer_outfit_loaded(peer)
+	log("[ClientNetworkSession :on_peer_outfit_loaded] check_me2.2 :: peer: " .. tostring(peer:id()) .. ", peer_id: " .. tostring(peer:id()))
+	ClientNetworkSession.super.on_peer_outfit_loaded(self, peer)
+	self:_chk_send_proactive_outfit_loaded()
+end
+function ClientNetworkSession:_chk_send_proactive_outfit_loaded()
+	log("[ClientNetworkSession :_chk_send_proactive_outfit_loaded] check_me2.3")
+	if not self:server_peer() or not self:server_peer():ip_verified() or self:server_peer():id() == 0 or self._local_peer:id() == 0 then
+		log("[ClientNetworkSession :_chk_send_proactive_outfit_loaded] check_me2.3 -- SUM TING WONG")
+		return
+	end
+	local sent = self:chk_send_outfit_loading_status()
+	if not sent and self:are_all_peer_assets_loaded() then
+		log("[ClientNetworkSession :_chk_send_proactive_outfit_loaded] check_me2.3 :: SENDING, local peer_id: " .. tostring(self._local_peer:id()))
+		print("[ClientNetworkSession:_chk_send_proactive_outfit_loaded] sending outfit_ready proactively")
+		self:send_to_host("set_member_ready", self._local_peer:id(), 0, 3, "proactive")
+	end
+end
+function ClientNetworkSession:on_set_member_ready(peer_id, ready, state_changed, from_network)
+	log("[ClientNetworkSession :on_set_member_ready] check_me2.4 :: peer_id: " .. tostring(peer_id) .. ", state_changed: " .. tostring(state_changed) .. ", from_network: " .. tostring(from_network))
+	ClientNetworkSession.super.on_set_member_ready(self, peer_id, ready, state_changed, from_network)
+	if from_network and ready then
+		self:chk_send_outfit_loading_status()
+	end
 end

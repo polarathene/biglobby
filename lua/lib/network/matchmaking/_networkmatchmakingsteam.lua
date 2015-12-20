@@ -1,15 +1,15 @@
 --Use global version later? Possible issue with gtrace in some instances
-local log_data = true
-function xlogger(content, use_chat)
-	if log_data then
-		if not content then return end
-		if use_chat then
-			managers.chat:_receive_message(ChatManager.GAME, "BigLobby", content, tweak_data.system_chat_color)
-		end
-		--io.stdout:write(content .. "\n")
-		log(content) --BLT support
-	end
-end
+-- local log_data = true
+-- function xlogger(content, use_chat)
+-- 	if log_data then
+-- 		if not content then return end
+-- 		if use_chat then
+-- 			managers.chat:_receive_message(ChatManager.GAME, "BigLobby", content, tweak_data.system_chat_color)
+-- 		end
+-- 		--io.stdout:write(content .. "\n")
+-- 		log(content) --BLT support
+-- 	end
+-- end
 
 
 function NetworkMatchMakingSTEAM:join_server(room_id, skip_showing_dialog)
@@ -115,7 +115,7 @@ end
 
 
 NetworkMatchMakingSTEAM.OPEN_SLOTS = 6--4
---NetworkMatchMakingSTEAM.GAMEVERSION = 53770 --hello or could use NetworkMatchMakingSTEAM._BUILD_SEARCH_INTEREST_KEY
+--NetworkMatchMakingSTEAM.GAMEVERSION = 53770 --53770=`hello` or could use NetworkMatchMakingSTEAM._BUILD_SEARCH_INTEREST_KEY
 NetworkMatchMakingSTEAM._BUILD_SEARCH_INTEREST_KEY = NetworkMatchMakingSTEAM._BUILD_SEARCH_INTEREST_KEY .. "-biglobby"
 function NetworkMatchMakingSTEAM:create_lobby(settings)
 	self._num_players = nil

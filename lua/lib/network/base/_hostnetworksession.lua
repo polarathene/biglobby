@@ -1,7 +1,7 @@
 --Assigns a free Peer ID to new joining peer
 function HostNetworkSession:_get_free_client_id()
 	--logger("[HostNetworkSession: _get_free_client_id]")
-	local i = 2
+	local i = 5--2
 	repeat
 		if not self._peers[i] then
 			local is_dirty = false
@@ -201,6 +201,7 @@ function HostNetworkSession:on_remove_peer_confirmation(sender_peer, removed_pee
 end
 
 function HostNetworkSession:add_peer(name, rpc, in_lobby, loading, synched, id, character, user_id, xuid, xnaddr)
+log("[HostNetworkSession:add_peer] name: " .. tostring(name) .. ", id: " .. tostring(id) .. ", character: " .. tostring(character))
 	id = id or self:_get_free_client_id()
 	if not id then
 		return
@@ -423,5 +424,97 @@ function HostNetworkSession:set_game_started(state)
 	self._state_data.game_started = state
 	if state then
 		self:set_state("in_game")
+	end
+end
+
+
+
+--outfit debugging
+function HostNetworkSession:all_peers_done_loading_outfits()
+	log("[HostNetworkSession :all_peers_done_loading_outfits] check_me3.1")
+	if not self:are_all_peer_assets_loaded() then
+		return false
+	end
+	for peer_id, peer in pairs(self._peers) do
+		if peer:waiting_for_player_ready() and not peer:other_peer_outfit_loaded_status() then
+			log("[HostNetworkSession :all_peers_done_loading_outfits] check_me3.1 :: waiting for " .. tostring(peer_id) .. "to load outfits.")
+			print("[HostNetworkSession:all_peers_done_loading_outfits] waiting for", peer_id, "to load outfits.")
+			return false
+		end
+	end
+	return true
+end
+function HostNetworkSession:chk_request_peer_outfit_load_status()
+	log("[HostNetworkSession :chk_request_peer_outfit_load_status] check_me3.2")
+	print("[HostNetworkSession:chk_request_peer_outfit_load_status]")
+	Application:stack_dump()
+	local outfit_versions_str = self:_get_peer_outfit_versions_str()
+	local req_id = self:_increment_outfit_loading_status_request_id()
+	for peer_id, peer in pairs(self._peers) do
+		if peer:loaded() then
+			peer:set_other_peer_outfit_loaded_status(false)
+			log("[HostNetworkSession :chk_request_peer_outfit_load_status] check_me3.2 :: loaded=true, peer_id: " .. tostring(peer_id) .. "req_id" .. tostring(req_id))
+			print("[HostNetworkSession:request_peer_outfit_load_status] peer_id", peer_id, "req_id", req_id)
+			peer:send("set_member_ready", self._local_peer:id(), req_id, 4, outfit_versions_str)
+		else
+			log("[HostNetworkSession :chk_request_peer_outfit_load_status] check_me3.2 :: loaded=false, peer_id: " .. tostring(peer_id) .. "req_id" .. tostring(req_id))
+		end
+	end
+end
+function HostNetworkSession:on_peer_finished_loading_outfit(peer, request_id, outfit_versions_str_in)
+	log("[HostNetworkSession :on_peer_finished_loading_outfit] check_me3.3 :: peer: " .. tostring(peer:id()) .. " - " .. tostring(peer:name()) .. ", request_id: " .. tostring(request_id))
+	log("[HostNetworkSession :on_peer_finished_loading_outfit] outfit_versions_str_in: " .. tostring(outfit_versions_str_in))
+	print("[HostNetworkSession:on_peer_finished_loading_outfit] peer:id()", peer:id(), "request_id", request_id, "self._peer_outfit_loaded_status_request_id", self._peer_outfit_loaded_status_request_id, "outfit_versions_str_in", outfit_versions_str_in, "self:_get_peer_outfit_versions_str()", self:_get_peer_outfit_versions_str())
+	if outfit_versions_str_in == "proactive" then
+		log("[HostNetworkSession :on_peer_finished_loading_outfit] proactive..")
+		managers.network:session():chk_request_peer_outfit_load_status()
+	else
+		if request_id ~= self._peer_outfit_loaded_status_request_id then
+			log("[HostNetworkSession :on_peer_finished_loading_outfit] request_id is not correct")
+			return
+		end
+		if outfit_versions_str_in ~= self:_get_peer_outfit_versions_str() then
+			log("[HostNetworkSession :on_peer_finished_loading_outfit] outfit_versions_str_in is not correct")
+			return
+		end
+		peer:set_other_peer_outfit_loaded_status(true)
+	end
+	for _peer_id, _peer in pairs(self._peers) do
+		self:chk_initiate_dropin_pause(_peer)
+		self:chk_drop_in_peer(_peer)
+		self:chk_spawn_member_unit(_peer, _peer_id)
+	end
+end
+function HostNetworkSession:on_set_member_ready(peer_id, ready, state_changed, from_network)
+	log("[HostNetworkSession :on_set_member_ready] check_me3.4 :: peer_id: " .. tostring(peer_id) .. ", state_changed: " .. tostring(state_changed) .. ", from_network: " .. tostring(from_network))
+	HostNetworkSession.super.on_set_member_ready(self, peer_id, ready, state_changed, from_network)
+	self:check_start_game_intro()
+	if from_network then
+		self:chk_request_peer_outfit_load_status()
+	end
+end
+function HostNetworkSession:_increment_outfit_loading_status_request_id()
+	log("[HostNetworkSession :_increment_outfit_loading_status_request_id] check_me3.5")
+	if self._peer_outfit_loaded_status_request_id == 100 then
+		self._peer_outfit_loaded_status_request_id = 0
+	else
+		self._peer_outfit_loaded_status_request_id = self._peer_outfit_loaded_status_request_id + 1
+	end
+	return self._peer_outfit_loaded_status_request_id
+end
+function HostNetworkSession:_reset_outfit_loading_status_request()
+	log("[HostNetworkSession :_reset_outfit_loading_status_request] check_me3.6")
+	self:_increment_outfit_loading_status_request_id()
+	for peer_id, peer in pairs(self._peers) do
+		peer:set_other_peer_outfit_loaded_status(false)
+	end
+end
+function HostNetworkSession:on_peer_outfit_loaded(peer)
+	log("[HostNetworkSession :on_peer_outfit_loaded] check_me3.7 :: outfit loaded for peer: " .. tostring(peer:id()) .. " - " .. tostring(peer:name()))
+	print("[HostNetworkSession:on_peer_outfit_loaded]", peer:id())
+	for _peer_id, _peer in pairs(self._peers) do
+		self:chk_initiate_dropin_pause(_peer)
+		self:chk_drop_in_peer(_peer)
+		self:chk_spawn_member_unit(_peer, _peer_id)
 	end
 end

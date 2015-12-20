@@ -1,10 +1,11 @@
 BigLobbyGlobals = BigLobbyGlobals or class()
 
+--BigLobbyGlobals.aticket = nil
 --local aticket
 function BigLobbyGlobals:auth_ticket(ticket)
     log("[BigLobbyGlobals :auth_ticket]")
-    if ticket then tweak_data.aticket = ticket end
-    return tweak_data.aticket
+    if ticket then BigLobbyGlobals.aticket = ticket end
+    return BigLobbyGlobals.aticket
 end
 
 --pd2hook or BLT version
@@ -12,16 +13,21 @@ function BigLobbyGlobals:Hook()
     return "BLT"
 end
 
+function BigLobbyGlobals:version()
+    return 0.2
+end
+
+--BigLobbyGlobals.jdata = nil
 --local jdata
 function BigLobbyGlobals:jdata(peer_id, data)
     log("[BigLobbyGlobals :jdata] peer_id: " .. tostring(peer_id) .. ", data: " .. tostring(data))
     if data then
-        log("[BigLobbyGlobals :jdata] setting data")
-        if not tweak_data.jdata then tweak_data.jdata = {} end
-        tweak_data.jdata[peer_id] = data
+        log("[BigLobbyGlobals :jdata] setting data for peer: " .. tostring(peer_id))
+        if not BigLobbyGlobals._jdata then BigLobbyGlobals._jdata = {} end
+        BigLobbyGlobals._jdata[peer_id] = data
     end
-    log("[BigLobbyGlobals :jdata] returning data: " .. tostring(tweak_data.jdata[peer_id]))
-    return tweak_data.jdata[peer_id]
+    log("[BigLobbyGlobals :jdata] returning data: " .. tostring(BigLobbyGlobals._jdata[peer_id]))
+    return BigLobbyGlobals._jdata[peer_id]
 end
 
 function BigLobbyGlobals:num_player_slots()
@@ -153,6 +159,7 @@ function client_on_join_request_reply(data)
     --set vars to stored ticket and sender
     local auth_ticket = BigLobbyGlobals:auth_ticket()
     --local sender = BigLobbyGlobals:sender() --not needed anymore
+    my_peer_id, my_character = unpack(json.decode(my_character)) --ClientNetworkSession not getting called? I had this there before but character was assigned json string oddly peer ID was correct in this function without this trick!? (host assigned first new peer as 5 however..)
 
 	log("[BigLobbyGlobals-ClientNetworkSession :on_join_request_reply] My Peer ID: " .. tostring(my_peer_id) .. ", my character: " .. tostring(my_character))
     log("[BigLobbyGlobals-ClientNetworkSession :on_join_request_reply] Reply: " .. tostring(reply))
@@ -230,7 +237,7 @@ function client_on_join_request_reply(data)
 		cb("AUTH_FAILED")
 	end
     log("[BigLobbyGlobals-ClientNetworkSession :on_join_request_reply] Done")
-    Net:SendToPeer(1, "client_reply_finished", "nothing")
+    Net:SendToPeer(1, "client_reply_finished", "nothing v" .. tostring(BigLobbyGlobals:version()))
 end
 
 --Use global version later? Possible issue with gtrace in some instances

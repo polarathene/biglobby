@@ -460,3 +460,74 @@ function HUDMissionBriefing:init(hud, workspace)
 	self._backdrop:animate_bg_text(big_text)
 	logger("[HUDMissionBriefing: init] 12" .. "\n")
 end
+
+function HUDMissionBriefing:set_slot_joining(peer, peer_id)
+	print("set_slot_joining( peer, peer_id )", peer, peer_id)
+	local slot = self._ready_slot_panel:child("slot_" .. tostring(peer_id))
+	if not slot or not alive(slot) then
+		return
+	end
+	slot:child("voice"):set_visible(false)
+	slot:child("infamy"):set_visible(false)
+	slot:child("status"):stop()
+	slot:child("status"):set_alpha(1)
+	slot:child("status"):set_color(slot:child("status"):color():with_alpha(1))
+	slot:child("criminal"):set_color(slot:child("criminal"):color():with_alpha(1))
+	slot:child("criminal"):set_text(managers.localization:to_upper_text("menu_" .. tostring(peer:character())))
+	slot:child("name"):set_text(peer:name() .. "  ")
+	slot:child("status"):set_visible(true)
+	slot:child("status"):set_text(managers.localization:text("menu_waiting_is_joining"))
+	slot:child("status"):set_font_size(tweak_data.menu.pd2_small_font_size)
+	local animate_joining = function(o)
+		local t = 0
+		while true do
+			t = (t + coroutine.yield()) % 1
+			o:set_alpha(0.3 + 0.7 * math.sin(t * 180))
+		end
+	end
+	slot:child("status"):animate(animate_joining)
+end
+
+
+
+--debugging slot ready not appearing on client
+function HUDMissionBriefing:set_slot_ready(peer, peer_id)
+	print("set_slot_ready( peer, peer_id )", peer, peer_id)
+	local slot = self._ready_slot_panel:child("slot_" .. tostring(peer_id))
+	if not slot or not alive(slot) then
+		return
+	end
+	slot:child("status"):stop()
+	slot:child("status"):set_blend_mode("add")
+	slot:child("status"):set_visible(true)
+	slot:child("status"):set_alpha(1)
+	slot:child("status"):set_color(slot:child("status"):color():with_alpha(1))
+	slot:child("status"):set_text(managers.localization:text("menu_waiting_is_ready"))
+	slot:child("status"):set_font_size(tweak_data.menu.pd2_small_font_size)
+	managers.menu_component:flash_ready_mission_briefing_gui()
+end
+function HUDMissionBriefing:set_slot_not_ready(peer, peer_id)
+	print("set_slot_not_ready( peer, peer_id )", peer, peer_id)
+	local slot = self._ready_slot_panel:child("slot_" .. tostring(peer_id))
+	if not slot or not alive(slot) then
+		return
+	end
+	slot:child("status"):stop()
+	slot:child("status"):set_visible(true)
+	slot:child("status"):set_alpha(1)
+	slot:child("status"):set_color(slot:child("status"):color():with_alpha(1))
+	slot:child("status"):set_text(managers.localization:text("menu_waiting_is_not_ready"))
+	slot:child("status"):set_font_size(tweak_data.menu.pd2_small_font_size)
+end
+function HUDMissionBriefing:set_dropin_progress(peer_id, progress_percentage, mode)
+	local slot = self._ready_slot_panel:child("slot_" .. tostring(peer_id))
+	if not slot or not alive(slot) then
+		return
+	end
+	slot:child("status"):stop()
+	slot:child("status"):set_visible(true)
+	slot:child("status"):set_alpha(1)
+	local status_text = mode == "join" and "menu_waiting_is_joining" or "debug_loading_level"
+	slot:child("status"):set_text(utf8.to_upper(managers.localization:text(status_text) .. " " .. tostring(progress_percentage) .. "%"))
+	slot:child("status"):set_font_size(tweak_data.menu.pd2_small_font_size)
+end

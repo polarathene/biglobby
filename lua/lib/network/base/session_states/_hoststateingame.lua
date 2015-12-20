@@ -1,3 +1,19 @@
+--Use global version later? Possible issue with gtrace in some instances
+local log_data = true
+function logger(content, use_chat)
+	if log_data then
+		if not content then return end
+		if use_chat then
+			managers.chat:_receive_message(ChatManager.GAME, "BigLobby", content, tweak_data.system_chat_color)
+		end
+		-- if BigLobbyGlobals:Hook() == "pd2hook" then
+		-- 	io.stdout:write(content .. "\n")
+		-- else
+			log(content)
+		-- end
+	end
+end
+
 function HostStateInGame:on_join_request_received(data, peer_name, client_preferred_character, dlcs, xuid, peer_level, gameversion, join_attempt_identifier, auth_ticket, sender)
 	--[[local num_player_slots = 3--BigLobbyGlobals:num_player_slots() - 1
 	if peer_name == "Pola" then
@@ -125,7 +141,7 @@ function HostStateInGame:on_join_request_received(data, peer_name, client_prefer
 	local server_xuid = (SystemInfo:platform() == Idstring("X360") or SystemInfo:platform() == Idstring("XB1")) and managers.network.account:player_id() or ""
 	--Only being used to get the ticket now
 	local xcharacter = character
-	--character = json.encode({new_peer_id , character})
+	character = json.encode({new_peer_id , character})
 	new_peer:send("join_request_reply", 1, new_peer_id, character, level_index, difficulty_index, 2, data.local_peer:character(), my_user_id, Global.game_settings.mission, job_id_index, job_stage, alternative_job_stage, interupt_job_stage_level_index, server_xuid, ticket)
 	--BLT Network message used instead, proper peerID values are being changed to 4 for peers > 4, this works around that bug
 	logger("[HostStateInGame: on_join_request_received] Storing peers data as JSON")

@@ -1,3 +1,19 @@
+--Use global version later? Possible issue with gtrace in some instances
+local log_data = true
+function logger(content, use_chat)
+	if log_data then
+		if not content then return end
+		if use_chat then
+			managers.chat:_receive_message(ChatManager.GAME, "BigLobby", content, tweak_data.system_chat_color)
+		end
+		-- if BigLobbyGlobals:Hook() == "pd2hook" then
+		-- 	io.stdout:write(content .. "\n")
+		-- else
+			log(content)
+		-- end
+	end
+end
+
 function HostStateBase:on_join_request_received(data, peer_name, client_preferred_character, dlcs, xuid, peer_level, gameversion, join_attempt_identifier, auth_ticket, sender)
 	print("[HostStateBase:on_join_request_received]", data, peer_name, client_preferred_character, dlcs, xuid, peer_level, gameversion, join_attempt_identifier, sender:ip_at_index(0))
 	logger("[HostStateBase:on_join_request_received]")

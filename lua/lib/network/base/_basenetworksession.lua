@@ -1,3 +1,19 @@
+--Use global version later? Possible issue with gtrace in some instances
+local log_data = true
+function logger(content, use_chat)
+	if log_data then
+		if not content then return end
+		if use_chat then
+			managers.chat:_receive_message(ChatManager.GAME, "BigLobby", content, tweak_data.system_chat_color)
+		end
+		-- if BigLobbyGlobals:Hook() == "pd2hook" then
+		-- 	io.stdout:write(content .. "\n")
+		-- else
+			log(content)
+		-- end
+	end
+end
+
 function BaseNetworkSession:amount_of_players()
 	logger("[BaseNetworkSession: amount_of_players()]")
 	return table.size(self._peers_all)
@@ -433,6 +449,7 @@ end
 
 
 function BaseNetworkSession:_update_peer_ready_gui(peer)
+	log("!!!!!![BaseNetworkSession :_update_peer_ready_gui] peer: " .. tostring(peer:id()) .. " - " .. tostring(peer:name()) .. ", ready?: " .. tostring(peer:waiting_for_player_ready()))
 	logger("!!!!!![BaseNetworkSession :_update_peer_ready_gui] peer: " .. tostring(peer:id()) .. " - " .. tostring(peer:name()) .. ", ready?: " .. tostring(peer:waiting_for_player_ready()))
 	if not peer:synched() or not peer:is_streaming_complete() then
 		logger("!!!!!![BaseNetworkSession :_update_peer_ready_gui] fail, peer:synched(): " .. tostring(peer:synched()) .. ", streaming_complete(): " .. tostring(peer:is_streaming_complete()))
@@ -451,10 +468,12 @@ end
 
 
 function BaseNetworkSession:on_streaming_progress_received(peer, progress)
+	log("[BaseNetworkSession :on_streaming_progress_received] peer: " .. tostring(peer:id()) .. " - " .. tostring(peer:name()) .. ", progress: " .. tostring(progress))
 	if not peer:synched() then
 		return
 	end
 	if progress == 100 then
+		log("[BaseNetworkSession :on_streaming_progress_received] 100% loaded, update_gui... peer: ".. tostring(peer:id()) .. " - " .. tostring(peer:name()))
 		self:_update_peer_ready_gui(peer)
 		if Network:is_server() then
 			self:chk_spawn_member_unit(peer, peer:id())
@@ -468,11 +487,12 @@ function BaseNetworkSession:on_streaming_progress_received(peer, progress)
 end
 
 function BaseNetworkSession:on_dropin_progress_received(dropin_peer_id, progress_percentage)
+	logger("[BaseNetworkSession :on_dropin_progress_received] peer: " .. tostring(peer:id()) .. " - " .. tostring(peer:name()) .. ", progress: " .. tostring(progress_percentage))
 	local peer = self:peer(dropin_peer_id)
 	if peer:synched() then
 		return
 	end
-	logger("[BaseNetworkSession :on_dropin_progress_received] peer: " .. tostring(peer:id()) .. " - " .. tostring(peer:name()) .. ", progress: " .. tostring(progress_percentage))
+	--logger("[BaseNetworkSession :on_dropin_progress_received] peer: " .. tostring(peer:id()) .. " - " .. tostring(peer:name()) .. ", progress: " .. tostring(progress_percentage))
 	local old_drop_in_prog = peer:drop_in_progress()
 	if not old_drop_in_prog or progress_percentage > old_drop_in_prog then
 		peer:set_drop_in_progress(progress_percentage)
@@ -481,5 +501,93 @@ function BaseNetworkSession:on_dropin_progress_received(dropin_peer_id, progress
 		else
 			managers.menu:update_person_joining(dropin_peer_id, progress_percentage)
 		end
+	end
+end
+
+
+
+
+--debugging peer id bug
+function BaseNetworkSession:load(data)
+	for peer_id, peer_data in pairs(data.peers) do
+		log("[BaseNetworkSession:load] peer_id: " .. tostring(peer_id))
+		self._peers[peer_id] = NetworkPeer:new()
+		self._peers_all[peer_id] = self._peers[peer_id]
+		self._peers[peer_id]:load(peer_data)
+	end
+	if data.server_peer then
+		self._server_peer = self._peers[data.server_peer]
+	end
+	self._local_peer:load(data.local_peer)
+	self._peers_all[self._local_peer:id()] = self._local_peer
+	self.update = self.update_skip_one
+	self._kicked_list = data.kicked_list
+	self._connection_established_results = data.connection_established_results
+	if data.dead_con_reports then
+		self._dead_con_reports = {}
+		for _, report in ipairs(data.dead_con_reports) do
+			local report = {
+				process_t = report.process_t,
+				reporter = self._peers[report.reporter],
+				reported = self._peers[report.reported]
+			}
+			table.insert(self._dead_con_reports, report)
+		end
+	end
+	self._server_protocol = data.server_protocol
+	self._notify_host_when_outfits_loaded = data.notify_host_when_outfits_loaded
+	self._load_counter = data.load_counter
+	if self:is_client() and self:server_peer() then
+		Network:set_client(self:server_peer():rpc())
+		local is_playing = BaseNetworkHandler._gamestate_filter.any_ingame_playing[game_state_machine:last_queued_state_name()]
+		if is_playing then
+			Application:set_pause(true)
+		end
+	end
+end
+function BaseNetworkSession:save(data)
+	if self._server_peer then
+		data.server_peer = self._server_peer:id()
+	end
+	local peers = {}
+	data.peers = peers
+	for peer_id, peer in pairs(self._peers) do
+		log("[BaseNetworkSession:save] peer_id: " .. tostring(peer_id))
+		local peer_data = {}
+		peers[peer_id] = peer_data
+		peer:save(peer_data)
+	end
+	data.local_peer = {}
+	self._local_peer:save(data.local_peer)
+	data.kicked_list = self._kicked_list
+	data.connection_established_results = self._connection_established_results
+	if self._dead_con_reports then
+		data.dead_con_reports = {}
+		for _, report in ipairs(self._dead_con_reports) do
+			local save_report = {
+				process_t = report.process_t,
+				reporter = report.reporter:id(),
+				reported = report.reported:id()
+			}
+			table.insert(data.dead_con_reports, save_report)
+		end
+	end
+	if self._dropin_complete_event_manager_id then
+		EventManager:unregister_listener(self._dropin_complete_event_manager_id)
+		self._dropin_complete_event_manager_id = nil
+	end
+	self:_flush_soft_remove_peers()
+	data.server_protocol = self._server_protocol
+	data.notify_host_when_outfits_loaded = self._notify_host_when_outfits_loaded
+	data.load_counter = self._load_counter
+end
+
+function BaseNetworkSession:chk_send_local_player_ready()
+	log("[BaseNetworkSession :chk_send_local_player_ready] check_me")
+	local state = self._local_peer:waiting_for_player_ready()
+	if self:is_host() then
+		self:send_to_peers_loaded("set_member_ready", self._local_peer:id(), state and 1 or 0, 1, "")
+	else
+		self:send_to_host("set_member_ready", self._local_peer:id(), state and 1 or 0, 1, "")
 	end
 end
