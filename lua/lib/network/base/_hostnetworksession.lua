@@ -1,7 +1,8 @@
 --Assigns a free Peer ID to new joining peer
 function HostNetworkSession:_get_free_client_id()
-	--logger("[HostNetworkSession: _get_free_client_id]")
-	local i = 5--2
+	log("[HostNetworkSession :_get_free_client_id]")
+	local i = 2--2
+	log("[HostNetworkSession :_get_free_client_id] starting index is: " .. tostring(i))
 	repeat
 		if not self._peers[i] then
 			local is_dirty = false
@@ -11,11 +12,12 @@ function HostNetworkSession:_get_free_client_id()
 				end
 			end
 			if not is_dirty then
+				log("[HostNetworkSession :_get_free_client_id] returning non-dirty i: " .. tostring(i))
 				return i
 			end
 		end
 		i = i + 1
-	until i == 7--5
+	until i == 7--5 --limit, total numplayer slot limit + 1
 end
 
 --[[

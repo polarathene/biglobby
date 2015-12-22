@@ -11,7 +11,7 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 		"FutureCatCar",
 		"WWWWWWWWWWWWQWWW",
 		"AI Teammate",
-		"FutureCatCar"
+		"xFutureCatCar"
 	}
 	local teammate_panel = teammates_panel:panel({
 		visible = false,

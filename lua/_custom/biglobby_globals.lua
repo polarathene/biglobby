@@ -55,13 +55,15 @@ log("NETWORK RESPONSE: " .. tostring(id))
     	log("[BigLobbyGlobals :who_is_awesome] From " .. tostring(managers.network:session():peer(sender):name()) .. " :)")
     end
 
-    if id == "client_peer_handshake" then
-        log("[BigLobbyGlobals :network_hook] client_peer_handshake")
+    --if id == "client_peer_handshake" then
+    if id == "peer_handshake" then
+        log("[BigLobbyGlobals :network_hook] " .. id)
         local name = Net:GetNameFromPeerID( sender )
         log( "Received Private Message from: " .. name )
         log( "Message: " .. data )
 
-        client_peer_handshake(data)
+        BigLobbyGlobals:peer_handshake(unpack(json.decode(data)))
+        --client_peer_handshake(data)
     end
 
     if id == "client_on_join_request_reply" then
@@ -103,8 +105,70 @@ log("NETWORK RESPONSE: " .. tostring(id))
         --managers.network:session():on_handshake_confirmation(data_session, new_peer, 1)
         logger("[HostStateInGame: on_join_request_received] DONE!!!!" .. tostring(peer_name))
     end
+
+    if id == "set_member_ready" then
+        log("[BigLobbyGlobals :set_member_ready] sender_id: ".. tostring(sender) .. ", data: " .. tostring(data))
+        local sender_peer = managers.network:session():peer(sender):rpc()
+        BigLobbyGlobals:set_member_ready(sender_peer, unpack(json.decode(data)))
+    end
+
+    if id == "peer_exchange_info" then
+        log("[BigLobbyGlobals :peer_exchange_info] sender_id: ".. tostring(sender) .. ", data: " .. tostring(data))
+        local sender_peer = managers.network:session():peer(sender):rpc()
+        BigLobbyGlobals:peer_exchange_info(sender_peer, unpack(json.decode(data)))
+    end
+
+    if id == "connection_established" then
+        log("[BigLobbyGlobals :connection_established] sender_id: ".. tostring(sender) .. ", data: " .. tostring(data))
+        local sender_peer = managers.network:session():peer(sender):rpc()
+        BigLobbyGlobals:connection_established(sender_peer, unpack(json.decode(data)))
+    end
+
+    if id == "mutual_connection" then
+        log("[BigLobbyGlobals :mutual_connection] sender_id: ".. tostring(sender) .. ", data: " .. tostring(data))
+        --local sender_peer = managers.network:session():peer(sender):rpc()
+        BigLobbyGlobals:mutual_connection(unpack(json.decode(data)))
+    end
+
+if id == "set_peer_synched" then
+    log("[BigLobbyGlobals :set_peer_synched] sender_id: ".. tostring(sender) .. ", data: " .. tostring(data))
+    local sender_peer = managers.network:session():peer(sender):rpc()
+    BigLobbyGlobals:set_peer_synched(sender_peer, unpack(json.decode(data)))
+end
+
+if id == "request_drop_in_pause" then
+    log("[BigLobbyGlobals :request_drop_in_pause] sender_id: ".. tostring(sender) .. ", data: " .. tostring(data))
+    local sender_peer = managers.network:session():peer(sender):rpc()
+    BigLobbyGlobals:request_drop_in_pause(sender_peer, unpack(json.decode(data)))
+end
+
+if id == "drop_in_pause_confirmation" then
+    log("[BigLobbyGlobals :drop_in_pause_confirmation] sender_id: ".. tostring(sender) .. ", data: " .. tostring(data))
+    local sender_peer = managers.network:session():peer(sender):rpc()
+    BigLobbyGlobals:drop_in_pause_confirmation(sender_peer, unpack(json.decode(data)))
+end
+
+if id == "dropin_progress" then
+    log("[BigLobbyGlobals :dropin_progress] sender_id: ".. tostring(sender) .. ", data: " .. tostring(data))
+    local sender_peer = managers.network:session():peer(sender):rpc()
+    BigLobbyGlobals:dropin_progress(sender_peer, unpack(json.decode(data)))
+end
+
+
 end)
 
+
+function BigLobbyGlobals:peer_handshake(name, peer_id, ip, in_lobby, loading, synched, character, slot, mask_set, xuid, xnaddr)
+    log("[BigLobbyGlobals :peer_handshake]")
+	if not BaseNetworkHandler._verify_in_client_session() then
+        log("[BigLobbyGlobals :peer_handshake] verification failed")
+		return
+	end
+    log("[BigLobbyGlobals :peer_handshake] verified")
+	log("NAME: " .. tostring(name) .. "\nPEERID: " .. tostring(peer_id) .. "\nIP: " .. tostring(ip) .. "\nINLOBBY: " .. tostring(in_lobby) .. "\nLOADING: " .. tostring(loading))
+	log("SYNCHED: " .. tostring(synched) .. "\nCHARACTER: " .. tostring(character) .. "\nSLOT: " .. tostring(slot) .. "\nMASKSET: " .. tostring(mask_set) .. "\nXUID: " .. tostring(xuid) .. "\nXNADDR: " .. tostring(xnaddr))
+	managers.network:session():peer_handshake(name, peer_id, ip, in_lobby, loading, synched, character, slot, mask_set, xuid, xnaddr)
+end
 
 function client_peer_handshake(data)
     log("[BigLobbyGlobals-ClientNetworkSession :peer_handshake]")
@@ -166,6 +230,10 @@ function client_on_join_request_reply(data)
 	--print("[BigLobbyGlobals-ClientNetworkSession:on_join_request_reply] ", managers.network:session()._server_peer and managers.network:session()._server_peer:user_id(), user_id, sender:ip_at_index(0), sender:protocol_at_index(0))
 
 	local cb = managers.network:session()._cb_find_game
+    if cb == nil then
+        log("[BigLobbyGlobals-ClientNetworkSession :on_join_request_reply] CB IS NIL, WILL CRASH, RETURNING")
+        return
+    end
 	managers.network:session()._cb_find_game = nil
 	if reply == 1 then
 		managers.network:session()._host_sanity_send_t = TimerManager:wall():time() + managers.network:session().HOST_SANITY_CHECK_INTERVAL
@@ -238,6 +306,131 @@ function client_on_join_request_reply(data)
 	end
     log("[BigLobbyGlobals-ClientNetworkSession :on_join_request_reply] Done")
     Net:SendToPeer(1, "client_reply_finished", "nothing v" .. tostring(BigLobbyGlobals:version()))
+end
+
+function BigLobbyGlobals:set_member_ready(sender, peer_id, ready, mode, outfit_versions_str)
+	log("[BigLobbyGlobals :set_member_ready] check_me 1 :: peer_id: " .. tostring(peer_id) .. ", mode: " .. tostring(mode) .. ", outfit_str: " .. tostring(outfit_versions_str))
+	--peer_id, ready, mode, outfit_versions_str = unpack(json.decode(outfit_versions_str))
+	log("[BigLobbyGlobals :set_member_ready] check_me 2 :: peer_id: " .. tostring(peer_id) .. ", mode: " .. tostring(mode) .. ", outfit_str: " .. tostring(outfit_versions_str))
+
+	--Get real peer id by assigning peer_id as senders...is this ok? or do we have a problem?
+	-- local sender_peer = self._verify_sender(sender)
+	-- if not sender_peer then
+	-- 	return
+	-- end
+	-- peer_id = sender_peer:id()
+	-- log("SENDER: " .. tostring(sender_peer:name()) .. " - " .. tostring(sender_peer:id()))
+	if not BaseNetworkHandler._verify_gamestate(BaseNetworkHandler._gamestate_filter.any_ingame) or not BaseNetworkHandler._verify_sender(sender) then
+		return
+	end
+	local peer = managers.network:session():peer(peer_id)
+	if not peer then
+		return
+	end
+	if mode == 1 then
+		ready = ready ~= 0 and true or false
+		local ready_state = peer:waiting_for_player_ready()
+		peer:set_waiting_for_player_ready(ready)
+		managers.network:session():on_set_member_ready(peer_id, ready, ready_state ~= ready, true)
+		if Network:is_server() then
+			managers.network:session():send_to_peers_loaded_except(peer_id, "set_member_ready", peer_id, ready and 1 or 0, 1, "")
+			if game_state_machine:current_state().start_game_intro then
+			elseif ready then
+				managers.network:session():chk_spawn_member_unit(peer, peer_id)
+			end
+		end
+	elseif mode == 2 then
+		peer:set_streaming_status(ready)
+		managers.network:session():on_streaming_progress_received(peer, ready)
+	elseif mode == 3 then
+		if Network:is_server() then
+			managers.network:session():on_peer_finished_loading_outfit(peer, ready, outfit_versions_str)
+		end
+	elseif mode == 4 and Network:is_client() and peer == managers.network:session():server_peer() then
+		managers.network:session():notify_host_when_outfits_loaded(ready, outfit_versions_str)
+	end
+end
+
+function BigLobbyGlobals:peer_exchange_info(sender, peer_id)
+	log("$$$$$$$$[BigLobbyGlobals :peer_exchange_info] peer_id: " .. tostring(peer_id))
+	local sender_peer = BaseNetworkHandler._verify_sender(sender)
+	if not sender_peer then
+		return
+	end
+	log("$$$$$$$$[BigLobbyGlobals :peer_exchange_info] peer_id: " .. tostring(peer_id) .. ", sender: " .. tostring(sender_peer:id()) .. " - " .. tostring(sender_peer:name()))
+	if BaseNetworkHandler._verify_in_client_session() then
+		if sender_peer:id() == 1 then
+			log("$$$$$$$$[BigLobbyGlobals :peer_exchange_info] -> on_peer_requested_info()")
+			managers.network:session():on_peer_requested_info(peer_id)
+		elseif peer_id == sender_peer:id() then
+			log("$$$$$$$$[BigLobbyGlobals :peer_exchange_info] -> send_to_host('peer_exchange_info', peer_id)")
+			managers.network:session():send_to_host("peer_exchange_info", peer_id)
+		end
+	elseif BaseNetworkHandler._verify_in_server_session() then
+		log("$$$$$$$$[BigLobbyGlobals :peer_exchange_info] -> on_peer_connection_established(sender_peer, peer_id)")
+		managers.network:session():on_peer_connection_established(sender_peer, peer_id)
+	end
+end
+
+function BigLobbyGlobals:connection_established(sender, peer_id)
+	if not BaseNetworkHandler._verify_in_server_session() then
+		return
+	end
+	local sender_peer = BaseNetworkHandler._verify_sender(sender)
+	if not sender_peer then
+		return
+	end
+	log("$$$$$$$$[BigLobbyGlobals :connection_established] peer_id: " .. tostring(peer_id) .. ", sender name and id: " .. tostring(sender_peer:id()) .. " - " .. tostring(sender_peer:name()))
+	log("$$$$$$$$[BigLobbyGlobals :connection_established] -> on_peer_connection_established()")
+	managers.network:session():on_peer_connection_established(sender_peer, peer_id)
+end
+function BigLobbyGlobals:mutual_connection(other_peer_id)
+	print("[BigLobbyGlobals:mutual_connection]", other_peer_id)
+	if not BaseNetworkHandler._verify_in_client_session() then
+		return
+	end
+	managers.network:session():on_mutual_connection(other_peer_id)
+end
+
+function BigLobbyGlobals:set_peer_synched(sender, id)
+	log("$$$$$$$$[BigLobbyGlobals :set_peer_synched] peer_id: " .. tostring(id))
+	if not BaseNetworkHandler._verify_sender(sender) then
+		return
+	end
+	managers.network:session():on_peer_synched(id)
+end
+
+function BigLobbyGlobals:request_drop_in_pause(sender, peer_id, nickname, state)
+    log("$$$$$$$$[BigLobbyGlobals :request_drop_in_pause] peer_id: " .. tostring(peer_id))
+	managers.network:session():on_drop_in_pause_request_received(peer_id, nickname, state)
+end
+function BigLobbyGlobals:drop_in_pause_confirmation(sender, dropin_peer_id)
+    log("$$$$$$$$[BigLobbyGlobals :drop_in_pause_confirmation] dropin_peer_id: " .. tostring(dropin_peer_id))
+	local sender_peer = BaseNetworkHandler._verify_sender(sender)
+	if not sender_peer then
+		return
+	end
+	managers.network:session():on_drop_in_pause_confirmation_received(dropin_peer_id, sender_peer)
+end
+-- function ConnectionNetworkHandler:report_dead_connection(other_peer_id, sender)
+-- 	local sender_peer = BaseNetworkHandler._verify_sender(sender)
+-- 	if not sender_peer then
+-- 		return
+-- 	end
+-- 	managers.network:session():on_dead_connection_reported(sender_peer:id(), other_peer_id)
+-- end
+
+function BigLobbyGlobals:dropin_progress(sender, dropin_peer_id, progress_percentage)
+    log("[BigLobbyGlobals :dropin_progress] dropin_peer_id: " .. tostring(dropin_peer_id) .. ", progress: " .. tostring(progress_percentage))
+	if not BaseNetworkHandler._verify_in_client_session() or not BaseNetworkHandler._verify_gamestate(BaseNetworkHandler._gamestate_filter.any_ingame) then
+		return
+	end
+	local session = managers.network:session()
+	local dropin_peer = session:peer(dropin_peer_id)
+	if not dropin_peer or dropin_peer_id == session:local_peer():id() then
+		return
+	end
+	session:on_dropin_progress_received(dropin_peer_id, progress_percentage)
 end
 
 --Use global version later? Possible issue with gtrace in some instances

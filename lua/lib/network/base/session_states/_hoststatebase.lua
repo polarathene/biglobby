@@ -56,6 +56,12 @@ function HostStateBase:_introduce_old_peers_to_new_peer(data, new_peer)
 				logger("[HostStateBase :_introduce_old_peers_to_new_peer] introducing: " .. tostring(old_peer:id()) .. " - " .. tostring(old_peer:name()) .. " to: " .. tostring(new_peer:id()) .. " - " .. tostring(new_peer:name()))
 				print("[HostStateBase:_introduce_old_peers_to_new_peer] introducing", old_pid, "to", new_peer_id)
 				new_peer:send("peer_handshake", old_peer:connection_info())
+
+				-- local data = json.encode({old_peer:connection_info()})
+				-- local Net = _G.LuaNetworking
+				-- logger("[HostStateBase :_introduce_new_peer_to_old_peers] Sending request for handshake to peer")
+				-- Net:SendToPeer(new_peer:id(), "client_peer_handshake", data)
+
 				logger("[HostStateBase :_introduce_old_peers_to_new_peer] SET HANDSHAKE STATUS TO ASKED: " .. tostring(old_peer:name()) .. " to: " .. tostring(new_peer:name()))
 				new_peer:set_handshake_status(old_pid, "asked")
 			else
@@ -75,12 +81,12 @@ function HostStateBase:_introduce_new_peer_to_old_peers(data, new_peer, loading,
 				logger("[HostStateBase :_introduce_new_peer_to_old_peers] introducing: " .. tostring(new_peer:id()) .. " - " .. tostring(new_peer:name()) .. " to: " .. tostring(old_peer:id()) .. " - " .. tostring(old_peer:name()))
 				print("[HostStateBase:_introduce_new_peer_to_old_peers] introducing", new_peer_id, "to", old_pid)
 
-				--old_peer:send("peer_handshake", peer_name, new_peer_id, new_peer_user_id, new_peer:in_lobby(), loading, false, character, mask_set, xuid, xnaddr)
+				old_peer:send("peer_handshake", peer_name, new_peer_id, new_peer_user_id, new_peer:in_lobby(), loading, false, character, mask_set, xuid, xnaddr)
 				--BLT Network message used instead, proper peerID values are being changed to 4 for peers > 4, this works around that bug
-				local data = json.encode({peer_name, new_peer_id, new_peer_user_id, new_peer:in_lobby(), loading, false, character, mask_set, xuid, xnaddr})
-				local Net = _G.LuaNetworking
-				logger("[HostStateBase :_introduce_new_peer_to_old_peers] Sending request for handshake to peer")
-				Net:SendToPeer(old_peer:id(), "client_peer_handshake", data)
+				-- local data = json.encode({peer_name, new_peer_id, new_peer_user_id, new_peer:in_lobby(), loading, false, character, mask_set, xuid, xnaddr})
+				-- local Net = _G.LuaNetworking
+				-- logger("[HostStateBase :_introduce_new_peer_to_old_peers] Sending request for handshake to peer")
+				-- Net:SendToPeer(old_peer:id(), "client_peer_handshake", data)
 
 				logger("[HostStateBase :_introduce_new_peer_to_old_peers] SET HANDSHAKE STATUS TO ASKED: " .. tostring(new_peer:name()) .. " to: " .. tostring(old_peer:name()))
 				old_peer:set_handshake_status(new_peer_id, "asked")

@@ -15,21 +15,15 @@ function logger(content, use_chat)
 end
 
 function HostStateInGame:on_join_request_received(data, peer_name, client_preferred_character, dlcs, xuid, peer_level, gameversion, join_attempt_identifier, auth_ticket, sender)
-	--[[local num_player_slots = 3--BigLobbyGlobals:num_player_slots() - 1
-	if peer_name == "Pola" then
-		num_player_slots =  BigLobbyGlobals:num_player_slots() - 1
-	end]]
-
 	local num_player_slots = BigLobbyGlobals:num_player_slots() - 1
+	log("[HostStateInGame: on_join_request_received] peer_name: " .. tostring(peer_name) .. ", gversion: " .. tostring(gameversion))
 
-	logger("[HostStateInGame: on_join_request_received] PEER: " .. tostring(peer_name) .. ", gversion: " .. tostring(gameversion))
-	--print("[HostStateInGame:on_join_request_received]", data, peer_name, client_preferred_character, dlcs, xuid, peer_level, gameversion, join_attempt_identifier, sender:ip_at_index(0))
 	local my_user_id = data.local_peer:user_id() or ""
 	if SystemInfo:platform() == Idstring("WIN32") then
-		logger("THIS GOT TRIGGERED!")
-		peer_name = peer_name or managers.network.account:username_by_id(sender:ip_at_index(0)) or peer_name
+		peer_name = managers.network.account:username_by_id(sender:ip_at_index(0))
 	end
-	logger("[HostStateInGame: on_join_request_received] Still here?  PEER: " .. tostring(peer_name))
+	log("[HostStateInGame: on_join_request_received] peer_name: " .. tostring(peer_name))
+
 	if self:_has_peer_left_PSN(peer_name) then
 		logger("[HostStateInGame: on_join_request_received] What? This shouldn't happen")
 		--print("this CLIENT has left us from PSN, ignore his request", peer_name)
@@ -141,6 +135,7 @@ function HostStateInGame:on_join_request_received(data, peer_name, client_prefer
 	local server_xuid = (SystemInfo:platform() == Idstring("X360") or SystemInfo:platform() == Idstring("XB1")) and managers.network.account:player_id() or ""
 	--Only being used to get the ticket now
 	local xcharacter = character
+	log("[HostStateInGame: on_join_request_received] peer_id: " .. tostring(new_peer_id) .. ", char: " .. tostring(character))
 	character = json.encode({new_peer_id , character})
 	new_peer:send("join_request_reply", 1, new_peer_id, character, level_index, difficulty_index, 2, data.local_peer:character(), my_user_id, Global.game_settings.mission, job_id_index, job_stage, alternative_job_stage, interupt_job_stage_level_index, server_xuid, ticket)
 	--BLT Network message used instead, proper peerID values are being changed to 4 for peers > 4, this works around that bug

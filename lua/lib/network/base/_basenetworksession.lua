@@ -487,11 +487,12 @@ function BaseNetworkSession:on_streaming_progress_received(peer, progress)
 end
 
 function BaseNetworkSession:on_dropin_progress_received(dropin_peer_id, progress_percentage)
-	logger("[BaseNetworkSession :on_dropin_progress_received] peer: " .. tostring(peer:id()) .. " - " .. tostring(peer:name()) .. ", progress: " .. tostring(progress_percentage))
+	log("[BaseNetworkSession :on_dropin_progress_received] dropin_peer_id: " .. tostring(dropin_peer_id))
 	local peer = self:peer(dropin_peer_id)
 	if peer:synched() then
 		return
 	end
+	log("[BaseNetworkSession :on_dropin_progress_received] peer: " .. tostring(peer:id()) .. " - " .. tostring(peer:name()) .. ", progress: " .. tostring(progress_percentage))
 	--logger("[BaseNetworkSession :on_dropin_progress_received] peer: " .. tostring(peer:id()) .. " - " .. tostring(peer:name()) .. ", progress: " .. tostring(progress_percentage))
 	local old_drop_in_prog = peer:drop_in_progress()
 	if not old_drop_in_prog or progress_percentage > old_drop_in_prog then

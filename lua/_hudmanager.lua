@@ -44,9 +44,11 @@ function HUDManager:add_mugshot_by_unit(unit)
 	for i, data in ipairs(self._hud.mugshots) do
 		if data.character_name_id == character_name_id then
 			if is_husk_player and not data.peer_id then
+				log("[HUDManager :add_mugshot_by_unit] husk_player remove_mugshot")
 				self:_remove_mugshot(data.id)
 				break
 			else
+				log("[HUDManager :add_mugshot_by_unit] player, set_mugshot_normal, char: " .. tostring(character_name))
 				unit:unit_data().mugshot_id = data.id
 				managers.hud:set_mugshot_normal(unit:unit_data().mugshot_id)
 				managers.hud:set_mugshot_armor(unit:unit_data().mugshot_id, 1)
@@ -115,4 +117,18 @@ function HUDManager:set_mugshot_armor(id, amount)
 		else
 		end
 	end
+end
+
+
+function HUDManager:reset_player_hpbar()
+	local crim_entry = managers.criminals:character_static_data_by_name(managers.criminals:local_character_name())
+	if not crim_entry then
+		return
+	end
+	local color_id = managers.network:session():local_peer():id()
+	-- self:set_teammate_callsign(4, color_id)
+	-- self:set_teammate_name(4, managers.network:session():local_peer():name())
+	--Uses dynamic value
+	self:set_teammate_callsign(HUDManager.PLAYER_PANEL, color_id)
+	self:set_teammate_name(HUDManager.PLAYER_PANEL, managers.network:session():local_peer():name())
 end

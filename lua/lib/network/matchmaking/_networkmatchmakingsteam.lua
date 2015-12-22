@@ -116,7 +116,7 @@ end
 
 NetworkMatchMakingSTEAM.OPEN_SLOTS = 6--4
 --NetworkMatchMakingSTEAM.GAMEVERSION = 53770 --53770=`hello` or could use NetworkMatchMakingSTEAM._BUILD_SEARCH_INTEREST_KEY
-NetworkMatchMakingSTEAM._BUILD_SEARCH_INTEREST_KEY = NetworkMatchMakingSTEAM._BUILD_SEARCH_INTEREST_KEY .. "-biglobby"
+NetworkMatchMakingSTEAM._BUILD_SEARCH_INTEREST_KEY = "biglobby"--NetworkMatchMakingSTEAM._BUILD_SEARCH_INTEREST_KEY .. "-biglobby"
 function NetworkMatchMakingSTEAM:create_lobby(settings)
 	self._num_players = nil
 	local dialog_data = {}

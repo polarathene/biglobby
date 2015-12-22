@@ -1,6 +1,7 @@
 --Crashes if use global
 -- HUDManager.PLAYER_PANEL = 6 --bad idea, this actually referenced 4 as in the 4th panel on the UI(one on the furtherest right)
 -- should be the local players
+HUDManager.PLAYER_PANEL = 6
 
 --Nothing seems to call this, I don't think it's even used.. Panels are created somewhere else
 function HUDManager:_create_teammates_panel(hud)
@@ -44,11 +45,64 @@ function HUDManager:_create_teammates_panel(hud)
 	end
 end
 
+--[[
+function HUDManager:_create_teammates_panel(hud)
+	log("[HUDManager :_create_teammates_panel]")
+	local num_player_slots = 6--BigLobbyGlobals:num_player_slots()
+
+
+	hud = hud or managers.hud:script(PlayerBase.PLAYER_INFO_HUD_PD2)
+	self._hud.teammate_panels_data = self._hud.teammate_panels_data or {}
+	self._teammate_panels = {}
+	if hud.panel:child("teammates_panel") then
+		hud.panel:remove(hud.panel:child("teammates_panel"))
+	end
+	local h = self:teampanels_height()
+	local teammates_panel = hud.panel:panel({
+		name = "teammates_panel",
+		h = h,
+		y = hud.panel:h() - h,
+		halign = "grow",
+		valign = "bottom"
+	})
+
+	--for i = 1, 4 do
+	for i = 1, num_player_slots do
+		log('[HUDManager :_create_teammates_panel] i: ' .. tostring(i))
+
+
+		local is_player = i == HUDManager.PLAYER_PANEL
+
+		local teammate_w = is_player and 204 or 512
+		local player_gap = 240
+		--local small_gap = (teammates_panel:w() - player_gap - teammate_w * 4) / 3
+		local small_gap = (teammates_panel:w() - player_gap - teammate_w * num_player_slots) / num_player_slots-1
+		self._hud.teammate_panels_data[i] = {
+			taken = false,
+			special_equipments = {}
+		}
+		local pw = teammate_w + (is_player and 0 or 64)
+		local teammate = HUDTeammate:new(i, teammates_panel, is_player, pw)
+		if is_player then
+			local x = math.floor((pw + small_gap) * (i - 1) + (i == HUDManager.PLAYER_PANEL and player_gap or 0))
+			teammate._panel:set_x(math.floor(x))
+		else
+			local y = math.floor( 24 * (i - 1) + 14 )
+			teammate._panel:set_y(y)
+		end
+		table.insert(self._teammate_panels, teammate)
+		if is_player then
+			teammate:add_panel()
+		end
+	end
+end
+]]
+
 
 HUDManager.disabled = {}
 HUDManager.disabled[Idstring("guis/player_hud"):key()] = true
 HUDManager.disabled[Idstring("guis/experience_hud"):key()] = true
-HUDManager.PLAYER_PANEL = 4
+--HUDManager.PLAYER_PANEL = 4
 function HUDManager:controller_mod_changed()
 	if self:alive("guis/mask_off_hud") then
 		self:script("guis/mask_off_hud").mask_on_text:set_text(utf8.to_upper(managers.localization:text("hud_instruct_mask_on", {
@@ -196,7 +250,7 @@ end
 function HUDManager:set_teammate_health(i, data)
 	log("[HUDManager:set_teammate_health] i: " .. tostring(i) .. ", data: " .. tostring(data))
 	--if i == 4 then return end
-	if i == nil then return end
+	--if i == nil then return end
 	self._teammate_panels[i]:set_health(data)
 end
 function HUDManager:set_player_custom_radial(data)
@@ -214,10 +268,11 @@ end
 function HUDManager:set_teammate_armor(i, data)
 	log("[HUDManager:set_teammate_armor] i: " .. tostring(i) .. ", data: " .. tostring(data))
 	--if i == 4 then return end
-	if i == nil then return end
+	--if i == nil then return end
 	self._teammate_panels[i]:set_armor(data)
 end
 function HUDManager:set_teammate_name(i, teammate_name)
+	log("[HUDManager:set_teammate_name] i: " .. tostring(i) .. ", data: " .. tostring(teammate_name))
 	self._teammate_panels[i]:set_name(teammate_name)
 end
 function HUDManager:set_teammate_callsign(i, id)
@@ -281,7 +336,7 @@ end
 function HUDManager:set_teammate_grenades(i, data)
 	log("[HUDManager:set_teammate_grenades] i: " .. tostring(i) .. ", data: " .. tostring(data))
 	--if i == 4 then return end
-	if i == nil then return end
+	--if i == nil then return end
 	self._teammate_panels[i]:set_grenades(data)
 end
 function HUDManager:set_teammate_grenades_amount(i, data)
@@ -476,6 +531,7 @@ function HUDManager:add_teammate_panel(character_name, player_name, ai, peer_id)
 end
 
 function HUDManager:remove_teammate_panel(id)
+	log("[HUDManager :remove_teammate_panel] i: " .. tostring(i))
 	self._teammate_panels[id]:remove_panel()
 	self._hud.teammate_panels_data[id].taken = false
 	local is_ai = self._teammate_panels[HUDManager.PLAYER_PANEL]._ai
@@ -489,6 +545,7 @@ function HUDManager:remove_teammate_panel(id)
 			local panel_id = self:add_teammate_panel(character_name, name, true, nil)
 			managers.criminals:character_data_by_name(character_name).panel_id = panel_id
 		else
+			log("[HUDManager :remove_teammate_panel] replacing panel for peer_id: " .. tostring(peer_id) .. ", name: " .. tostring(managers.network:session():peer(peer_id):name()))
 			local character_name = managers.criminals:character_name_by_peer_id(peer_id)
 			local panel_id = self:add_teammate_panel(character_name, managers.network:session():peer(peer_id):name(), false, peer_id)
 			managers.criminals:character_data_by_name(character_name).panel_id = panel_id
@@ -818,7 +875,7 @@ function HUDManager:align_teammate_name_label(panel, interact)
 		bag:set_right(panel:w())
 	end
 end
---[[
+
 function HUDManager:_add_name_label(data)
 	local hud = managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2)
 	local last_id = self._hud.name_labels[#self._hud.name_labels] and self._hud.name_labels[#self._hud.name_labels].id or 0
@@ -875,7 +932,7 @@ function HUDManager:_add_name_label(data)
 		texture_rect = bag_rect,
 		visible = false,
 		layer = 0,
-		color = crim_color * 1.1:with_alpha(1),
+		color = crim_color:with_alpha(1),
 		x = 1,
 		y = 1
 	})
@@ -898,7 +955,7 @@ function HUDManager:_add_name_label(data)
 		text = utf8.to_upper("Fixing"),
 		font = tweak_data.hud.medium_font,
 		font_size = tweak_data.hud.name_label_font_size,
-		color = crim_color * 1.1:with_alpha(1),
+		color = crim_color:with_alpha(1),
 		align = "left",
 		vertical = "bottom",
 		layer = -1,
@@ -929,7 +986,7 @@ function HUDManager:_add_name_label(data)
 	})
 	return id
 end
-]]
+
 --[[
 function HUDManager:add_vehicle_name_label(data)
 	local hud = managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2)

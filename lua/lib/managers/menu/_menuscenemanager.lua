@@ -28,11 +28,11 @@ function MenuSceneManager:_setup_lobby_characters()
 	self._lobby_characters = {}
 	self._characters_offset = Vector3(0, -200, -130)
 	self._characters_rotation = {
-		-89,
+		-130, --slot 5?
 		-73,
 		-56,
 		-106,
-		-89,
+		-89,--host?
 		-64,
 		-35,
 		-115
@@ -132,13 +132,13 @@ end]]
 
 --tracking a bug, delete after
 function MenuSceneManager:set_character_mask(mask_name_str, unit, peer_id, mask_id, ready_clbk)
-	logger("[MenuSceneManager :set_character_mask] peer_id: " .. tostring(peer_id) .. "\n")
+	logger("[MenuSceneManager :set_character_mask] peer_id: " .. tostring(peer_id))
 	if managers and managers.network and managers.network:session() then
-		logger("[MenuSceneManager :set_character_mask] peer_name: " .. tostring(managers.network:session():peer(peer_id):name()) .. "\n")
+		logger("[MenuSceneManager :set_character_mask] peer_name: " .. tostring(managers.network:session():peer(peer_id):name()))
 	end
-	logger("[MenuSceneManager :set_character_mask] mask_id: " .. tostring(mask_id) .. "\n")
-	logger("[MenuSceneManager :set_character_mask] unit: " .. tostring(unit) .. "\n")
-	logger("[MenuSceneManager :set_character_mask] unit: " .. tostring(self._character_unit) .. "\n")
+	logger("[MenuSceneManager :set_character_mask] mask_id: " .. tostring(mask_id))
+	logger("[MenuSceneManager :set_character_mask] unit: " .. tostring(unit))
+	logger("[MenuSceneManager :set_character_mask] unit: " .. tostring(self._character_unit))
 	unit = unit or self._character_unit
 	local mask_name = Idstring(mask_name_str)
 	local old_mask_data = self._mask_units[unit:key()]
@@ -258,6 +258,7 @@ function MenuSceneManager:mouse_moved(o, x, y)
 end
 
 function MenuSceneManager:set_lobby_character_out_fit(i, outfit_string, rank)
+	log("[MenuSceneManager :set_lobby_character_out_fit] i: " .. tostring(i) .. ", rank: " .. tostring(rank) .. ", outfit_string: " .. tostring(outfit_string))
 	local outfit = managers.blackmarket:unpack_outfit_from_string(outfit_string)
 	local character = outfit.character
 	if managers.network:session() then
@@ -304,17 +305,17 @@ end
 
 
 function MenuSceneManager:_chk_character_visibility(char_unit)
-	logger("[MenuSceneManager :_chk_character_visibility]" .. "\n")
-	logger("[MenuSceneManager :_chk_character_visibility] char_unit: " .. tostring(char_unit) .. "\n")
+	logger("[MenuSceneManager :_chk_character_visibility]")
+	logger("[MenuSceneManager :_chk_character_visibility] char_unit: " .. tostring(char_unit))
 	local char_key = char_unit:key()
-	logger("[MenuSceneManager :_chk_character_visibility] char_key: ".. tostring(char_key) .. "\n")
+	logger("[MenuSceneManager :_chk_character_visibility] char_key: ".. tostring(char_key))
 	if not self._character_visibilities[char_key] then
-		logger("[MenuSceneManager :_chk_character_visibility] _set_character_and_outfit_visibility" .. "\n")
+		logger("[MenuSceneManager :_chk_character_visibility] _set_character_and_outfit_visibility")
 		self:_set_character_and_outfit_visibility(char_unit, false)
-		logger("[MenuSceneManager :_chk_character_visibility] _set_character_and_outfit_visibility finished" .. "\n")
+		logger("[MenuSceneManager :_chk_character_visibility] _set_character_and_outfit_visibility finished")
 		return
 	end
-	logger("[MenuSceneManager :_chk_character_visibility] char_weapons: ".. tostring(self._weapon_units[char_key]) .. "\n")
+	logger("[MenuSceneManager :_chk_character_visibility] char_weapons: ".. tostring(self._weapon_units[char_key]))
 	local char_weapons = self._weapon_units[char_key]
 	if char_weapons then
 		for w_type, w_data in pairs(char_weapons) do
@@ -324,43 +325,43 @@ function MenuSceneManager:_chk_character_visibility(char_unit)
 			end
 		end
 	end
-	logger("[MenuSceneManager :_chk_character_visibility] char_mask: ".. tostring(self._mask_units[char_key]) .. "\n")
+	logger("[MenuSceneManager :_chk_character_visibility] char_mask: ".. tostring(self._mask_units[char_key]))
 	local char_mask = self._mask_units[char_key]
 	if char_mask and not char_mask.mask_unit then
 		self:_set_character_and_outfit_visibility(char_unit, false)
 		return
 	end
-	logger("[MenuSceneManager :_chk_character_visibility] self._character_unit: " .. tostring(self._character_unit) .. "\n")
+	logger("[MenuSceneManager :_chk_character_visibility] self._character_unit: " .. tostring(self._character_unit))
 	if char_unit == self._character_unit then
-		logger("[MenuSceneManager :_chk_character_visibility] check 1" .. "\n")
+		logger("[MenuSceneManager :_chk_character_visibility] check 1")
 		if self._character_unit_need_pose then
-			logger("[MenuSceneManager :_chk_character_visibility] check 1.1" .. "\n")
+			logger("[MenuSceneManager :_chk_character_visibility] check 1.1")
 			self:_set_character_and_outfit_visibility(char_unit, false)
 			return
 		end
 		if self._current_scene_template ~= "" and not self._scene_templates[self._current_scene_template].character_visible then
-			logger("[MenuSceneManager :_chk_character_visibility] check 1.2" .. "\n")
+			logger("[MenuSceneManager :_chk_character_visibility] check 1.2")
 			self:_set_character_and_outfit_visibility(char_unit, false)
 			return
 		end
-		logger("[MenuSceneManager :_chk_character_visibility] check 2" .. "\n")
+		logger("[MenuSceneManager :_chk_character_visibility] check 2")
 	elseif self._current_scene_template ~= "" and not self._scene_templates[self._current_scene_template].lobby_characters_visible then
-		logger("[MenuSceneManager :_chk_character_visibility] check 3" .. "\n")
+		logger("[MenuSceneManager :_chk_character_visibility] check 3")
 		self:_set_character_and_outfit_visibility(char_unit, false)
 		return
 	end
-	logger("[MenuSceneManager :_chk_character_visibility] check 4" .. "\n")
+	logger("[MenuSceneManager :_chk_character_visibility] check 4")
 	self:_set_character_and_outfit_visibility(char_unit, true)
 end
 
 function MenuSceneManager:_character_unit_pose_updated()
-	logger("[MenuSceneManager :_character_unit_pose_updated]" .. "\n")
+	logger("[MenuSceneManager :_character_unit_pose_updated]")
 	self._character_unit_need_pose = false
 	self:_chk_character_visibility(self._character_unit)
 end
 
 function MenuSceneManager:set_lobby_character_visible(i, visible, no_state)
-	logger("[MenuSceneManager :set_lobby_character_visible]" .. "\n")
+	logger("[MenuSceneManager :set_lobby_character_visible]")
 	local unit = self._lobby_characters[i]
 	self._character_visibilities[unit:key()] = visible
 	if not visible then
@@ -375,7 +376,7 @@ end
 
 function MenuSceneManager:set_character_mask(mask_name_str, unit, peer_id, mask_id, ready_clbk)
 	local ids_unit = Idstring("unit")
-	logger("[MenuSceneManager :set_character_mask]" .. "\n")
+	logger("[MenuSceneManager :set_character_mask]")
 	unit = unit or self._character_unit
 	local mask_name = Idstring(mask_name_str)
 	local old_mask_data = self._mask_units[unit:key()]
@@ -404,7 +405,7 @@ function MenuSceneManager:set_character_mask(mask_name_str, unit, peer_id, mask_
 end
 
 function MenuSceneManager:clbk_mask_unit_loaded(mask_data_param, status, asset_type, asset_name)
-	logger("[MenuSceneManager :clbk_mask_unit_loaded]" .. "\n")
+	logger("[MenuSceneManager :clbk_mask_unit_loaded]")
 	if not alive(mask_data_param.unit) then
 		return
 	end
@@ -429,7 +430,7 @@ end
 
 function MenuSceneManager:set_character_equipped_weapon(unit, factory_id, blueprint, type, cosmetics)
 	local ids_unit = Idstring("unit")
-	logger("[MenuSceneManager :set_character_equipped_weapon]" .. "\n")
+	logger("[MenuSceneManager :set_character_equipped_weapon]")
 	unit = unit or self._character_unit
 	self:_delete_character_weapon(unit, type)
 	if factory_id then
@@ -455,7 +456,7 @@ end
 
 function MenuSceneManager:clbk_weapon_base_unit_loaded(params, status, asset_type, asset_name)
 	local null_vector = Vector3()
-	logger("[MenuSceneManager :clbk_weapon_base_unit_loaded]" .. "\n")
+	logger("[MenuSceneManager :clbk_weapon_base_unit_loaded]")
 	print("[MenuSceneManager:clbk_weapon_base_unit_loaded]", inspect(params), status, asset_type, asset_name)
 	local owner = params.owner
 	if not alive(owner) then
@@ -483,7 +484,7 @@ function MenuSceneManager:clbk_weapon_base_unit_loaded(params, status, asset_typ
 end
 
 function MenuSceneManager:clbk_weapon_assembly_complete(params)
-	logger("[MenuSceneManager :clbk_weapon_base_unit_loaded]" .. "\n")
+	logger("[MenuSceneManager :clbk_weapon_base_unit_loaded]")
 	local owner = params.owner
 	if not alive(owner) then
 		return
@@ -497,7 +498,7 @@ function MenuSceneManager:clbk_weapon_assembly_complete(params)
 end
 
 function MenuSceneManager:set_scene_template(template, data, custom_name, skip_transition)
-	logger("[MenuSceneManager :set_scene_template]" .. "\n")
+	logger("[MenuSceneManager :set_scene_template]")
 	if not skip_transition and (self._current_scene_template == template or self._current_scene_template == custom_name) then
 		return
 	end
@@ -530,7 +531,7 @@ function MenuSceneManager:set_scene_template(template, data, custom_name, skip_t
 			self._character_unit:set_position(self._character_values.pos_target)
 		end
 		self:_chk_character_visibility(self._character_unit)
-		logger("[MenuSceneManager :set_scene_template] 2" .. "\n")
+		logger("[MenuSceneManager :set_scene_template] 2")
 		self:_chk_complete_overkill_pack_safe_visibility()
 		if self._lobby_characters then
 			for _, unit in pairs(self._lobby_characters) do
