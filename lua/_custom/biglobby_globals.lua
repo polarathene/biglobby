@@ -55,6 +55,15 @@ log("NETWORK RESPONSE: " .. tostring(id))
     	log("[BigLobbyGlobals :who_is_awesome] From " .. tostring(managers.network:session():peer(sender):name()) .. " :)")
     end
 
+if id == "join_request_reply" then
+--join_request_reply(reply_id, my_peer_id, my_character, level_index, difficulty_index, state, server_character, user_id, mission, job_id_index, job_stage, alternative_job_stage, interupt_job_stage_level_index, xuid, auth_ticket, sender)
+--log("REPLY_ID: " .. tostring(reply_id) .. "\nMYPEER_ID: " .. tostring(my_peer_id) .. "\nMYCHAR: " .. tostring(my_character) .. "\nLvINDEX: " .. tostring(level_index) .. "\nDiffINDEX: " .. tostring(difficulty_index) .. "\nSTATE: " .. tostring(state) .. "\nSERVERCHAR: " .. tostring(server_character) .. "\nUSERID: " .. tostring(user_id) .. "\nMISSION: " .. tostring(mission))
+--log("JobINDEX: " .. tostring(job_id_index) .. "\nJobSTAGE: " .. tostring(job_stage) .. "\nAltJobSTAGE: " .. tostring(alternative_job_stage) .. "\nInterruptJobSTAGE_LvINDEX: " .. tostring(interupt_job_stage_level_index) .. "\nXUID: " .. tostring(xuid))
+log("[BigLobbyGlobals :set_member_ready] sender_id: ".. tostring(sender) .. ", data: " .. tostring(data))
+local sender_peer = managers.network:session():peer(sender):rpc()
+managers.network:session():on_join_request_reply(unpack(json.decode(data)), auth_ticket, sender)
+end
+
     --if id == "client_peer_handshake" then
     if id == "peer_handshake" then
         log("[BigLobbyGlobals :network_hook] " .. id)
@@ -66,45 +75,45 @@ log("NETWORK RESPONSE: " .. tostring(id))
         --client_peer_handshake(data)
     end
 
-    if id == "client_on_join_request_reply" then
-        log("[BigLobbyGlobals :network_hook] client_on_join_request_reply")
-        local name = Net:GetNameFromPeerID( sender )
-        log( "Received Private Message from: " .. name )
-        log( "Message: " .. data )
+-- if id == "client_on_join_request_reply" then
+--     log("[BigLobbyGlobals :network_hook] client_on_join_request_reply")
+--     local name = Net:GetNameFromPeerID( sender )
+--     log( "Received Private Message from: " .. name )
+--     log( "Message: " .. data )
+--
+--     client_on_join_request_reply(data)
+-- end
+--
+-- if id == "request_json_data" then
+--     log("[BigLobbyGlobals :network_hook] request_json_data")
+--     local name = Net:GetNameFromPeerID( sender )
+--     log("JSON DATA REQUEST")
+--     log( "Received Private Message from: " .. name )
+--     log( "Message: " .. data )
+--
+--     local jsdata = BigLobbyGlobals:jdata(sender)
+--     log("Sending JSON data to peer: " .. sender .. ", jsdata: " .. tostring(jsdata))
+--
+--     Net:SendToPeer(sender, "client_on_join_request_reply", jsdata)
+--     --local exclude = { 1, 3, 4 }
+--     --Net:SendToPeersExcept( exclude, "client_on_join_request_reply", jsdata )
+-- end
 
-        client_on_join_request_reply(data)
-    end
-
-    if id == "request_json_data" then
-        log("[BigLobbyGlobals :network_hook] request_json_data")
-        local name = Net:GetNameFromPeerID( sender )
-        log("JSON DATA REQUEST")
-        log( "Received Private Message from: " .. name )
-        log( "Message: " .. data )
-
-        local jsdata = BigLobbyGlobals:jdata(sender)
-        log("Sending JSON data to peer: " .. sender .. ", jsdata: " .. tostring(jsdata))
-
-        Net:SendToPeer(sender, "client_on_join_request_reply", jsdata)
-        --local exclude = { 1, 3, 4 }
-        --Net:SendToPeersExcept( exclude, "client_on_join_request_reply", jsdata )
-    end
-
-    if id == "client_reply_finished" then
-        log("[BigLobbyGlobals :network_hook] client_reply_finished")
-        local new_peer = managers.network:session():peer(sender)
-        local data_session = managers.network
-        new_peer:send("set_loading_state", false, data_session:session():load_counter())
-        if SystemInfo:platform() == Idstring("X360") or SystemInfo:platform() == Idstring("XB1") then
-            new_peer:send("request_player_name_reply", managers.network:session():local_peer():name())
-        end
-        managers.vote:sync_server_kick_option(new_peer)
-        data_session:session():send_ok_to_load_level()
-        -- crashes, claims nil value. managers.network = NetworkManager, :session() returns ._session,
-        -- should be a host session, so don't know what's up :\ moved back to original method.
-        --managers.network:session():on_handshake_confirmation(data_session, new_peer, 1)
-        logger("[HostStateInGame: on_join_request_received] DONE!!!!" .. tostring(peer_name))
-    end
+-- if id == "client_reply_finished" then
+--     log("[BigLobbyGlobals :network_hook] client_reply_finished")
+--     local new_peer = managers.network:session():peer(sender)
+--     local data_session = managers.network
+--     new_peer:send("set_loading_state", false, data_session:session():load_counter())
+--     if SystemInfo:platform() == Idstring("X360") or SystemInfo:platform() == Idstring("XB1") then
+--         new_peer:send("request_player_name_reply", managers.network:session():local_peer():name())
+--     end
+--     managers.vote:sync_server_kick_option(new_peer)
+--     data_session:session():send_ok_to_load_level()
+--     -- crashes, claims nil value. managers.network = NetworkManager, :session() returns ._session,
+--     -- should be a host session, so don't know what's up :\ moved back to original method.
+--     --managers.network:session():on_handshake_confirmation(data_session, new_peer, 1)
+--     logger("[HostStateInGame: on_join_request_received] DONE!!!!" .. tostring(peer_name))
+-- end
 
     if id == "set_member_ready" then
         log("[BigLobbyGlobals :set_member_ready] sender_id: ".. tostring(sender) .. ", data: " .. tostring(data))
@@ -215,98 +224,98 @@ function client_peer_handshake(data)
 end
 
 
-function client_on_join_request_reply(data)
-    log("[BigLobbyGlobals-ClientNetworkSession :on_join_request_reply]")
-    --parameters unpacked from json data
-    --local reply, my_peer_id, my_character, level_index, difficulty_index, state_index, server_character, user_id, mission, job_id_index, job_stage, alternative_job_stage, interupt_job_stage_level_index, xuid, auth_ticket, sender = unpack(json.decode(data))
-    local func_name, reply, my_peer_id, my_character, level_index, difficulty_index, state_index, server_character, user_id, mission, job_id_index, job_stage, alternative_job_stage, interupt_job_stage_level_index, xuid = unpack(json.decode(data))
-    --set vars to stored ticket and sender
-    local auth_ticket = BigLobbyGlobals:auth_ticket()
-    --local sender = BigLobbyGlobals:sender() --not needed anymore
-    my_peer_id, my_character = unpack(json.decode(my_character)) --ClientNetworkSession not getting called? I had this there before but character was assigned json string oddly peer ID was correct in this function without this trick!? (host assigned first new peer as 5 however..)
-
-	log("[BigLobbyGlobals-ClientNetworkSession :on_join_request_reply] My Peer ID: " .. tostring(my_peer_id) .. ", my character: " .. tostring(my_character))
-    log("[BigLobbyGlobals-ClientNetworkSession :on_join_request_reply] Reply: " .. tostring(reply))
-	--print("[BigLobbyGlobals-ClientNetworkSession:on_join_request_reply] ", managers.network:session()._server_peer and managers.network:session()._server_peer:user_id(), user_id, sender:ip_at_index(0), sender:protocol_at_index(0))
-
-	local cb = managers.network:session()._cb_find_game
-    if cb == nil then
-        log("[BigLobbyGlobals-ClientNetworkSession :on_join_request_reply] CB IS NIL, WILL CRASH, RETURNING")
-        return
-    end
-	managers.network:session()._cb_find_game = nil
-	if reply == 1 then
-		managers.network:session()._host_sanity_send_t = TimerManager:wall():time() + managers.network:session().HOST_SANITY_CHECK_INTERVAL
-		Global.game_settings.level_id = tweak_data.levels:get_level_name_from_index(level_index)
-		Global.game_settings.difficulty = tweak_data:index_to_difficulty(difficulty_index)
-		Global.game_settings.mission = mission
-		managers.network:session()._server_peer:set_character(server_character)
-		managers.network:session()._server_peer:set_xuid(xuid)
-		if SystemInfo:platform() == Idstring("X360") or SystemInfo:platform() == Idstring("XB1") then
-			local xnaddr = managers.network.matchmake:external_address(managers.network:session()._server_peer:rpc())
-			managers.network:session()._server_peer:set_xnaddr(xnaddr)
-			managers.network.matchmake:on_peer_added(managers.network:session()._server_peer)
-		elseif SystemInfo:platform() == Idstring("PS4") then
-			managers.network.matchmake:on_peer_added(managers.network:session()._server_peer)
-		end
-		--LOCAL PEER ASSIGNED PEER ID
-		managers.network:session():register_local_peer(my_peer_id)
-		managers.network:session()._local_peer:set_character(my_character)
-		managers.network:session()._server_peer:set_id(1)
-        if not managers.network:session()._server_peer:begin_ticket_session(auth_ticket) then
-    		log("[BigLobbyGlobals-ClientNetworkSession :on_join_request_reply] AUTH_HOST_FAILED")
-    		managers.network:session():remove_peer(managers.network:session()._server_peer, 1)
-    		cb("AUTH_HOST_FAILED") --no cb again! failed auth!
-    		return
-    	end
-    	log("[BigLobbyGlobals-ClientNetworkSession :on_join_request_reply] AUTH_HOST_OK")
-		managers.network:session()._server_peer:set_in_lobby_soft(state_index == 1)
-		managers.network:session()._server_peer:set_synched_soft(state_index ~= 1)
-		if SystemInfo:platform() == Idstring("PS3") then
-		end
-		managers.network:session():_chk_send_proactive_outfit_loaded()
-		if job_id_index ~= 0 then
-			local job_id = tweak_data.narrative:get_job_name_from_index(job_id_index)
-			managers.job:activate_job(job_id, job_stage)
-			if alternative_job_stage ~= 0 then
-				managers.job:synced_alternative_stage(alternative_job_stage)
-			end
-			if interupt_job_stage_level_index ~= 0 then
-				local interupt_level = tweak_data.levels:get_level_name_from_index(interupt_job_stage_level_index)
-				managers.job:synced_interupt_stage(interupt_level)
-			end
-			Global.game_settings.world_setting = managers.job:current_world_setting()
-			managers.network:session()._server_peer:verify_job(job_id)
-		end
-		cb(state_index == 1 and "JOINED_LOBBY" or "JOINED_GAME", level_index, difficulty_index, state_index) --no cb for player crashed them on this line
-	elseif reply == 2 then
-		managers.network:session():remove_peer(managers.network:session()._server_peer, 1)
-		cb("KICKED")
-	elseif reply == 0 then
-		managers.network:session():remove_peer(managers.network:session()._server_peer, 1)
-		cb("FAILED_CONNECT")
-	elseif reply == 3 then
-		managers.network:session():remove_peer(managers.network:session()._server_peer, 1)
-		cb("GAME_STARTED")
-	elseif reply == 4 then
-		managers.network:session():remove_peer(managers.network:session()._server_peer, 1)
-		cb("DO_NOT_OWN_HEIST")
-	elseif reply == 5 then
-		managers.network:session():remove_peer(managers.network:session()._server_peer, 1)
-		cb("GAME_FULL")
-	elseif reply == 6 then
-		managers.network:session():remove_peer(managers.network:session()._server_peer, 1)
-		cb("LOW_LEVEL")
-	elseif reply == 7 then
-		managers.network:session():remove_peer(managers.network:session()._server_peer, 1)
-		cb("WRONG_VERSION")
-	elseif reply == 8 then
-		managers.network:session():remove_peer(managers.network:session()._server_peer, 1)
-		cb("AUTH_FAILED")
-	end
-    log("[BigLobbyGlobals-ClientNetworkSession :on_join_request_reply] Done")
-    Net:SendToPeer(1, "client_reply_finished", "nothing v" .. tostring(BigLobbyGlobals:version()))
-end
+-- function client_on_join_request_reply(data)
+--     log("[BigLobbyGlobals-ClientNetworkSession :on_join_request_reply]")
+--     --parameters unpacked from json data
+--     --local reply, my_peer_id, my_character, level_index, difficulty_index, state_index, server_character, user_id, mission, job_id_index, job_stage, alternative_job_stage, interupt_job_stage_level_index, xuid, auth_ticket, sender = unpack(json.decode(data))
+--     local func_name, reply, my_peer_id, my_character, level_index, difficulty_index, state_index, server_character, user_id, mission, job_id_index, job_stage, alternative_job_stage, interupt_job_stage_level_index, xuid = unpack(json.decode(data))
+--     --set vars to stored ticket and sender
+--     local auth_ticket = BigLobbyGlobals:auth_ticket()
+--     --local sender = BigLobbyGlobals:sender() --not needed anymore
+--     my_peer_id, my_character = unpack(json.decode(my_character)) --ClientNetworkSession not getting called? I had this there before but character was assigned json string oddly peer ID was correct in this function without this trick!? (host assigned first new peer as 5 however..)
+--
+-- 	log("[BigLobbyGlobals-ClientNetworkSession :on_join_request_reply] My Peer ID: " .. tostring(my_peer_id) .. ", my character: " .. tostring(my_character))
+--     log("[BigLobbyGlobals-ClientNetworkSession :on_join_request_reply] Reply: " .. tostring(reply))
+-- 	--print("[BigLobbyGlobals-ClientNetworkSession:on_join_request_reply] ", managers.network:session()._server_peer and managers.network:session()._server_peer:user_id(), user_id, sender:ip_at_index(0), sender:protocol_at_index(0))
+--
+-- 	local cb = managers.network:session()._cb_find_game
+--     if cb == nil then
+--         log("[BigLobbyGlobals-ClientNetworkSession :on_join_request_reply] CB IS NIL, WILL CRASH, RETURNING")
+--         return
+--     end
+-- 	managers.network:session()._cb_find_game = nil
+-- 	if reply == 1 then
+-- 		managers.network:session()._host_sanity_send_t = TimerManager:wall():time() + managers.network:session().HOST_SANITY_CHECK_INTERVAL
+-- 		Global.game_settings.level_id = tweak_data.levels:get_level_name_from_index(level_index)
+-- 		Global.game_settings.difficulty = tweak_data:index_to_difficulty(difficulty_index)
+-- 		Global.game_settings.mission = mission
+-- 		managers.network:session()._server_peer:set_character(server_character)
+-- 		managers.network:session()._server_peer:set_xuid(xuid)
+-- 		if SystemInfo:platform() == Idstring("X360") or SystemInfo:platform() == Idstring("XB1") then
+-- 			local xnaddr = managers.network.matchmake:external_address(managers.network:session()._server_peer:rpc())
+-- 			managers.network:session()._server_peer:set_xnaddr(xnaddr)
+-- 			managers.network.matchmake:on_peer_added(managers.network:session()._server_peer)
+-- 		elseif SystemInfo:platform() == Idstring("PS4") then
+-- 			managers.network.matchmake:on_peer_added(managers.network:session()._server_peer)
+-- 		end
+-- 		--LOCAL PEER ASSIGNED PEER ID
+-- 		managers.network:session():register_local_peer(my_peer_id)
+-- 		managers.network:session()._local_peer:set_character(my_character)
+-- 		managers.network:session()._server_peer:set_id(1)
+--         if not managers.network:session()._server_peer:begin_ticket_session(auth_ticket) then
+--     		log("[BigLobbyGlobals-ClientNetworkSession :on_join_request_reply] AUTH_HOST_FAILED")
+--     		managers.network:session():remove_peer(managers.network:session()._server_peer, 1)
+--     		cb("AUTH_HOST_FAILED") --no cb again! failed auth!
+--     		return
+--     	end
+--     	log("[BigLobbyGlobals-ClientNetworkSession :on_join_request_reply] AUTH_HOST_OK")
+-- 		managers.network:session()._server_peer:set_in_lobby_soft(state_index == 1)
+-- 		managers.network:session()._server_peer:set_synched_soft(state_index ~= 1)
+-- 		if SystemInfo:platform() == Idstring("PS3") then
+-- 		end
+-- 		managers.network:session():_chk_send_proactive_outfit_loaded()
+-- 		if job_id_index ~= 0 then
+-- 			local job_id = tweak_data.narrative:get_job_name_from_index(job_id_index)
+-- 			managers.job:activate_job(job_id, job_stage)
+-- 			if alternative_job_stage ~= 0 then
+-- 				managers.job:synced_alternative_stage(alternative_job_stage)
+-- 			end
+-- 			if interupt_job_stage_level_index ~= 0 then
+-- 				local interupt_level = tweak_data.levels:get_level_name_from_index(interupt_job_stage_level_index)
+-- 				managers.job:synced_interupt_stage(interupt_level)
+-- 			end
+-- 			Global.game_settings.world_setting = managers.job:current_world_setting()
+-- 			managers.network:session()._server_peer:verify_job(job_id)
+-- 		end
+-- 		cb(state_index == 1 and "JOINED_LOBBY" or "JOINED_GAME", level_index, difficulty_index, state_index) --no cb for player crashed them on this line
+-- 	elseif reply == 2 then
+-- 		managers.network:session():remove_peer(managers.network:session()._server_peer, 1)
+-- 		cb("KICKED")
+-- 	elseif reply == 0 then
+-- 		managers.network:session():remove_peer(managers.network:session()._server_peer, 1)
+-- 		cb("FAILED_CONNECT")
+-- 	elseif reply == 3 then
+-- 		managers.network:session():remove_peer(managers.network:session()._server_peer, 1)
+-- 		cb("GAME_STARTED")
+-- 	elseif reply == 4 then
+-- 		managers.network:session():remove_peer(managers.network:session()._server_peer, 1)
+-- 		cb("DO_NOT_OWN_HEIST")
+-- 	elseif reply == 5 then
+-- 		managers.network:session():remove_peer(managers.network:session()._server_peer, 1)
+-- 		cb("GAME_FULL")
+-- 	elseif reply == 6 then
+-- 		managers.network:session():remove_peer(managers.network:session()._server_peer, 1)
+-- 		cb("LOW_LEVEL")
+-- 	elseif reply == 7 then
+-- 		managers.network:session():remove_peer(managers.network:session()._server_peer, 1)
+-- 		cb("WRONG_VERSION")
+-- 	elseif reply == 8 then
+-- 		managers.network:session():remove_peer(managers.network:session()._server_peer, 1)
+-- 		cb("AUTH_FAILED")
+-- 	end
+--     log("[BigLobbyGlobals-ClientNetworkSession :on_join_request_reply] Done")
+--     Net:SendToPeer(1, "client_reply_finished", "nothing v" .. tostring(BigLobbyGlobals:version()))
+-- end
 
 function BigLobbyGlobals:set_member_ready(sender, peer_id, ready, mode, outfit_versions_str)
 	log("[BigLobbyGlobals :set_member_ready] check_me 1 :: peer_id: " .. tostring(peer_id) .. ", mode: " .. tostring(mode) .. ", outfit_str: " .. tostring(outfit_versions_str))

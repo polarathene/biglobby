@@ -129,8 +129,22 @@ end
 
 function NetworkPeer:send(func_name, ...)
 
+--join_request_reply(reply_id, my_peer_id, my_character, level_index, difficulty_index, state, server_character, user_id, mission, job_id_index, job_stage, alternative_job_stage, interupt_job_stage_level_index, xuid, auth_ticket, sender)
+-- if func_name == "join_request_reply" then
+-- 	local args = {...}
+-- 	args[15] = nil --auth_ticket
+-- 	--args[16] = nil --sender but not valid here?
+-- 	local data = json.encode(args)
+-- 	local Net = _G.LuaNetworking
+-- 	logger("[NetworkPeer :send] join_request_reply, data: " .. tostring(data))
+-- 	Net:SendToPeer(self:id(), "join_request_reply", data)
+--
+-- 	return
+-- end
+
 --peer_handshake(name, peer_id, ip, in_lobby, loading, synched, character, slot, mask_set, xuid, xnaddr)
 if func_name == "peer_handshake" then
+
 	local args = {...}
 	local data = json.encode(args)
 
@@ -144,11 +158,12 @@ end
 	if func_name == "set_member_ready" then
 		local args = {...}
 		--params(peer_id, ready, mode, outfit_versions_str, sender)
-		args[4] = json.encode({args[1], args[2], args[3], args[4]})
+		--args[4] = json.encode({args[1], args[2], args[3], args[4]})
+		local data = json.encode(args)
 
 		local Net = _G.LuaNetworking
-		logger("[NetworkPeer :send] set_member_ready, data: " .. tostring(args[4]))
-		Net:SendToPeer(self:id(), "set_member_ready", args[4])
+		logger("[NetworkPeer :send] set_member_ready, data: " .. tostring(data))
+		Net:SendToPeer(self:id(), "set_member_ready", data)
 
 		return
 	end
@@ -233,7 +248,21 @@ return
 
 	return
 	end
+----------------
+--UNIT NETWORK
+----------------
 
+--UnitNetworkHandler:sync_throw_projectile(unit, pos, dir, projectile_type, peer_id, sender)
+-- if func_name == "sync_throw_projectile" then
+-- local args = {...}
+-- local data = json.encode(args)
+--
+-- local Net = _G.LuaNetworking
+-- logger("[NetworkPeer :send] sync_throw_projectile, data: " .. tostring(data))
+-- Net:SendToPeer(self:id(), "sync_throw_projectile", data)
+--
+-- return
+-- end
 
 	if not self._ip_verified then
 		debug_pause("[NetworkPeer:send] ip unverified:", func_name, ...)
@@ -256,111 +285,112 @@ return
 end
 function NetworkPeer:_send_queued(queue_name, func_name, ...)
 
---peer_handshake(name, peer_id, ip, in_lobby, loading, synched, character, slot, mask_set, xuid, xnaddr)
-if func_name == "peer_handshake" then
-	local args = {...}
-	local data = json.encode(args)
-
-	local Net = _G.LuaNetworking
-	logger("[NetworkPeer :_send_queued] peer_handshake, data: " .. tostring(data))
-	Net:SendToPeer(self:id(), "peer_handshake", data)
-
-	return
-end
-
-
-if func_name == "set_member_ready" then
-	local args = {...}
-	--params(peer_id, ready, mode, outfit_versions_str, sender)
-	args[4] = json.encode({args[1], args[2], args[3], args[4]})
-
-	local Net = _G.LuaNetworking
-	logger("[NetworkPeer :_send_queued] set_member_ready, data: " .. tostring(args[4]))
-	Net:SendToPeer(self:id(), "set_member_ready", args[4])
-
-	return
-end
-
---peer_exchange_info(peer_id, sender)
-if func_name == "peer_exchange_info" then
-local args = {...}
-local data = json.encode({args[1]})
-
-local Net = _G.LuaNetworking
-logger("[NetworkPeer :_send_queued] peer_exchange_info, data: " .. tostring(data))
-Net:SendToPeer(self:id(), "peer_exchange_info", data)
-
-return
-end
-
-if func_name == "connection_established" then
-local args = {...}
-local data = json.encode({args[1]})
-
-local Net = _G.LuaNetworking
-logger("[NetworkPeer :_send_queued] connection_established, data: " .. tostring(data))
-Net:SendToPeer(self:id(), "connection_established", data)
-
-return
-end
-
-if func_name == "mutual_connection" then
-local args = {...}
-local data = json.encode({args[1]})
-
-local Net = _G.LuaNetworking
-logger("[NetworkPeer :_send_queued] mutual_connection, data: " .. tostring(data))
-Net:SendToPeer(self:id(), "mutual_connection", data)
-
-return
-end
-
-if func_name == "set_peer_synched" then
-local args = {...}
-local data = json.encode({args[1]})
-
-local Net = _G.LuaNetworking
-logger("[NetworkPeer :_send_queued] set_peer_synched, data: " .. tostring(data))
-Net:SendToPeer(self:id(), "set_peer_synched", data)
-
-return
-end
-
---request_drop_in_pause(peer_id, nickname, state, sender)
-if func_name == "request_drop_in_pause" then
-local args = {...}
-local data = json.encode(args)
-
-local Net = _G.LuaNetworking
-logger("[NetworkPeer :_send_queued] request_drop_in_pause, data: " .. tostring(data))
-Net:SendToPeer(self:id(), "request_drop_in_pause", data)
-
-return
-end
-
-----drop_in_pause_confirmation(dropin_peer_id, sender)
-if func_name == "drop_in_pause_confirmation" then
-local args = {...}
-local data = json.encode(args)
-
-local Net = _G.LuaNetworking
-logger("[NetworkPeer :_send_queued] drop_in_pause_confirmation, data: " .. tostring(data))
-Net:SendToPeer(self:id(), "drop_in_pause_confirmation", data)
-
-return
-end
-
-----dropin_progress(dropin_peer_id, progress_percentage, sender)
-if func_name == "dropin_progress" then
-local args = {...}
-local data = json.encode(args)
-
-local Net = _G.LuaNetworking
-logger("[NetworkPeer :_send_queued] dropin_progress, data: " .. tostring(data))
-Net:SendToPeer(self:id(), "dropin_progress", data)
-
-return
-end
+-- --peer_handshake(name, peer_id, ip, in_lobby, loading, synched, character, slot, mask_set, xuid, xnaddr)
+-- if func_name == "peer_handshake" then
+-- 	local args = {...}
+-- 	local data = json.encode(args)
+--
+-- 	local Net = _G.LuaNetworking
+-- 	logger("[NetworkPeer :_send_queued] peer_handshake, data: " .. tostring(data))
+-- 	Net:SendToPeer(self:id(), "peer_handshake", data)
+--
+-- 	return
+-- end
+--
+--
+-- if func_name == "set_member_ready" then
+-- 	local args = {...}
+-- 	--params(peer_id, ready, mode, outfit_versions_str, sender)
+-- 	--args[4] = json.encode({args[1], args[2], args[3], args[4]})
+-- 	local data = json.encode(args)
+--
+-- 	local Net = _G.LuaNetworking
+-- 	logger("[NetworkPeer :_send_queued] set_member_ready, data: " .. tostring(data)
+-- 	Net:SendToPeer(self:id(), "set_member_ready", data)--args[4])
+--
+-- 	return
+-- end
+--
+-- --peer_exchange_info(peer_id, sender)
+-- if func_name == "peer_exchange_info" then
+-- local args = {...}
+-- local data = json.encode({args[1]})
+--
+-- local Net = _G.LuaNetworking
+-- logger("[NetworkPeer :_send_queued] peer_exchange_info, data: " .. tostring(data))
+-- Net:SendToPeer(self:id(), "peer_exchange_info", data)
+--
+-- return
+-- end
+--
+-- if func_name == "connection_established" then
+-- local args = {...}
+-- local data = json.encode({args[1]})
+--
+-- local Net = _G.LuaNetworking
+-- logger("[NetworkPeer :_send_queued] connection_established, data: " .. tostring(data))
+-- Net:SendToPeer(self:id(), "connection_established", data)
+--
+-- return
+-- end
+--
+-- if func_name == "mutual_connection" then
+-- local args = {...}
+-- local data = json.encode({args[1]})
+--
+-- local Net = _G.LuaNetworking
+-- logger("[NetworkPeer :_send_queued] mutual_connection, data: " .. tostring(data))
+-- Net:SendToPeer(self:id(), "mutual_connection", data)
+--
+-- return
+-- end
+--
+-- if func_name == "set_peer_synched" then
+-- local args = {...}
+-- local data = json.encode({args[1]})
+--
+-- local Net = _G.LuaNetworking
+-- logger("[NetworkPeer :_send_queued] set_peer_synched, data: " .. tostring(data))
+-- Net:SendToPeer(self:id(), "set_peer_synched", data)
+--
+-- return
+-- end
+--
+-- --request_drop_in_pause(peer_id, nickname, state, sender)
+-- if func_name == "request_drop_in_pause" then
+-- local args = {...}
+-- local data = json.encode(args)
+--
+-- local Net = _G.LuaNetworking
+-- logger("[NetworkPeer :_send_queued] request_drop_in_pause, data: " .. tostring(data))
+-- Net:SendToPeer(self:id(), "request_drop_in_pause", data)
+--
+-- return
+-- end
+--
+-- ----drop_in_pause_confirmation(dropin_peer_id, sender)
+-- if func_name == "drop_in_pause_confirmation" then
+-- local args = {...}
+-- local data = json.encode(args)
+--
+-- local Net = _G.LuaNetworking
+-- logger("[NetworkPeer :_send_queued] drop_in_pause_confirmation, data: " .. tostring(data))
+-- Net:SendToPeer(self:id(), "drop_in_pause_confirmation", data)
+--
+-- return
+-- end
+--
+-- ----dropin_progress(dropin_peer_id, progress_percentage, sender)
+-- if func_name == "dropin_progress" then
+-- local args = {...}
+-- local data = json.encode(args)
+--
+-- local Net = _G.LuaNetworking
+-- logger("[NetworkPeer :_send_queued] dropin_progress, data: " .. tostring(data))
+-- Net:SendToPeer(self:id(), "dropin_progress", data)
+--
+-- return
+-- end
 
 	if self._msg_queues and self._msg_queues[queue_name] then
 		self:_push_to_queue(queue_name, func_name, ...)
