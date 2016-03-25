@@ -1,12 +1,12 @@
 --Network bug where peer id of 5 or higher is changed to 4, must handle value correctly
 local tmp_rot1 = Rotation()
---UnitNetworkHandler = UnitNetworkHandler or class(BaseNetworkHandler)
+--The character_name has the peer_id encoded into the parameter as a json string due to invalid peer_id for 5 and up
 function UnitNetworkHandler:set_unit(unit, character_name, outfit_string, outfit_version, peer_id, team_id)
 	log("[UnitNetworkHandler :set_unit] peer_id: " .. tostring(peer_id) .. ", character_name: " .. tostring(character_name))
 	peer_id, character_name = unpack(json.decode(character_name))
 	log("[UnitNetworkHandler :set_unit] UNPACKED = peer_id: " .. tostring(peer_id) .. ", character_name: " .. tostring(character_name))
+	log("[UnitNetworkHandler :set_unit] outfit_string: " .. tostring(outfit_string))
 
-	print("[UnitNetworkHandler:set_unit]", unit, character_name, peer_id)
 	Application:stack_dump()
 	if not alive(unit) then
 		return
@@ -704,6 +704,8 @@ end
 -- end
 function UnitNetworkHandler:remove_corpse_by_id(u_id, carry_bodybag, peer_id, sender)
 	log("[UnitNetworkHandler :remove_corpse_by_id] peer_id: " .. tostring(peer_id))
+	log("[UnitNetworkHandler :remove_corpse_by_id] carry_bodybag: " .. tostring(carry_bodybag))
+	log("[UnitNetworkHandler :remove_corpse_by_id] u_id: " .. tostring(u_id))
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
 		return
 	end
@@ -968,6 +970,7 @@ end
 -- end
 function UnitNetworkHandler:sync_trip_mine_setup(unit, sensor_upgrade, peer_id)
 	log("[UnitNetworkHandler :sync_trip_mine_setup] peer_id: " .. tostring(peer_id))
+	log("[UnitNetworkHandler :sync_trip_mine_setup] unit: " .. tostring(unit) .. ", sensor_upgrade: " .. tostring(sensor_upgrade))
 	if not alive(unit) or not self._verify_gamestate(self._gamestate_filter.any_ingame) then
 		return
 	end
@@ -1073,7 +1076,9 @@ end
 -- 	managers.network:session():send_to_peers_synched("from_server_sentry_gun_place_result", peer:id(), unit and equipment_selection_index or 0, unit, unit and unit:movement()._rot_speed_mul, unit and unit:weapon()._setup.spread_mul, unit and unit:base():has_shield() and true or false)
 -- end
 function UnitNetworkHandler:from_server_sentry_gun_place_result(owner_peer_id, equipment_selection_index, sentry_gun_unit, rot_speed_mul, spread_mul, shield, rpc)
-	log("[UnitNetworkHandler :from_server_sentry_gun_place_result] peer_id: " .. tostring(owner_peer_id))
+	log("[UnitNetworkHandler :from_server_sentry_gun_place_result] owner_peer_id: " .. tostring(owner_peer_id))
+	log("[UnitNetworkHandler :from_server_sentry_gun_place_result] equipment_selection_index: " .. tostring(equipment_selection_index))
+	log("[UnitNetworkHandler :from_server_sentry_gun_place_result] sentry_gun_unit: " .. tostring(sentry_gun_unit))
 	local local_peer = managers.network:session():local_peer()
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(rpc) or not alive(sentry_gun_unit) or not managers.network:session():peer(owner_peer_id) then
 		if alive(local_peer:unit()) then
@@ -1167,6 +1172,8 @@ end
 -- end
 function UnitNetworkHandler:sync_equipment_setup(unit, upgrade_lvl, peer_id)
 	log("[UnitNetworkHandler :sync_equipment_setup] peer_id: " .. tostring(peer_id))
+	log("[UnitNetworkHandler :sync_equipment_setup] unit: " .. tostring(unit))
+	log("[UnitNetworkHandler :sync_equipment_setup] upgrade_lvl: " .. tostring(upgrade_lvl))
 	if not alive(unit) or not self._verify_gamestate(self._gamestate_filter.any_ingame) then
 		return
 	end
@@ -1524,6 +1531,7 @@ end
 -- end
 function UnitNetworkHandler:sync_carry_data(unit, carry_id, carry_multiplier, dye_initiated, has_dye_pack, dye_value_multiplier, position, dir, throw_distance_multiplier_upgrade_level, zipline_unit, peer_id, sender)
 	log("[UnitNetworkHandler :sync_carry_data] peer_id: " .. tostring(peer_id))
+	log("[UnitNetworkHandler :sync_carry_data] unit: " .. tostring(unit))
 	if not alive(unit) or not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender) then
 		return
 	end
@@ -1545,6 +1553,7 @@ end
 -- end
 function UnitNetworkHandler:sync_throw_projectile(unit, pos, dir, projectile_type, peer_id, sender)
 	log("[UnitNetworkHandler :sync_throw_projectile] peer_id: " .. tostring(peer_id))
+	log("[UnitNetworkHandler :sync_throw_projectile] unit: " .. tostring(unit))
 	local peer = self._verify_sender(sender)
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not peer then
 		print("_verify failed!!!")
@@ -1582,6 +1591,9 @@ function UnitNetworkHandler:sync_throw_projectile(unit, pos, dir, projectile_typ
 end
 function UnitNetworkHandler:sync_attach_projectile(unit, instant_dynamic_pickup, parent_unit, parent_body, parent_object, local_pos, dir, projectile_type, peer_id, sender)
 	log("[UnitNetworkHandler :sync_attach_projectile] peer_id: " .. tostring(peer_id))
+	log("[UnitNetworkHandler :sync_attach_projectile] unit: " .. tostring(unit))
+	log("[UnitNetworkHandler :sync_attach_projectile] instant_dynamic_pickup: " .. tostring(instant_dynamic_pickup))
+	log("[UnitNetworkHandler :sync_attach_projectile] parent_unit: " .. tostring(parent_unit))
 	local peer = self._verify_sender(sender)
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not peer then
 		print("_verify failed!!!")

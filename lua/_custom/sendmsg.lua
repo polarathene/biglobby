@@ -1,16 +1,3 @@
---Use global version later? Possible issue with gtrace in some instances
--- local log_data = true
--- function xlogger(content, use_chat)
--- 	if log_data then
--- 		if not content then return end
--- 		if use_chat then
--- 			managers.chat:_receive_message(ChatManager.GAME, "BigLobby", content, tweak_data.system_chat_color)
--- 		end
--- 		--io.stdout:write(content .. "\n")
--- 		log(content) --BLT support
--- 	end
--- end
-
 local me = managers.network:session():local_peer()
 logger("My Peer ID is: " .. tostring(me:id()) .. ", and my name is: " .. tostring(me:name()), true)
 log("Test send msg")

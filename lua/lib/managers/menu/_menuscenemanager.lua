@@ -34,7 +34,7 @@ function MenuSceneManager:_setup_lobby_characters()
 		-106,
 		-89,--host?
 		-64,
-		-35,
+		-130,--35,
 		-115
 	}
 	local masks = {}
@@ -63,26 +63,32 @@ function MenuSceneManager:_setup_lobby_characters()
 	end
 end
 
-function MenuSceneManager:test_show_all_lobby_characters(enable_card)
+function MenuSceneManager:test_show_all_lobby_characters(enable_card, pose)
 	local num_player_slots = 6--BigLobbyGlobals:num_player_slots()()
+	pose = pose or "lobby_generic_idle1"
 
 	local mvec = Vector3()
 	local math_up = math.UP
 	local pos = Vector3()
 	local rot = Rotation()
-	self._ti = (self._ti or 0) + 1
-	self._ti = (self._ti - 1) % num_player_slots + 1
+	self._ti = 1--(self._ti or 0) + 1
+	--self._ti = (self._ti - 1) % num_player_slots + 1
 	for i = 1, num_player_slots do
 		local is_me = i == self._ti
+		log("TEST LOBBY, is_me = " .. tostring(is_me) .. ", i: " .. tostring(i))
 		local unit = self._lobby_characters[i]
 		if unit and alive(unit) then
 			if enable_card then
 				self:set_character_card(i, math.random(25), unit)
 			else
-				local state = unit:play_redirect(Idstring("idle_menu"))
-				unit:anim_state_machine():set_parameter(state, "lobby_generic_idle" .. i, 1)
+				self:_set_character_unit_pose(pose, unit)
+				--local state = unit:play_redirect(Idstring("idle_menu"))
+				--unit:anim_state_machine():set_parameter(state, "lobby_generic_idle" .. i, 1)
+				--local state = unit:play_redirect(Idstring("tased"))
+				--unit:anim_state_machine():set_parameter(state, "lobby_generic_idle" .. i%4, 1)
 			end
-			mrotation.set_yaw_pitch_roll(rot, self._characters_rotation[(is_me and 4 or 0) + i], 0, 0)
+			mrotation.set_yaw_pitch_roll(rot, self._characters_rotation[(is_me and 6 or 0) + i], 0, 0)
+			--mrotation.set_yaw_pitch_roll(rot, self._characters_rotation[1], 0, 0) -- will break if not enough rotation indices use a modulus?
 			mvector3.set(pos, self._characters_offset)
 			if is_me then
 				mvector3.set_y(pos, mvector3.y(pos) + 100)
@@ -103,10 +109,11 @@ function MenuSceneManager:test_show_all_lobby_characters(enable_card)
 			self:set_lobby_character_visible(i, true)
 		end
 	end
+	managers.menu_scene:_set_character_equipment()
 end
 
 function MenuSceneManager:hide_all_lobby_characters()
-	local num_player_slots = 6--BigLobbyGlobals:num_player_slots()()
+	local num_player_slots = 4--BigLobbyGlobals:num_player_slots()()
 
 	for i = 1, num_player_slots do
 		self:set_lobby_character_visible(i, false, true)
@@ -274,13 +281,13 @@ function MenuSceneManager:set_lobby_character_out_fit(i, outfit_string, rank)
 	self:set_character_armor(outfit.armor, unit)
 	self:set_character_deployable(outfit.deployable, unit, i)
 	self:_delete_character_weapon(unit, "all")
-	local prio_item = self:_get_lobby_character_prio_item(rank, outfit)
-	if prio_item == "rank" then
-		self:set_character_card(i, rank, unit)
-	else
+	local prio_item = "primary"--self:_get_lobby_character_prio_item(rank, outfit)
+	--if prio_item == "rank" then
+	--	self:set_character_card(i, rank, unit)
+	--else
 		self:_select_lobby_character_pose(i, unit, outfit[prio_item])
 		self:set_character_equipped_weapon(unit, outfit[prio_item].factory_id, outfit[prio_item].blueprint, "primary", outfit[prio_item].cosmetics)
-	end
+	--end
 	local is_me = i == managers.network:session():local_peer():id()
 	local mvec = Vector3()
 	local math_up = math.UP
@@ -616,4 +623,99 @@ function MenuSceneManager:_chk_complete_overkill_pack_safe_visibility()
 		return
 	end
 	self._complete_overkill_pack_safe:set_visible(self._scene_templates[self._current_scene_template].complete_overkill_pack_safe_visible)
+end
+
+
+--delete me is ok
+function MenuSceneManager:_select_character_pose(unit)
+	unit = unit or self._character_unit
+	if self._scene_templates and self._scene_templates[self._current_scene_template] and self._scene_templates[self._current_scene_template].poses then
+		local poses = self._scene_templates[self._current_scene_template].poses
+		--local poses = self._scene_templates["inventory"].poses
+		local pose
+		local primary = managers.blackmarket:equipped_primary()
+		if primary then
+			local weapon_id_poses = poses[primary.weapon_id]
+			if weapon_id_poses then
+				pose = weapon_id_poses[math.random(#weapon_id_poses)]
+			else
+				local category = tweak_data.weapon[primary.weapon_id].category
+				if poses[category] then
+					pose = poses[category][math.random(#poses[category])]
+				end
+			end
+			if pose then
+				self:_set_character_unit_pose(pose, unit)
+				return
+			end
+		end
+		local secondary = managers.blackmarket:equipped_secondary()
+		if secondary then
+			local weapon_id_poses = poses[secondary.weapon_id]
+			if weapon_id_poses then
+				pose = weapon_id_poses[math.random(#weapon_id_poses)]
+			else
+				local category = tweak_data.weapon[secondary.weapon_id].category
+				if poses[category] then
+					pose = poses[category][math.random(#poses[category])]
+				end
+			end
+			if pose then
+				self:_set_character_unit_pose(pose, unit)
+				return
+			end
+		end
+	end
+	if managers.experience:current_rank() > 0 and self._card_units and self._card_units[unit:key()] then
+		local pose = self._global_poses.infamous[math.random(#self._global_poses.infamous)]
+		self:_set_character_unit_pose(pose, unit)
+		return
+	end
+	local pose
+	if math.rand(1) < 0.25 then
+		pose = self._global_poses.generic[math.random(#self._global_poses.generic)]
+		self:_set_character_unit_pose(pose, unit)
+		return
+	end
+	if math.rand(1) < 0.12 then
+		local secondary = managers.blackmarket:equipped_secondary()
+		if secondary then
+			local category = tweak_data.weapon[secondary.weapon_id].category
+			if category == "pistol" then
+				pose = self._global_poses.pistol[math.random(#self._global_poses.pistol)]
+			end
+			if pose then
+				self:_set_character_unit_pose(pose, unit)
+				return
+			end
+		end
+	end
+	local primary = managers.blackmarket:equipped_primary()
+	if primary then
+		local weapon_id_poses = self._global_poses[primary.weapon_id]
+		if weapon_id_poses then
+			pose = weapon_id_poses[math.random(#weapon_id_poses)]
+		else
+			local category = tweak_data.weapon[primary.weapon_id].category
+			if category == "shotgun" then
+				pose = self._global_poses.shotgun[math.random(#self._global_poses.shotgun)]
+			elseif category == "assault_rifle" then
+				pose = self._global_poses.assault_rifle[math.random(#self._global_poses.assault_rifle)]
+			elseif category == "saw" then
+				pose = self._global_poses.saw[math.random(#self._global_poses.saw)]
+			elseif category == "lmg" then
+				pose = self._global_poses.lmg[math.random(#self._global_poses.lmg)]
+			elseif category == "snp" then
+				pose = self._global_poses.snp[math.random(#self._global_poses.snp)]
+			elseif category == "bow" then
+				pose = self._global_poses.bow[math.random(#self._global_poses.bow)]
+			end
+		end
+		if pose then
+			self:_set_character_unit_pose(pose, unit)
+			return
+		end
+	end
+	pose = self._global_poses.generic[math.random(#self._global_poses.generic)]
+	self:_set_character_unit_pose(pose, unit)
 end

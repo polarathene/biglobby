@@ -1,7 +1,7 @@
 --Assigns a free Peer ID to new joining peer
 function HostNetworkSession:_get_free_client_id()
 	log("[HostNetworkSession :_get_free_client_id]")
-	local i = 2--2
+	local i = 4--2
 	log("[HostNetworkSession :_get_free_client_id] starting index is: " .. tostring(i))
 	repeat
 		if not self._peers[i] then

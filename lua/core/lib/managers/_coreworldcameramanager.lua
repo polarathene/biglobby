@@ -6,14 +6,3 @@ function CoreWorldCamera:print_points()
 		cat_print("debug", i, self._positions[i], self._target_positions[i])
 	end
 end
-
-
---Use global version later? Possible issue with gtrace in some instances
--- local log_data = true
--- function logger(content)
--- 	if log_data then
--- 		if not content then return end
--- 		--io.stdout:write(content .. "\n")
--- 		log(content .. "\n") --BLT support
--- 	end
--- end

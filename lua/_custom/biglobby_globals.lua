@@ -164,6 +164,32 @@ if id == "dropin_progress" then
 end
 
 
+--
+-- UnitNetworkHandler
+--
+if id == "sync_trip_mine_setup" then
+    log("[BigLobbyGlobals :sync_trip_mine_setup] sender_id: ".. tostring(sender) .. ", data: " .. tostring(data))
+data = json.decode(data)
+    --for k,v in pairs(typefilter) do
+      for _,unitx in ipairs(World:find_units_quick("all", managers.slot:get_mask("world_geometry"), managers.slot:get_mask("trip_mine_targets"), managers.slot:get_mask("trip_mine_placeables"))) do
+        if tostring(unitx:id()) == data[1] then
+            log("[BigLobbyGlobals :sync_trip_mine_setup] FOUND TRIPMINE! " .. data[1])
+        end
+        --local pox = get_crosshair_pos_new().hit_position
+        -- if(type==v) then
+        --   --World:delete_unit(unitx)
+        --   --unitx:set_slot(0)
+        --   pox = Vector3(99999,99999,99999)
+        --   --unitx:set_position(pox)
+        -- end
+      end
+--      typetable[v] = nil
+--    end
+    --local sender_peer = managers.network:session():peer(sender):rpc()
+    --BigLobbyGlobals:sync_trip_mine_setup(sender_peer, unpack(json.decode(data)))
+end
+
+
 end)
 
 
