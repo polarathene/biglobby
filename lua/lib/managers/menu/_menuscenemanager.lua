@@ -231,6 +231,7 @@ end
 
 -- Not sure what I was doing here, might have been experimenting for another mod that messes with this stuff
 -- TODO: Should be safe to delete
+-- TODO: Actually, the line with `is_me and 4` may need to be updated/fixed?
 function MenuSceneManager:set_lobby_character_out_fit(i, outfit_string, rank)
 	log("[MenuSceneManager :set_lobby_character_out_fit] i: " .. tostring(i) .. ", rank: " .. tostring(rank) .. ", outfit_string: " .. tostring(outfit_string))
 	local outfit = managers.blackmarket:unpack_outfit_from_string(outfit_string)

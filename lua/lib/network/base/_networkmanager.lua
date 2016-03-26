@@ -1,3 +1,5 @@
+-- CAN REMOVE/DELETE
+
 -- Modified to show 3 players in game on crime.net to others. Not required, but should encourage joining.
 function NetworkManager:on_peer_added(peer, peer_id)
 	cat_print("multiplayer_base", "NetworkManager:on_peer_added", peer, peer_id)

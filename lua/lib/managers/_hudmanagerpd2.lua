@@ -1,7 +1,8 @@
 --Crashes if use global
--- HUDManager.PLAYER_PANEL = 8 --bad idea, this actually referenced 4 as in the 4th panel on the UI(one on the furtherest right)
--- should be the local players
-HUDManager.PLAYER_PANEL = 8 -- TODO: No idea what I said above since I seemed to have done pretty much the same anyway right after?
+-- This references 4 as in the 4th panel on the UI(one on the furtherest right) by default.
+-- Otherwise known as the local players UI panel.
+-- By updating this value, we keep that consistency that the player is used to.
+HUDManager.PLAYER_PANEL = 8
 
 --Nothing seems to call this, I don't think it's even used.. Panels are created somewhere else
 function HUDManager:_create_teammates_panel(hud)

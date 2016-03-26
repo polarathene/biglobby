@@ -1,3 +1,7 @@
+-- Not sure what was done here, thanks past self. Considering location I'm
+-- assuming this was just for debug/experiment. It does look like I tampered
+-- with the names variable, adding 2 new strings to the table.
+
 function HUDTeammate:init(i, teammates_panel, is_player, width)
 	self._id = i
 	local small_gap = 8

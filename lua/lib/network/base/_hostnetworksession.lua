@@ -5,7 +5,7 @@ function HostNetworkSession:_get_free_client_id()
 	-- The below loop stops when index(i) reaches this value
 	local num_player_slots = 9 -- Not global friendly? BigLobbyGlobals:num_player_slots() + 1
 	-- The player slot to start from(Host is 1 so defaults to 2)
-	local i = 4--2
+	local i = 2--4 --I set this to 4 to do tests without having to fill earlier slots(== less players needed for testing)
 	repeat
 		if not self._peers[i] then
 			local is_dirty = false

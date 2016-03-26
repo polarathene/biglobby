@@ -13,11 +13,12 @@ function logger(content, use_chat)
 end
 
 
+-- Modified to support additional peers.
 function BaseNetworkSession:on_network_stopped()
 	logger("[BaseNetworkSession: on_network_stopped]")
 	local num_player_slots = BigLobbyGlobals:num_player_slots()
 
-	-- num_player_slots variable instead of hardcoded 4, handles additional peers.
+	-- Only code changed was replacing hardcoded 4 with variable num_player_slots
 	for k = 1, num_player_slots do
 		self:on_drop_in_pause_request_received(k, nil, false)
 		local peer = self:peer(k)
@@ -31,12 +32,13 @@ function BaseNetworkSession:on_network_stopped()
 end
 
 
+-- Modified to support additional peers.
 function BaseNetworkSession:_get_peer_outfit_versions_str()
 	logger("[BaseNetworkSession: _get_peer_outfit_versions_str]")
 	local num_player_slots = BigLobbyGlobals:num_player_slots()
 
+	-- Only code changed was replacing hardcoded 4 with variable num_player_slots
 	local outfit_versions_str = ""
-	-- num_player_slots variable instead of hardcoded 4, handles additional peers.
 	for peer_id = 1, num_player_slots do
 		local peer
 		if peer_id == self._local_peer:id() then
