@@ -1,7 +1,11 @@
---Loop condition updated to support additional players, replacing value '4' with variable num_player_slots
+-- Modified to support additional player slots in the mission briefing screen.
 function MenuLobbyRenderer:open(...)
 	local num_player_slots = BigLobbyGlobals:num_player_slots()
 
+
+
+
+	-- Original Code --
 	MenuLobbyRenderer.super.open(self, ...)
 	local safe_rect_pixels = managers.gui_data:scaled_size()
 	local scaled_size = safe_rect_pixels
@@ -16,9 +20,15 @@ function MenuLobbyRenderer:open(...)
 	if not server_peer then
 		return
 	end
+	-- End Original Code --
+
+
+
+	-- Only code changed was replacing hardcoded 4 with variable num_player_slots
 	logger("[MenuLobbyRenderer :open] building _player_slots")
 	for i = 1, is_single_player and 1 or num_player_slots do
 		logger("[MenuLobbyRenderer :open] adding player_slot: " .. tostring(i))
+
 		local t = {}
 		t.player = {}
 		t.free = true
@@ -30,10 +40,14 @@ function MenuLobbyRenderer:open(...)
 		table.insert(self._player_slots, t)
 	end
 	logger("[MenuLobbyRenderer :open] done _player_slots")
+
+
+
+
+	-- Original Code --
 	if is_server then
 		local level = managers.experience:current_level()
 		local rank = managers.experience:current_rank()
-		logger("[MenuLobbyRenderer :open]")
 		self:_set_player_slot(1, {
 			name = server_peer:name(),
 			peer_id = server_peer:id(),
@@ -42,16 +56,6 @@ function MenuLobbyRenderer:open(...)
 			character = "random"
 		})
 	end
-	logger("[MenuLobbyRenderer :open] _entered_menu")
 	self:_entered_menu()
-end
-
---NOT REQUIRED, used for console output debugging
-function MenuLobbyRenderer:set_slot_joining(peer, peer_id)
-	local peer_id_name = tostring(peer:id()) .. " - " .. tostring(peer:name())
-	logger("[MenuLobbyRenderer] SETTING SLOT JOINING, peer: " .. peer_id_name)
-
-	managers.hud:set_slot_joining(peer, peer_id)
-	local slot = self._player_slots[peer_id]
-	slot.peer_id = peer_id
+	-- End Original Code --
 end

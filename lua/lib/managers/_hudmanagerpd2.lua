@@ -1,12 +1,12 @@
 --Crashes if use global
--- HUDManager.PLAYER_PANEL = 6 --bad idea, this actually referenced 4 as in the 4th panel on the UI(one on the furtherest right)
+-- HUDManager.PLAYER_PANEL = 8 --bad idea, this actually referenced 4 as in the 4th panel on the UI(one on the furtherest right)
 -- should be the local players
-HUDManager.PLAYER_PANEL = 6
+HUDManager.PLAYER_PANEL = 8 -- TODO: No idea what I said above since I seemed to have done pretty much the same anyway right after?
 
 --Nothing seems to call this, I don't think it's even used.. Panels are created somewhere else
 function HUDManager:_create_teammates_panel(hud)
 	log("[HUDManager :_create_teammates_panel]")
-	local num_player_slots = 6--BigLobbyGlobals:num_player_slots()
+	local num_player_slots = 8--BigLobbyGlobals:num_player_slots()
 
 	hud = hud or managers.hud:script(PlayerBase.PLAYER_INFO_HUD_PD2)
 	self._hud.teammate_panels_data = self._hud.teammate_panels_data or {}
@@ -45,6 +45,7 @@ function HUDManager:_create_teammates_panel(hud)
 	end
 end
 
+-- TODO: Go over this, not sure why I kept it, seems to be same as above roughly.
 --[[
 function HUDManager:_create_teammates_panel(hud)
 	log("[HUDManager :_create_teammates_panel]")
@@ -98,6 +99,15 @@ function HUDManager:_create_teammates_panel(hud)
 end
 ]]
 
+-- TODO:
+-- All of this below was copy/paste of the class to debug/find the actual lines crashing the game
+-- Unfortunately I was a nub and made changes directly without a decent way to identify where.
+-- If I used git properly would have been easier with commit diffs, could still diff if needed.
+-- It looks like whatever the UI crashing bugs were had the real problem solved since I see code I've
+-- commented out that was clearly added by me.
+
+-- TODO:
+-- That all said, `HUDManager:add_teammate_panel` looks relevant still, and perhaps some other stuff?
 
 HUDManager.disabled = {}
 HUDManager.disabled[Idstring("guis/player_hud"):key()] = true

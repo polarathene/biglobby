@@ -1,6 +1,10 @@
 function HUDLootScreen:init(hud, workspace, saved_lootdrop, saved_selected, saved_chosen, saved_setup)
 	local num_player_slots = BigLobbyGlobals:num_player_slots()
 
+
+
+
+	-- Original Code --
 	self._backdrop = MenuBackdropGUI:new(workspace)
 	self._backdrop:create_black_borders()
 	self._active = false
@@ -56,9 +60,19 @@ function HUDLootScreen:init(hud, workspace, saved_lootdrop, saved_selected, save
 	self._hud_panel:set_h(self._hud_panel:h() - 25 - 150)
 	self._peer_data = {}
 	self._peers_panel = self._hud_panel:panel({})
+	-- End Original Code --
+
+
+
+	-- Only code changed was replacing hardcoded 4 with variable num_player_slots
 	for i = 1, num_player_slots do
 		self:create_peer(self._peers_panel, i)
 	end
+
+
+
+
+	-- Original Code --
 	self._num_visible = 1
 	self:set_num_visible(self:get_local_peer_id())
 	if saved_setup then
@@ -100,25 +114,31 @@ function HUDLootScreen:init(hud, workspace, saved_lootdrop, saved_selected, save
 	panel:set_alpha(1)
 	peer_info_panel:show()
 	panel:child("card_info"):hide()
+	-- End Original Code --
 end
+
 
 function HUDLootScreen:set_num_visible(peers_num)
 	local num_player_slots = BigLobbyGlobals:num_player_slots()
 
+	-- Only code changed was replacing hardcoded 4 with variable num_player_slots
 	self._num_visible = math.max(self._num_visible, peers_num)
 	for i = 1, num_player_slots do
 		self._peers_panel:child("peer" .. i):set_visible(i <= self._num_visible)
 	end
 	self._peers_panel:set_h(self._num_visible * 110)
 	self._peers_panel:set_center_y(self._hud_panel:h() * 0.5)
+	-- TODO: Is this console code useful for reworking the UI layout?
 	if managers.menu:is_console() and self._num_visible >= 4 then
 		self._peers_panel:move(0, 30)
 	end
 end
 
+
 function HUDLootScreen:clear_other_peers(peer_id)
 	local num_player_slots = BigLobbyGlobals:num_player_slots()
 
+	-- Only code changed was replacing hardcoded 4 with variable num_player_slots
 	peer_id = peer_id or self:get_local_peer_id()
 	for i = 1, num_player_slots do
 		if i ~= peer_id then
@@ -127,9 +147,11 @@ function HUDLootScreen:clear_other_peers(peer_id)
 	end
 end
 
+
 function HUDLootScreen:check_all_ready()
 	local num_player_slots = BigLobbyGlobals:num_player_slots()
 
+	-- Only code changed was replacing hardcoded 4 with variable num_player_slots
 	local ready = true
 	for i = 1, num_player_slots do
 		if self._peer_data[i].active and ready then
@@ -139,9 +161,11 @@ function HUDLootScreen:check_all_ready()
 	return ready
 end
 
+
 function HUDLootScreen:update(t, dt)
 	local num_player_slots = BigLobbyGlobals:num_player_slots()
 
+	-- Only code changed was replacing hardcoded 4 with variable num_player_slots
 	for peer_id = 1, num_player_slots do
 		if self._peer_data[peer_id].wait_t then
 			self._peer_data[peer_id].wait_t = math.max(self._peer_data[peer_id].wait_t - dt, 0)

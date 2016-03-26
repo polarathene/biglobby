@@ -1,8 +1,8 @@
---Crashes if use global
+--Crashes if use global BigLobbyGlobals:num_player_slots()
 --I don't particularly feel comfortable about this approach :\
 --Updates colours to support UI elements for additional peers
 
-	local num_player_slots = 6--BigLobbyGlobals:num_player_slots()
+	local num_player_slots = 8--BigLobbyGlobals:num_player_slots()
 
 	--override colours here, rgb values, /255 to get a 0-1 value range that game wants
 	local brown = Vector3(204, 161, 102) / 255
@@ -33,6 +33,7 @@
 	}
 
 	-- Make sure we have enough colours to support the number of player slots, creates random colours
+	-- Only real issue with this is that assigned colours are probably not going to be reliable between users.
 	if #tweak_data.peer_vector_colors < num_player_slots then
 		--math.randomseed( os.time() ) --Will improve randomness of the PRNG
 		for i = #tweak_data.peer_vector_colors, num_player_slots do

@@ -1,9 +1,19 @@
---Not sure what this refers to?
+-- Not sure what this class refers to? Seems to affect peers only during a UI screen
+-- `ContractBoxGui:create_contract_box()` decompiled source appears to have several bugs.
+-- 'job_xp_text' and 'total_payout_text' declare local var within conditional statements
+-- that don't make much sense. There is also a conditional that does nothing at all.
 
---Both methods replace values of '4' used for player count to a variable to support additional peers, fixed 'job_xp_text' and 'total_payout_text' local declaration bugs
+-- TODO: Might be better to take the modified loop at the end of `ContractBoxGui:create_contract_box()`
+-- and undo it after the original function runs, then recreate the loop logic modified afterwards.
+
+-- Modified to support rendering UI text for additional peers.
 function ContractBoxGui:create_contract_box()
 	local num_player_slots = BigLobbyGlobals:num_player_slots()
 
+
+
+
+	-- Original Code --
 	if not managers.network:session() then
 		return
 	end
@@ -176,13 +186,28 @@ function ContractBoxGui:create_contract_box()
 		})
 		local xp_text_min = managers.money:add_decimal_marks_to_string(tostring(math.round(total_xp_min)))
 		local xp_text_max = managers.money:add_decimal_marks_to_string(tostring(math.round(total_xp_max)))
-		--[[local job_xp_text --local should be declared here instead of inside below if statement
+		-- End Original Code --
+
+
+
+
+		--[[
+		local job_xp_text --local should be declared here instead of inside the below if statement
 		if total_xp_min < total_xp_max then
 		else
 			job_xp_text = managers.localization:text("menu_number_range", {min = xp_text_min, max = xp_text_max}) or xp_text_min
-		end]]
-		--Actually I think the if statement might not make any sense to be there? Decompile bug? Change in below line
+		end
+		]]
+
+		-- Actually I think the if statement might not make any sense to be there? Decompile bug?
+		-- Unless they only want to use/update the variable `job_xp_text` when `total_xp_min` is not less than `total_xp_max`?
+		-- Have decied to ignore the if statement and just assign always.
 		local job_xp_text = managers.localization:text("menu_number_range", {min = xp_text_min, max = xp_text_max}) or xp_text_min
+
+
+
+
+		-- Original Code --
 		local job_xp = self._contract_panel:text({
 			font = font,
 			font_size = font_size,
@@ -250,10 +275,11 @@ function ContractBoxGui:create_contract_box()
 				blend_mode = "add"
 			})
 			do
-				local _, _, tw, th = heat_xp_text:text_rect() --two local _ being defined? Not good..Perhaps they're just irrelevant data returned from tuple?
+				local _, _, tw, th = heat_xp_text:text_rect()
 				heat_xp_text:set_size(tw, th)
 			end
-			if (not ghost_xp_text or not ghost_xp_text:right()) and (not risk_xp:visible() or not risk_xp:right()) then --no logic? This can't be good
+			if (not ghost_xp_text or not ghost_xp_text:right()) and (not risk_xp:visible() or not risk_xp:right()) then
+				-- TODO: No logic? This can't be good
 			end
 			heat_xp_text:set_position(math.round((job_xp:right())), job_xp:top())
 		end
@@ -266,13 +292,28 @@ function ContractBoxGui:create_contract_box()
 		})
 		local payout_text_min = managers.experience:cash_string(math.round(total_payout_min))
 		local payout_text_max = managers.experience:cash_string(math.round(total_payout_max))
-		--[[local total_payout_text --local should be declared here instead of inside below if statement
+		-- End Original Code --
+
+
+
+
+		--[[
+		local total_payout_text --local should be declared here instead of inside the below if statement
 		if total_payout_min < total_payout_max then
 		else
 			total_payout_text = managers.localization:text("menu_number_range", {min = payout_text_min, max = payout_text_max}) or payout_text_min
-		end]]
-		--Actually I think the if statement might not make any sense to be there? Decompile bug? Change in below line
+		end
+		]]
+
+		-- Actually I think the if statement might not make any sense to be there? Decompile bug?
+		-- Unless they only want to use/update the variable `total_payout_text` when `payout_text_min` is not less than `payout_text_max`?
+		-- Have decied to ignore the if statement and just assign always.
 		local total_payout_text = managers.localization:text("menu_number_range", {min = payout_text_min, max = payout_text_max}) or payout_text_min
+
+
+
+
+		-- Original Code --
 		local job_money = self._contract_panel:text({
 			font = font,
 			font_size = font_size,
@@ -349,7 +390,11 @@ function ContractBoxGui:create_contract_box()
 			1
 		}
 	})
-	--logger("()()()()()()()()()()()()()()()CONTRACTBOXGUI")
+	-- End Original Code --
+
+
+
+	-- Only code changed was replacing hardcoded 4 with variable num_player_slots
 	for i = 1, num_player_slots do
 		local peer = managers.network:session():peer(i)
 		if peer then
@@ -363,9 +408,12 @@ function ContractBoxGui:create_contract_box()
 	self._enabled = true
 end
 
+
+-- Modified to support rendering UI text for additional peers.
 function ContractBoxGui:update(t, dt)
 	local num_player_slots = BigLobbyGlobals:num_player_slots()
 
+	-- Only code changed was replacing hardcoded 4 with variable num_player_slots
 	for i = 1, num_player_slots do
 		self:update_character(i)
 	end

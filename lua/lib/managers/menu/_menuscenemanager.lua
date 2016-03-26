@@ -1,23 +1,27 @@
---Cannot access global, duplicate function here
+--Crashes if trying to access global BigLobbyGlobals:num_player_slots()
+
+--Cannot access global/external class of this method(BigLobby:logger), duplicate function here
 local log_data = true
 function logger(content, use_chat)
 	if log_data then
 		if not content then return end
+
 		if use_chat then
 			managers.chat:_receive_message(ChatManager.GAME, "BigLobby", content, tweak_data.system_chat_color)
 		end
-		--if BigLobbyGlobals:Hook() == "pd2hook" then
-			--io.stdout:write(content .. "\n")
-		--else
-			log(content)
-		--end
+
+		log(content)
 	end
 end
 
 
---Crashes if trying to access global
 function MenuSceneManager:_setup_lobby_characters()
-	local num_player_slots = 6--BigLobbyGlobals:num_player_slots()
+	local num_player_slots = 8--BigLobbyGlobals:num_player_slots()
+
+	-- Code changed was:
+	-- Replacing hardcoded 4 with variable num_player_slots
+	-- Replacing the local masks variable from hardcoded table to dynamically generated via loop
+	-- TODO: self._characters_rotation will possibly need to become dynamic too.
 
 	if self._lobby_characters then
 		for _, unit in ipairs(self._lobby_characters) do
@@ -63,32 +67,41 @@ function MenuSceneManager:_setup_lobby_characters()
 	end
 end
 
+
+-- Not required for this mod to work, just updates the test function to work with more players
+-- Only for testing (literally no relevance to the game)
 function MenuSceneManager:test_show_all_lobby_characters(enable_card, pose)
-	local num_player_slots = 6--BigLobbyGlobals:num_player_slots()()
+	local num_player_slots = 8--BigLobbyGlobals:num_player_slots()
 	pose = pose or "lobby_generic_idle1"
 
 	local mvec = Vector3()
 	local math_up = math.UP
 	local pos = Vector3()
 	local rot = Rotation()
+	-- Forcing all `self._ti` to be static 1, this was for a predictable outcome
+	-- since each call of this function was to test the feature with the client
+	-- player in each of the different player slots?
 	self._ti = 1--(self._ti or 0) + 1
 	--self._ti = (self._ti - 1) % num_player_slots + 1
 	for i = 1, num_player_slots do
 		local is_me = i == self._ti
-		log("TEST LOBBY, is_me = " .. tostring(is_me) .. ", i: " .. tostring(i))
+		logger("TEST LOBBY, is_me = " .. tostring(is_me) .. ", i: " .. tostring(i))
 		local unit = self._lobby_characters[i]
 		if unit and alive(unit) then
 			if enable_card then
 				self:set_character_card(i, math.random(25), unit)
 			else
+				-- Was forcing the pose for some reason instead of fix below?
 				self:_set_character_unit_pose(pose, unit)
-				--local state = unit:play_redirect(Idstring("idle_menu"))
-				--unit:anim_state_machine():set_parameter(state, "lobby_generic_idle" .. i, 1)
-				--local state = unit:play_redirect(Idstring("tased"))
-				--unit:anim_state_machine():set_parameter(state, "lobby_generic_idle" .. i%4, 1)
+				-- local state = unit:play_redirect(Idstring("idle_menu"))
+				-- Only 4 variations of lobby_generic_idle? 4%4=0 though, might want to + 1 if 0?
+				-- unit:anim_state_machine():set_parameter(state, "lobby_generic_idle" .. i%4, 1)
 			end
-			mrotation.set_yaw_pitch_roll(rot, self._characters_rotation[(is_me and 6 or 0) + i], 0, 0)
-			--mrotation.set_yaw_pitch_roll(rot, self._characters_rotation[1], 0, 0) -- will break if not enough rotation indices use a modulus?
+			-- Uses 0+i for rotation index unless it's your player unit then 4+i for some reason?
+			-- I guess this explains the 8 values in `self._characters_rotation`, the last half are specific to the client player
+			-- TODO: Therefore 4 should really be half of the table size?
+			-- will break if not enough rotation indices use a modulus? (or you know, just make the table dynamically built)
+			mrotation.set_yaw_pitch_roll(rot, self._characters_rotation[(is_me and 4 or 0) + i], 0, 0)
 			mvector3.set(pos, self._characters_offset)
 			if is_me then
 				mvector3.set_y(pos, mvector3.y(pos) + 100)
@@ -109,71 +122,22 @@ function MenuSceneManager:test_show_all_lobby_characters(enable_card, pose)
 			self:set_lobby_character_visible(i, true)
 		end
 	end
+	-- I seem to have added this, I guess it was for replacing all the dallas with my own unit? and thus weapons.
 	managers.menu_scene:_set_character_equipment()
 end
 
+
+-- Modified to hide additional peers.
 function MenuSceneManager:hide_all_lobby_characters()
-	local num_player_slots = 4--BigLobbyGlobals:num_player_slots()()
+	local num_player_slots = 8--BigLobbyGlobals:num_player_slots()
 
 	for i = 1, num_player_slots do
 		self:set_lobby_character_visible(i, false, true)
 	end
 end
---[[
-function MenuSceneManager:set_character_mask_by_id(mask_id, blueprint, unit, peer_id)
-	logger("[MenuSceneManager :set_character_mask_by_id] peer_id: " .. tostring(peer_id) .. "\n")
-	if managers and managers.network and managers.network:session() then
-		logger("[MenuSceneManager :set_character_mask_by_id] peer_name: " .. tostring(managers.network:session():peer(peer_id):name()) .. "\n")
-	end
-	logger("[MenuSceneManager :set_character_mask_by_id] mask_id: " .. tostring(mask_id) .. "\n")
-	logger("[MenuSceneManager :set_character_mask_by_id] blueprint: " .. tostring(blueprint) .. "\n")
-	logger("[MenuSceneManager :set_character_mask_by_id] unit: " .. tostring(unit) .. "\n")
-	mask_id = managers.blackmarket:get_real_mask_id(mask_id, peer_id)
-	logger("[MenuSceneManager :set_character_mask_by_id] unit_name" .. "\n")
-	local unit_name = managers.blackmarket:mask_unit_name_by_mask_id(mask_id, peer_id)
-	self:set_character_mask(unit_name, unit, peer_id, mask_id, callback(self, self, "clbk_mask_loaded", blueprint))
-	logger("[MenuSceneManager :set_character_mask_by_id] owner_unit" .. "\n")
-	local owner_unit = unit or self._character_unit
-	self:_check_character_mask_sequence(owner_unit, mask_id, peer_id)
-end]]
 
---tracking a bug, delete after
-function MenuSceneManager:set_character_mask(mask_name_str, unit, peer_id, mask_id, ready_clbk)
-	logger("[MenuSceneManager :set_character_mask] peer_id: " .. tostring(peer_id))
-	if managers and managers.network and managers.network:session() then
-		logger("[MenuSceneManager :set_character_mask] peer_name: " .. tostring(managers.network:session():peer(peer_id):name()))
-	end
-	logger("[MenuSceneManager :set_character_mask] mask_id: " .. tostring(mask_id))
-	logger("[MenuSceneManager :set_character_mask] unit: " .. tostring(unit))
-	logger("[MenuSceneManager :set_character_mask] unit: " .. tostring(self._character_unit))
-	unit = unit or self._character_unit
-	local mask_name = Idstring(mask_name_str)
-	local old_mask_data = self._mask_units[unit:key()]
-	if old_mask_data and old_mask_data.mask_name == mask_name then
-		if old_mask_data.ready then
-			ready_clbk(old_mask_data.mask_unit)
-		else
-			old_mask_data.ready_clbk = ready_clbk
-		end
-		return
-	end
-	self:_delete_character_mask(unit)
-	local mask_name_key = mask_name:key()
-	local mask_data = {
-		unit = unit,
-		mask_unit = false,
-		mask_name = mask_name,
-		peer_id = peer_id,
-		mask_id = mask_id,
-		ready = false,
-		ready_clbk = ready_clbk
-	}
-	self._mask_units[unit:key()] = mask_data
-	managers.dyn_resource:load(Idstring("unit"), mask_name, DynamicResourceManager.DYN_RESOURCES_PACKAGE, callback(self, self, "clbk_mask_unit_loaded", mask_data))
-	self:_chk_character_visibility(unit)
-end
 
---needs to support additional players?
+-- TODO: needs to support additional players?
 function MenuSceneManager:character_screen_position(peer_id)
 	local unit = self._lobby_characters[peer_id]
 	if unit and alive(unit) then
@@ -195,7 +159,7 @@ function MenuSceneManager:character_screen_position(peer_id)
 	end
 end
 
---instances of 4 might benefit from being increased to additional player value?
+-- TODO: instances of 4 might benefit from being increased to additional player value?
 function MenuSceneManager:mouse_moved(o, x, y)
 	if managers.menu_component:input_focus() == true or managers.menu_component:input_focus() == 1 then
 		return false, "arrow"
@@ -264,6 +228,9 @@ function MenuSceneManager:mouse_moved(o, x, y)
 	end
 end
 
+
+-- Not sure what I was doing here, might have been experimenting for another mod that messes with this stuff
+-- TODO: Should be safe to delete
 function MenuSceneManager:set_lobby_character_out_fit(i, outfit_string, rank)
 	log("[MenuSceneManager :set_lobby_character_out_fit] i: " .. tostring(i) .. ", rank: " .. tostring(rank) .. ", outfit_string: " .. tostring(outfit_string))
 	local outfit = managers.blackmarket:unpack_outfit_from_string(outfit_string)
@@ -306,416 +273,4 @@ function MenuSceneManager:set_lobby_character_out_fit(i, outfit_string, rank)
 	unit:set_position(pos)
 	unit:set_rotation(rot)
 	self:set_lobby_character_visible(i, true)
-end
-
-
-
-
-function MenuSceneManager:_chk_character_visibility(char_unit)
-	logger("[MenuSceneManager :_chk_character_visibility]")
-	logger("[MenuSceneManager :_chk_character_visibility] char_unit: " .. tostring(char_unit))
-	local char_key = char_unit:key()
-	logger("[MenuSceneManager :_chk_character_visibility] char_key: ".. tostring(char_key))
-	if not self._character_visibilities[char_key] then
-		logger("[MenuSceneManager :_chk_character_visibility] _set_character_and_outfit_visibility")
-		self:_set_character_and_outfit_visibility(char_unit, false)
-		logger("[MenuSceneManager :_chk_character_visibility] _set_character_and_outfit_visibility finished")
-		return
-	end
-	logger("[MenuSceneManager :_chk_character_visibility] char_weapons: ".. tostring(self._weapon_units[char_key]))
-	local char_weapons = self._weapon_units[char_key]
-	if char_weapons then
-		for w_type, w_data in pairs(char_weapons) do
-			if not w_data.assembly_complete then
-				self:_set_character_and_outfit_visibility(char_unit, false)
-				return
-			end
-		end
-	end
-	logger("[MenuSceneManager :_chk_character_visibility] char_mask: ".. tostring(self._mask_units[char_key]))
-	local char_mask = self._mask_units[char_key]
-	if char_mask and not char_mask.mask_unit then
-		self:_set_character_and_outfit_visibility(char_unit, false)
-		return
-	end
-	logger("[MenuSceneManager :_chk_character_visibility] self._character_unit: " .. tostring(self._character_unit))
-	if char_unit == self._character_unit then
-		logger("[MenuSceneManager :_chk_character_visibility] check 1")
-		if self._character_unit_need_pose then
-			logger("[MenuSceneManager :_chk_character_visibility] check 1.1")
-			self:_set_character_and_outfit_visibility(char_unit, false)
-			return
-		end
-		if self._current_scene_template ~= "" and not self._scene_templates[self._current_scene_template].character_visible then
-			logger("[MenuSceneManager :_chk_character_visibility] check 1.2")
-			self:_set_character_and_outfit_visibility(char_unit, false)
-			return
-		end
-		logger("[MenuSceneManager :_chk_character_visibility] check 2")
-	elseif self._current_scene_template ~= "" and not self._scene_templates[self._current_scene_template].lobby_characters_visible then
-		logger("[MenuSceneManager :_chk_character_visibility] check 3")
-		self:_set_character_and_outfit_visibility(char_unit, false)
-		return
-	end
-	logger("[MenuSceneManager :_chk_character_visibility] check 4")
-	self:_set_character_and_outfit_visibility(char_unit, true)
-end
-
-function MenuSceneManager:_character_unit_pose_updated()
-	logger("[MenuSceneManager :_character_unit_pose_updated]")
-	self._character_unit_need_pose = false
-	self:_chk_character_visibility(self._character_unit)
-end
-
-function MenuSceneManager:set_lobby_character_visible(i, visible, no_state)
-	logger("[MenuSceneManager :set_lobby_character_visible]")
-	local unit = self._lobby_characters[i]
-	self._character_visibilities[unit:key()] = visible
-	if not visible then
-		self._deployable_equipped[i] = nil
-	end
-	self:_chk_character_visibility(unit)
-	if self._current_profile_slot == i then
-		managers.menu_component:close_lobby_profile_gui()
-		self._current_profile_slot = 0
-	end
-end
-
-function MenuSceneManager:set_character_mask(mask_name_str, unit, peer_id, mask_id, ready_clbk)
-	local ids_unit = Idstring("unit")
-	logger("[MenuSceneManager :set_character_mask]")
-	unit = unit or self._character_unit
-	local mask_name = Idstring(mask_name_str)
-	local old_mask_data = self._mask_units[unit:key()]
-	if old_mask_data and old_mask_data.mask_name == mask_name then
-		if old_mask_data.ready then
-			ready_clbk(old_mask_data.mask_unit)
-		else
-			old_mask_data.ready_clbk = ready_clbk
-		end
-		return
-	end
-	self:_delete_character_mask(unit)
-	local mask_name_key = mask_name:key()
-	local mask_data = {
-		unit = unit,
-		mask_unit = false,
-		mask_name = mask_name,
-		peer_id = peer_id,
-		mask_id = mask_id,
-		ready = false,
-		ready_clbk = ready_clbk
-	}
-	self._mask_units[unit:key()] = mask_data
-	managers.dyn_resource:load(ids_unit, mask_name, DynamicResourceManager.DYN_RESOURCES_PACKAGE, callback(self, self, "clbk_mask_unit_loaded", mask_data))
-	self:_chk_character_visibility(unit)
-end
-
-function MenuSceneManager:clbk_mask_unit_loaded(mask_data_param, status, asset_type, asset_name)
-	logger("[MenuSceneManager :clbk_mask_unit_loaded]")
-	if not alive(mask_data_param.unit) then
-		return
-	end
-	local mask_data = self._mask_units[mask_data_param.unit:key()]
-	if mask_data ~= mask_data_param then
-		return
-	end
-	if mask_data.ready or asset_name ~= mask_data.mask_name then
-		return
-	end
-	local mask_align = mask_data.unit:get_object(Idstring("Head"))
-	local mask_unit = self:_spawn_mask(mask_data.mask_name, false, mask_align:position(), mask_align:rotation(), mask_data.mask_id)
-	mask_data.mask_unit = mask_unit
-	mask_data.ready = true
-	mask_data.unit:link(mask_align:name(), mask_unit, mask_unit:orientation_object():name())
-	self:_chk_character_visibility(mask_data.unit)
-	if mask_data.ready_clbk then
-		mask_data.ready_clbk(mask_unit)
-		mask_data.ready_clbk = nil
-	end
-end
-
-function MenuSceneManager:set_character_equipped_weapon(unit, factory_id, blueprint, type, cosmetics)
-	local ids_unit = Idstring("unit")
-	logger("[MenuSceneManager :set_character_equipped_weapon]")
-	unit = unit or self._character_unit
-	self:_delete_character_weapon(unit, type)
-	if factory_id then
-		local factory_weapon = tweak_data.weapon.factory[factory_id]
-		local ids_unit_name = Idstring(factory_weapon.unit)
-		self._weapon_units[unit:key()] = self._weapon_units[unit:key()] or {}
-		self._weapon_units[unit:key()][type] = {
-			unit = false,
-			name = ids_unit_name,
-			assembly_complete = false
-		}
-		local clbk = callback(self, self, "clbk_weapon_base_unit_loaded", {
-			owner = unit,
-			factory_id = factory_id,
-			blueprint = blueprint,
-			cosmetics = cosmetics,
-			type = type
-		})
-		managers.dyn_resource:load(ids_unit, ids_unit_name, DynamicResourceManager.DYN_RESOURCES_PACKAGE, clbk)
-	end
-	self:_chk_character_visibility(unit)
-end
-
-function MenuSceneManager:clbk_weapon_base_unit_loaded(params, status, asset_type, asset_name)
-	local null_vector = Vector3()
-	logger("[MenuSceneManager :clbk_weapon_base_unit_loaded]")
-	print("[MenuSceneManager:clbk_weapon_base_unit_loaded]", inspect(params), status, asset_type, asset_name)
-	local owner = params.owner
-	if not alive(owner) then
-		return
-	end
-	local owner_weapon_data = self._weapon_units[owner:key()]
-	if not owner_weapon_data or not owner_weapon_data[params.type] or owner_weapon_data[params.type].unit or owner_weapon_data[params.type].name ~= asset_name then
-		return
-	end
-	owner_weapon_data = owner_weapon_data[params.type]
-	local weapon_unit = World:spawn_unit(asset_name, null_vector, self.null_rotation)
-	owner_weapon_data.unit = weapon_unit
-	weapon_unit:base():set_npc(true)
-	weapon_unit:base():set_factory_data(params.factory_id)
-	weapon_unit:base():set_cosmetics_data(params.cosmetics)
-	if params.blueprint then
-		weapon_unit:base():assemble_from_blueprint(params.factory_id, params.blueprint, nil, callback(self, self, "clbk_weapon_assembly_complete", params))
-	else
-		weapon_unit:base():assemble(params.factory_id)
-	end
-	local align_name = params.type == "primary" and Idstring("a_weapon_right_front") or Idstring("a_weapon_left_front")
-	owner:link(align_name, weapon_unit, weapon_unit:orientation_object():name())
-	self:_select_character_pose()
-	self:_chk_character_visibility(owner)
-end
-
-function MenuSceneManager:clbk_weapon_assembly_complete(params)
-	logger("[MenuSceneManager :clbk_weapon_base_unit_loaded]")
-	local owner = params.owner
-	if not alive(owner) then
-		return
-	end
-	local owner_weapon_data = self._weapon_units[owner:key()]
-	if not owner_weapon_data or not owner_weapon_data[params.type] or owner_weapon_data[params.type].assembly_complete then
-		return
-	end
-	owner_weapon_data[params.type].assembly_complete = true
-	self:_chk_character_visibility(owner)
-end
-
-function MenuSceneManager:set_scene_template(template, data, custom_name, skip_transition)
-	logger("[MenuSceneManager :set_scene_template]")
-	if not skip_transition and (self._current_scene_template == template or self._current_scene_template == custom_name) then
-		return
-	end
-	local template_data
-	if not skip_transition then
-		managers.menu_component:play_transition()
-		self._fov_mod = 0
-		self._camera_object:set_fov(self._current_fov + (self._fov_mod or 0))
-		template_data = data or self._scene_templates[template]
-		self._current_scene_template = custom_name or template
-		self._character_values = self._character_values or {}
-		if template_data.character_pos then
-			self._character_values.pos_current = self._character_values.pos_current or Vector3()
-			mvector3.set(self._character_values.pos_current, template_data.character_pos)
-		elseif self._character_values.pos_target then
-			self._character_values.pos_current = self._character_values.pos_current or Vector3()
-			mvector3.set(self._character_values.pos_current, self._character_values.pos_target)
-		end
-		local set_character_position = false
-		if template_data.character_pos then
-			self._character_values.pos_target = self._character_values.pos_target or Vector3()
-			mvector3.set(self._character_values.pos_target, template_data.character_pos)
-			set_character_position = true
-		elseif self._character_values.pos_current then
-			self._character_values.pos_target = self._character_values.pos_target or Vector3()
-			mvector3.set(self._character_values.pos_target, self._character_values.pos_current)
-			set_character_position = true
-		end
-		if set_character_position and self._character_values.pos_target then
-			self._character_unit:set_position(self._character_values.pos_target)
-		end
-		self:_chk_character_visibility(self._character_unit)
-		logger("[MenuSceneManager :set_scene_template] 2")
-		self:_chk_complete_overkill_pack_safe_visibility()
-		if self._lobby_characters then
-			for _, unit in pairs(self._lobby_characters) do
-				self:_chk_character_visibility(unit)
-			end
-		end
-		self:_use_environment(template_data.environment or "standard")
-		self:post_ambience_event(template_data.ambience_event or "menu_main_ambience")
-		self._camera_values.camera_pos_current = self._camera_values.camera_pos_target
-		self._camera_values.target_pos_current = self._camera_values.target_pos_target
-		self._camera_values.fov_current = self._camera_values.fov_target
-		if self._transition_time then
-			self:dispatch_transition_done()
-		end
-		self._transition_time = 1
-		self._camera_values.camera_pos_target = template_data.camera_pos or self._camera_values.camera_pos_current
-		self._camera_values.target_pos_target = template_data.target_pos or self._camera_values.target_pos_current
-		self._camera_values.fov_target = template_data.fov or self._standard_fov
-		self:_release_item_grab()
-		self:_release_character_grab()
-		self._use_item_grab = template_data.use_item_grab
-		self._use_character_grab = template_data.use_character_grab
-		self._use_character_grab2 = template_data.use_character_grab2
-		self._use_character_pan = template_data.use_character_pan
-		self._disable_rotate = template_data.disable_rotate or false
-		self._disable_item_updates = template_data.disable_item_updates or false
-		self._can_change_fov = template_data.can_change_fov or false
-		self._can_move_item = template_data.can_move_item or false
-		self._change_fov_sensitivity = template_data.change_fov_sensitivity or 1
-		self._characters_deployable_visible = template_data.characters_deployable_visible or false
-		self:set_character_deployable(Global.player_manager.kit.equipment_slots[1], false, 0)
-		if template_data.remove_infamy_card and self._card_units and self._card_units[self._character_unit:key()] then
-			local secondary = managers.blackmarket:equipped_secondary()
-			if secondary then
-				self:set_character_equipped_weapon(nil, secondary.factory_id, secondary.blueprint, "secondary", secondary.cosmetics)
-			end
-		end
-		self:_select_character_pose()
-		if alive(self._menu_logo) then
-			self._menu_logo:set_visible(not template_data.hide_menu_logo)
-		end
-	end
-	if template_data and template_data.upgrade_object then
-		self._temp_upgrade_object = template_data.upgrade_object
-		self:_set_item_offset(template_data.upgrade_object:oobb())
-	elseif self._use_item_grab and self._item_unit then
-		if self._item_unit.unit then
-			managers.menu_scene:_set_weapon_upgrades(self._current_weapon_id)
-			self:_set_item_offset(self._current_item_oobb_object:oobb())
-		else
-			self._item_unit.scene_template = {
-				template = template,
-				data = data,
-				custom_name = custom_name
-			}
-		end
-	end
-	if not skip_transition then
-		local fade_lights = {}
-		for _, light in ipairs(self._fade_down_lights) do
-			if light:multiplier() ~= 0 and template_data.lights and not table.contains(template_data.lights, light) then
-				table.insert(fade_lights, light)
-			end
-		end
-		for _, light in ipairs(self._active_lights) do
-			table.insert(fade_lights, light)
-		end
-		self._fade_down_lights = fade_lights
-		self._active_lights = {}
-		if template_data.lights then
-			for _, light in ipairs(template_data.lights) do
-				light:set_enable(true)
-				table.insert(self._active_lights, light)
-			end
-		end
-	end
-	managers.network.account:inventory_load()
-end
-
-function MenuSceneManager:_chk_complete_overkill_pack_safe_visibility()
-	if not alive(self._complete_overkill_pack_safe) then
-		return
-	end
-	self._complete_overkill_pack_safe:set_visible(self._scene_templates[self._current_scene_template].complete_overkill_pack_safe_visible)
-end
-
-
---delete me is ok
-function MenuSceneManager:_select_character_pose(unit)
-	unit = unit or self._character_unit
-	if self._scene_templates and self._scene_templates[self._current_scene_template] and self._scene_templates[self._current_scene_template].poses then
-		local poses = self._scene_templates[self._current_scene_template].poses
-		--local poses = self._scene_templates["inventory"].poses
-		local pose
-		local primary = managers.blackmarket:equipped_primary()
-		if primary then
-			local weapon_id_poses = poses[primary.weapon_id]
-			if weapon_id_poses then
-				pose = weapon_id_poses[math.random(#weapon_id_poses)]
-			else
-				local category = tweak_data.weapon[primary.weapon_id].category
-				if poses[category] then
-					pose = poses[category][math.random(#poses[category])]
-				end
-			end
-			if pose then
-				self:_set_character_unit_pose(pose, unit)
-				return
-			end
-		end
-		local secondary = managers.blackmarket:equipped_secondary()
-		if secondary then
-			local weapon_id_poses = poses[secondary.weapon_id]
-			if weapon_id_poses then
-				pose = weapon_id_poses[math.random(#weapon_id_poses)]
-			else
-				local category = tweak_data.weapon[secondary.weapon_id].category
-				if poses[category] then
-					pose = poses[category][math.random(#poses[category])]
-				end
-			end
-			if pose then
-				self:_set_character_unit_pose(pose, unit)
-				return
-			end
-		end
-	end
-	if managers.experience:current_rank() > 0 and self._card_units and self._card_units[unit:key()] then
-		local pose = self._global_poses.infamous[math.random(#self._global_poses.infamous)]
-		self:_set_character_unit_pose(pose, unit)
-		return
-	end
-	local pose
-	if math.rand(1) < 0.25 then
-		pose = self._global_poses.generic[math.random(#self._global_poses.generic)]
-		self:_set_character_unit_pose(pose, unit)
-		return
-	end
-	if math.rand(1) < 0.12 then
-		local secondary = managers.blackmarket:equipped_secondary()
-		if secondary then
-			local category = tweak_data.weapon[secondary.weapon_id].category
-			if category == "pistol" then
-				pose = self._global_poses.pistol[math.random(#self._global_poses.pistol)]
-			end
-			if pose then
-				self:_set_character_unit_pose(pose, unit)
-				return
-			end
-		end
-	end
-	local primary = managers.blackmarket:equipped_primary()
-	if primary then
-		local weapon_id_poses = self._global_poses[primary.weapon_id]
-		if weapon_id_poses then
-			pose = weapon_id_poses[math.random(#weapon_id_poses)]
-		else
-			local category = tweak_data.weapon[primary.weapon_id].category
-			if category == "shotgun" then
-				pose = self._global_poses.shotgun[math.random(#self._global_poses.shotgun)]
-			elseif category == "assault_rifle" then
-				pose = self._global_poses.assault_rifle[math.random(#self._global_poses.assault_rifle)]
-			elseif category == "saw" then
-				pose = self._global_poses.saw[math.random(#self._global_poses.saw)]
-			elseif category == "lmg" then
-				pose = self._global_poses.lmg[math.random(#self._global_poses.lmg)]
-			elseif category == "snp" then
-				pose = self._global_poses.snp[math.random(#self._global_poses.snp)]
-			elseif category == "bow" then
-				pose = self._global_poses.bow[math.random(#self._global_poses.bow)]
-			end
-		end
-		if pose then
-			self:_set_character_unit_pose(pose, unit)
-			return
-		end
-	end
-	pose = self._global_poses.generic[math.random(#self._global_poses.generic)]
-	self:_set_character_unit_pose(pose, unit)
 end
