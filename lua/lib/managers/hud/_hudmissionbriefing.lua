@@ -50,7 +50,7 @@ function HUDMissionBriefing:init(hud, workspace)
 
 
 
-			-- Original Code --
+	-- Original Code --
 			local color_id = i
 			local color = tweak_data.chat_colors[color_id]
 			local slot_panel = self._ready_slot_panel:panel({
@@ -338,24 +338,37 @@ function HUDMissionBriefing:init(hud, workspace)
 			color = day_color,
 			blend_mode = "add"
 		})
+	-- End Original Code --
+
+
+
+
+		-- The decompiled source was messed up here, the conditional ended straight
+		-- away, all this code after seems related and has been moved into the conditional
+		-- to prevent crashing.
 		if i ~= 1 or not 0 then
-		end
-		day_text:set_left((self._job_schedule_panel:child("day_" .. tostring(i - 1)):right()))
-		local ghost = self._job_schedule_panel:bitmap({
-			name = "ghost_" .. tostring(i),
-			texture = "guis/textures/pd2/cn_minighost",
-			w = 16,
-			h = 16,
-			blend_mode = "add",
-			color = tweak_data.screen_colors.ghost_color
-		})
-		ghost:set_center(day_text:center_x(), day_text:center_y() + day_text:h() * 0.25)
-		local ghost_visible = i <= num_stages and managers.job:is_job_stage_ghostable(managers.job:current_real_job_id(), i)
-		ghost:set_visible(ghost_visible)
-		if ghost_visible then
-			self:_apply_ghost_color(ghost, i, not Network:is_server())
+			day_text:set_left((self._job_schedule_panel:child("day_" .. tostring(i - 1)):right()))
+			local ghost = self._job_schedule_panel:bitmap({
+				name = "ghost_" .. tostring(i),
+				texture = "guis/textures/pd2/cn_minighost",
+				w = 16,
+				h = 16,
+				blend_mode = "add",
+				color = tweak_data.screen_colors.ghost_color
+			})
+			ghost:set_center(day_text:center_x(), day_text:center_y() + day_text:h() * 0.25)
+			local ghost_visible = i <= num_stages and managers.job:is_job_stage_ghostable(managers.job:current_real_job_id(), i)
+			ghost:set_visible(ghost_visible)
+			if ghost_visible then
+				self:_apply_ghost_color(ghost, i, not Network:is_server())
+			end
 		end
 	end
+
+
+
+
+	-- Original Code --
 	for i = 1, managers.job:current_stage() or 0 do
 		local stage_marker = self._job_schedule_panel:bitmap({
 			name = "stage_done_" .. tostring(i),

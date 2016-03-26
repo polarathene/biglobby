@@ -24,14 +24,6 @@
       "script_path": "lua/lib/network/base/_hostnetworksession.lua"
     },
     {
-      "hook_id": "lib/network/base/clientnetworksession",
-      "script_path": "lua/lib/network/base/_clientnetworksession.lua"
-    },
-    {
-      "hook_id": "lib/network/base/session_states/hoststatebase",
-      "script_path": "lua/lib/network/base/session_states/_hoststatebase.lua"
-    },
-    {
       "hook_id": "lib/network/base/session_states/hoststateinlobby",
       "script_path": "lua/lib/network/base/session_states/_hoststateinlobby.lua"
     },
@@ -50,10 +42,6 @@
     {
       "hook_id": "lib/managers/menu/menulobbyrenderer",
       "script_path": "lua/lib/managers/menu/_menulobbyrenderer.lua"
-    },
-    {
-      "hook_id": "lib/managers/menu/menukitrenderer",
-      "script_path": "lua/lib/managers/menu/_menukitrenderer.lua"
     },
     {
       "hook_id": "lib/managers/menu/contractboxgui",
@@ -96,24 +84,8 @@
       "script_path": "lua/lib/managers/group_ai_states/_groupaistatebase.lua"
     },
     {
-      "hook_id": "lib/units/beings/player/huskplayerinventory",
-      "script_path": "lua/_huskplayerinventory.lua"
-    },
-    {
-      "hook_id": "lib/network/handlers/unitnetworkhandler",
-      "script_path": "lua/_unitnetworkhandler.lua"
-    },
-    {
-      "hook_id": "lib/network/base/networkpeer",
-      "script_path": "lua/_networkpeer.lua"
-    },
-    {
       "hook_id": "lib/managers/hudmanager",
       "script_path": "lua/_hudmanager.lua"
-    },
-    {
-      "hook_id": "lib/network/base/handlers/connectionnetworkhandler",
-      "script_path": "lua/lib/network/base/handlers/_connectionnetworkhandler.lua"
     },
     {
       "hook_id": "lib/managers/hud/hudteammate",

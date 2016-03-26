@@ -2,6 +2,9 @@
 -- assuming this was just for debug/experiment. It does look like I tampered
 -- with the names variable, adding 2 new strings to the table.
 
+-- Names table had to be updated, I guess it's important, you'll need to 
+-- make it dynamically generated
+
 function HUDTeammate:init(i, teammates_panel, is_player, width)
 	self._id = i
 	local small_gap = 8
@@ -15,7 +18,9 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 		"FutureCatCar",
 		"WWWWWWWWWWWWQWWW",
 		"AI Teammate",
-		"xFutureCatCar"
+		"xFutureCatCar",
+		"xFutureCatCar1",
+		"xFutureCatCar2"
 	}
 	local teammate_panel = teammates_panel:panel({
 		visible = false,
