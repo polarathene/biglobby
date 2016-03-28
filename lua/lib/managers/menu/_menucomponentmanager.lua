@@ -2,9 +2,7 @@
 -- should have been overriden by the player count. May want to remove on release
 -- and restore from old commit if needed?
 
--- Might be referring to the UI after completing a level (results + XP + stats)
-
-
+-- Seems to affect the contract UI in lobby screen when Host chooses/changes the contract
 function MenuComponentManager:create_contract_gui()
 	local num_player_slots = BigLobbyGlobals:num_player_slots()
 

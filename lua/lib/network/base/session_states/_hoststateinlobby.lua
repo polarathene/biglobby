@@ -3,7 +3,6 @@
 function HostStateInLobby:on_join_request_received(data, peer_name, client_preferred_character, dlcs, xuid, peer_level, gameversion, join_attempt_identifier, auth_ticket, sender)
 	-- Number of players allowed to join the game(excluding the host)
 	local num_player_slots = BigLobbyGlobals:num_player_slots() - 1
-	logger("[HostStateInLobby: on_join_request_received] PEER: " .. tostring(peer_name))
 
 
 
@@ -54,8 +53,6 @@ function HostStateInLobby:on_join_request_received(data, peer_name, client_prefe
 
 	-- num_player_slots variable instead of hardcoded 3, removes enforced limit.
 	if table.size(data.peers) >= num_player_slots then
-		logger("[HostStateInLobby: on_join_request_received] Server is full, num_slots: " .. tostring(num_player_slots))
-
 		print("server is full")
 		self:_send_request_denied(sender, 5, my_user_id)
 		return
@@ -122,9 +119,4 @@ function HostStateInLobby:on_join_request_received(data, peer_name, client_prefe
 	self:on_handshake_confirmation(data, new_peer, 1)
 	managers.network:session():local_peer():sync_lobby_data(new_peer)
 	-- End Original Code --
-
-
-
-
-	logger("[HostStateInLobby: on_join_request_received] Done, peer_name: " .. tostring(peer_name))
 end

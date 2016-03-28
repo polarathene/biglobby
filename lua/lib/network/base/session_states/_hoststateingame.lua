@@ -1,21 +1,7 @@
---Use global version later? Possible issue with reaching global/class functions for some classes?
-local log_data = true
-function logger(content, use_chat)
-	if log_data then
-		if not content then return end
-
-		if use_chat then
-			managers.chat:_receive_message(ChatManager.GAME, "BigLobby", content, tweak_data.system_chat_color)
-		end
-
-		log(content)
-	end
-end
-
-
+-- Unfortunately no clean way to modify this bit of code, so I have to include the
+-- original code with modified, could cause problems with other mods that would want to touch this function
 function HostStateInGame:on_join_request_received(data, peer_name, client_preferred_character, dlcs, xuid, peer_level, gameversion, join_attempt_identifier, auth_ticket, sender)
 	local num_player_slots = BigLobbyGlobals:num_player_slots() - 1
-	log("[HostStateInGame: on_join_request_received] peer_name: " .. tostring(peer_name) .. ", gversion: " .. tostring(gameversion))
 
 
 
@@ -70,8 +56,6 @@ function HostStateInGame:on_join_request_received(data, peer_name, client_prefer
 
 	-- num_player_slots variable instead of hardcoded 3, removes enforced limit.
 	if num_player_slots <= table.size(data.peers) then
-		logger("[HostStateInGame: on_join_request_received] server is full, num_slots: " .. tostring(num_player_slots))
-
 		print("server is full")
 		self:_send_request_denied(sender, 5, my_user_id)
 		return
@@ -134,9 +118,4 @@ function HostStateInGame:on_join_request_received(data, peer_name, client_prefer
 	data.session:send_ok_to_load_level()
 	self:on_handshake_confirmation(data, new_peer, 1)
 	-- End Original Code --
-
-
-
-
-	logger("[HostStateInGame: on_join_request_received] Done, peer_name: " .. tostring(peer_name))
 end

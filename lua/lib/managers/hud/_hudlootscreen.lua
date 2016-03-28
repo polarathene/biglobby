@@ -1,3 +1,4 @@
+-- TODO: Can possibly wrap the function, undo the call we're fixing and reapply it?
 function HUDLootScreen:init(hud, workspace, saved_lootdrop, saved_selected, saved_chosen, saved_setup)
 	local num_player_slots = BigLobbyGlobals:num_player_slots()
 
@@ -128,6 +129,7 @@ function HUDLootScreen:set_num_visible(peers_num)
 	end
 	self._peers_panel:set_h(self._num_visible * 110)
 	self._peers_panel:set_center_y(self._hud_panel:h() * 0.5)
+
 	-- TODO: Is this console code useful for reworking the UI layout?
 	if managers.menu:is_console() and self._num_visible >= 4 then
 		self._peers_panel:move(0, 30)

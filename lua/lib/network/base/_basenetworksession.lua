@@ -1,21 +1,5 @@
---Use global version later? Possible issue with reaching global/class functions for some classes?
-local log_data = true
-function logger(content, use_chat)
-	if log_data then
-		if not content then return end
-
-		if use_chat then
-			managers.chat:_receive_message(ChatManager.GAME, "BigLobby", content, tweak_data.system_chat_color)
-		end
-
-		log(content)
-	end
-end
-
-
 -- Modified to support additional peers.
 function BaseNetworkSession:on_network_stopped()
-	logger("[BaseNetworkSession: on_network_stopped]")
 	local num_player_slots = BigLobbyGlobals:num_player_slots()
 
 	-- Only code changed was replacing hardcoded 4 with variable num_player_slots
@@ -34,7 +18,6 @@ end
 
 -- Modified to support additional peers.
 function BaseNetworkSession:_get_peer_outfit_versions_str()
-	logger("[BaseNetworkSession: _get_peer_outfit_versions_str]")
 	local num_player_slots = BigLobbyGlobals:num_player_slots()
 
 	-- Only code changed was replacing hardcoded 4 with variable num_player_slots
@@ -52,16 +35,3 @@ function BaseNetworkSession:_get_peer_outfit_versions_str()
 	end
 	return outfit_versions_str
 end
-
-
--- Network:clients():num_peers() may be of interest
--- function BaseNetworkSession:_has_client(peer)
--- 	logger("[BaseNetworkSession: _has_client] num_peers(): " .. tostring(Network:clients():num_peers() - 1))
---
--- 	for i = 0, Network:clients():num_peers() - 1 do
--- 		if Network:clients():ip_at_index(i) == peer:ip() then
--- 			return true
--- 		end
--- 	end
--- 	return false
--- end

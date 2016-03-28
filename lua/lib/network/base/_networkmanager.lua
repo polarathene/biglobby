@@ -7,9 +7,9 @@ function NetworkManager:on_peer_added(peer, peer_id)
 		managers.menu:get_menu("kit_menu").renderer:set_slot_joining(peer, peer_id)
 	end
 	if Network:is_server() then
-		logger("[NetworkManager :on_peer_added] SETTING NUM PLAYERS TO FIXED VALUE OF 3!")
+		--log("BigLobby: [NetworkManager :on_peer_added] SETTING NUM PLAYERS TO FIXED VALUE OF 3!")
 		managers.network.matchmake:set_num_players(3)
-		--managers.network.matchmake:set_num_players(managers.network:session():amount_of_players())
+		--managers.network.matchmake:set_num_players(managers.network:session():amount_of_players()) --original line
 	end
 	if SystemInfo:platform() == Idstring("X360") or SystemInfo:platform() == Idstring("XB1") then
 		managers.network.matchmake:on_peer_added(peer)

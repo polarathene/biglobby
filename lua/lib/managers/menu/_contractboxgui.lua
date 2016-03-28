@@ -418,11 +418,3 @@ function ContractBoxGui:update(t, dt)
 		self:update_character(i)
 	end
 end
-
-
--- TODO: The method `ContractBoxGui:update_character(peer_id)` seems to crash due to peer_pos being nil
--- This was due to the unit being nil in the called function, pdmod might not be enough? or working?
--- local peer_pos = managers.menu_scene:character_screen_position(peer_id)
--- log("[ContractBoxGui:update_character] peer_id: " .. tostring(peer_id))
--- x = peer_pos.x
--- y = peer_pos.y

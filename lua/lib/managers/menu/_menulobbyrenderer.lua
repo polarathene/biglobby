@@ -24,11 +24,9 @@ function MenuLobbyRenderer:open(...)
 
 
 
-	-- Only code changed was replacing hardcoded 4 with variable num_player_slots
-	logger("[MenuLobbyRenderer :open] building _player_slots")
-	for i = 1, is_single_player and 1 or num_player_slots do
-		logger("[MenuLobbyRenderer :open] adding player_slot: " .. tostring(i))
 
+	-- Only code changed was replacing hardcoded 4 with variable num_player_slots
+	for i = 1, is_single_player and 1 or num_player_slots do
 		local t = {}
 		t.player = {}
 		t.free = true
@@ -39,7 +37,6 @@ function MenuLobbyRenderer:open(...)
 		end
 		table.insert(self._player_slots, t)
 	end
-	logger("[MenuLobbyRenderer :open] done _player_slots")
 
 
 
