@@ -166,7 +166,7 @@ end
 -- moneytweakdata.lua - MoneyTweakData:init, fixes infinite money loss at the results/exp screen.
 -- self.alive_humans_multiplier = self:_create_value_table(1, self.alive_players_max, BigLobbyGlobals:num_player_slots(), false, 1)
 -- Hooking the function called instead, identifying the calling signature and correcting the parameter.
-local orig__MoneyTweakData = {}
+--[[local orig__MoneyTweakData = {}
 orig__MoneyTweakData._create_value_table = MoneyTweakData._create_value_table
 function MoneyTweakData._create_value_table(min, max, table_size, round, curve)
 	if (min == 1 and max == self.alive_players_max and table_size == 4 and round == false and curve == 1) then
@@ -174,4 +174,4 @@ function MoneyTweakData._create_value_table(min, max, table_size, round, curve)
 	end
 
 	orig__MoneyTweakData._create_value_table(self, min, max, table_size, round, curve)
-end
+end]]--
