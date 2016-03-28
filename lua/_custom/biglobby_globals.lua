@@ -2,12 +2,12 @@ BigLobbyGlobals = BigLobbyGlobals or class()
 
 -- I think I only need this function and can delete the rest?
 function BigLobbyGlobals:num_player_slots()
-    return 8
+    return 15
 end
 
 
 function BigLobbyGlobals:version()
-    return 0.3
+    return 0.4
 end
 
 
@@ -24,3 +24,7 @@ function logger(content, use_chat)
 		log(content)
 	end
 end
+
+-- Fix fps performance problems due to running this script every frame
+-- 'cos I'm a nub.
+biglobby_globals=true
