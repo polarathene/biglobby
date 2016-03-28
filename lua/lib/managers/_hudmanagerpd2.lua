@@ -1,14 +1,10 @@
---Crashes if use global
 -- This references 4 as in the 4th panel on the UI(one on the furtherest right) by default.
 -- Otherwise known as the local players UI panel.
 -- By updating this value, we keep that consistency that the player is used to.
-HUDManager.PLAYER_PANEL = 8
+HUDManager.PLAYER_PANEL = BigLobbyGlobals:num_player_slots()
 
 --Nothing seems to call this, I don't think it's even used.. Panels are created somewhere else
 function HUDManager:_create_teammates_panel(hud)
-	log("[HUDManager :_create_teammates_panel]")
-	local num_player_slots = 8--BigLobbyGlobals:num_player_slots()
-
 	hud = hud or managers.hud:script(PlayerBase.PLAYER_INFO_HUD_PD2)
 	self._hud.teammate_panels_data = self._hud.teammate_panels_data or {}
 	self._teammate_panels = {}
@@ -25,14 +21,13 @@ function HUDManager:_create_teammates_panel(hud)
 	})
 	local teammate_w = 204
 	local player_gap = 240
-	local small_gap = (teammates_panel:w() - player_gap - teammate_w * num_player_slots) / num_player_slots-1
-	for i = 1, num_player_slots do
-		log('[HUDManager :_create_teammates_panel] i: ' .. tostring(i))
+	local small_gap = (teammates_panel:w() - player_gap - teammate_w * HUDManager.PLAYER_PANEL) / (HUDManager.PLAYER_PANEL - 1)
+	for i = 1, HUDManager.PLAYER_PANEL do
 		local is_player = i == HUDManager.PLAYER_PANEL
-		--do break end
-		-- unhandled boolean indicator
+		--do break end -- unhandled boolean indicator -- Decompile error here, hopefully not causing problems.
+
 		self._hud.teammate_panels_data[i] = {
-			taken = false, --this was true, but causes problem with add_teammate_panel() and data.taken, so maybe bad decompile?
+			taken = false, --this was true, but causes problem with add_teammate_panel() and data.taken, so maybe bad decompile bug from above?
 			special_equipments = {}
 		}
 		local pw = teammate_w + (is_player and 0 or 64)
@@ -46,62 +41,11 @@ function HUDManager:_create_teammates_panel(hud)
 	end
 end
 
--- TODO: Go over this, not sure why I kept it, seems to be same as above roughly.
---[[
-function HUDManager:_create_teammates_panel(hud)
-	log("[HUDManager :_create_teammates_panel]")
-	local num_player_slots = 6--BigLobbyGlobals:num_player_slots()
-
-
-	hud = hud or managers.hud:script(PlayerBase.PLAYER_INFO_HUD_PD2)
-	self._hud.teammate_panels_data = self._hud.teammate_panels_data or {}
-	self._teammate_panels = {}
-	if hud.panel:child("teammates_panel") then
-		hud.panel:remove(hud.panel:child("teammates_panel"))
-	end
-	local h = self:teampanels_height()
-	local teammates_panel = hud.panel:panel({
-		name = "teammates_panel",
-		h = h,
-		y = hud.panel:h() - h,
-		halign = "grow",
-		valign = "bottom"
-	})
-
-	--for i = 1, 4 do
-	for i = 1, num_player_slots do
-		log('[HUDManager :_create_teammates_panel] i: ' .. tostring(i))
-
-
-		local is_player = i == HUDManager.PLAYER_PANEL
-
-		local teammate_w = is_player and 204 or 512
-		local player_gap = 240
-		--local small_gap = (teammates_panel:w() - player_gap - teammate_w * 4) / 3
-		local small_gap = (teammates_panel:w() - player_gap - teammate_w * num_player_slots) / num_player_slots-1
-		self._hud.teammate_panels_data[i] = {
-			taken = false,
-			special_equipments = {}
-		}
-		local pw = teammate_w + (is_player and 0 or 64)
-		local teammate = HUDTeammate:new(i, teammates_panel, is_player, pw)
-		if is_player then
-			local x = math.floor((pw + small_gap) * (i - 1) + (i == HUDManager.PLAYER_PANEL and player_gap or 0))
-			teammate._panel:set_x(math.floor(x))
-		else
-			local y = math.floor( 24 * (i - 1) + 14 )
-			teammate._panel:set_y(y)
-		end
-		table.insert(self._teammate_panels, teammate)
-		if is_player then
-			teammate:add_panel()
-		end
-	end
-end
-]]
-
 
 -- TODO: nil check added, must have been causing a problem in past, not sure if still valid problem
+-- Possibly safe to delete
+local orig__HUDManager = {}
+orig__HUDManager.add_weapon = HUDManager.add_weapon
 function HUDManager:add_weapon(data)
 	if not self._teammate_panels[HUDManager.PLAYER_PANEL] and not self._teammate_panels[HUDManager.PLAYER_PANEL]:panel() then
 		log("[HUDManager :add_weapon] teammate_panels[HUDManager.PLAYER_PANEL] or teammate_panels[HUDManager.PLAYER_PANEL]:panel() is nil, HUDManager.PLAYER_PANEL = " .. tostring(HUDManager.PLAYER_PANEL))
@@ -109,32 +53,20 @@ function HUDManager:add_weapon(data)
 	end
 
 
-	-- Untouched code for the rest of the function
-	self:_set_weapon(data)
-	local teammate_panel = self._teammate_panels[HUDManager.PLAYER_PANEL]:panel()
-	self._hud.weapons[data.inventory_index] = {
-		inventory_index = data.inventory_index,
-		unit = data.unit
-	}
-	if data.is_equip then
-		self:set_weapon_selected_by_inventory_index(data.inventory_index)
-	end
-	if not data.is_equip and (data.inventory_index == 1 or data.inventory_index == 2) then
-		self:_update_second_weapon_ammo_info(HUDManager.PLAYER_PANEL, data.unit)
-	end
+	orig__HUDManager.add_weapon(self, data)
 end
 
 
--- Nothing modified at present, `self:set_teammate_callsign(i, ai and 5 or peer_id)`
--- should probably be catered to.
+-- `self:set_teammate_callsign(i, ai and 5 or peer_id)`
+-- Replaced hardcoded 5 with (HUDManager.PLAYER_PANEL + 1)
+-- TODO: Can probably wrap the function call and make the fix afterwards
 function HUDManager:add_teammate_panel(character_name, player_name, ai, peer_id)
-	log("[HUDManager:add_teammate_panel] character_name: " .. tostring(character_name) .. ", player_name: " .. tostring(player_name) .. ", peer_id: " .. tostring(peer_id))
 	for i, data in ipairs(self._hud.teammate_panels_data) do
 		if not data.taken then
 			self._teammate_panels[i]:add_panel()
 			self._teammate_panels[i]:set_peer_id(peer_id)
 			self._teammate_panels[i]:set_ai(ai)
-			self:set_teammate_callsign(i, ai and 5 or peer_id) -- TODO: this should cater for AI properly(change that 5 to dynamic variable)
+			self:set_teammate_callsign(i, ai and (HUDManager.PLAYER_PANEL + 1) or peer_id) -- TODO: this should cater for AI properly(change that 5 to dynamic variable)
 
 
 
@@ -201,35 +133,3 @@ function HUDManager:add_teammate_panel(character_name, player_name, ai, peer_id)
 	end
 	-- End Original Code --
 end
-
-
--- TODO: Safe to remove?:
--- function HUDManager:set_teammate_health(i, data)
--- 	log("[HUDManager:set_teammate_health] i: " .. tostring(i) .. ", data: " .. tostring(data))
--- 	--if i == 4 then return end
--- 	--if i == nil then return end
--- 	self._teammate_panels[i]:set_health(data)
--- end
---
--- function HUDManager:set_teammate_armor(i, data)
--- 	log("[HUDManager:set_teammate_armor] i: " .. tostring(i) .. ", data: " .. tostring(data))
--- 	--if i == 4 then return end
--- 	--if i == nil then return end
--- 	self._teammate_panels[i]:set_armor(data)
--- end
---
--- function HUDManager:set_stored_health(stored_health_ratio)
--- 	--return
--- 	self._teammate_panels[HUDManager.PLAYER_PANEL]:set_stored_health(stored_health_ratio)
--- end
---
--- function HUDManager:set_stored_health_max(stored_health_ratio)
--- 	--return
--- 	self._teammate_panels[HUDManager.PLAYER_PANEL]:set_stored_health_max(stored_health_ratio)
--- end
---
--- function HUDManager:set_teammate_grenades(i, data)
--- 	--if i == 4 then return end
--- 	--if i == nil then return end
--- 	self._teammate_panels[i]:set_grenades(data)
--- end

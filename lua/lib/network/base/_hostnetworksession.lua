@@ -1,11 +1,11 @@
 -- Modified hardcoded value to allow returning available peer id up to the actual limit.
 -- Assigns a free Peer ID to new joining peer
 function HostNetworkSession:_get_free_client_id()
-	log("[HostNetworkSession :_get_free_client_id]")
 	-- The below loop stops when index(i) reaches this value
-	local num_player_slots = 9 -- Not global friendly? BigLobbyGlobals:num_player_slots() + 1
+	local num_player_slots = (BigLobbyGlobals:num_player_slots() + 1)
+
 	-- The player slot to start from(Host is 1 so defaults to 2)
-	local i = 2--4 --I set this to 4 to do tests without having to fill earlier slots(== less players needed for testing)
+	local i = 2
 	repeat
 		if not self._peers[i] then
 			local is_dirty = false
@@ -15,7 +15,6 @@ function HostNetworkSession:_get_free_client_id()
 				end
 			end
 			if not is_dirty then
-				log("[HostNetworkSession :_get_free_client_id] returning non-dirty i: " .. tostring(i))
 				return i
 			end
 		end
@@ -23,10 +22,10 @@ function HostNetworkSession:_get_free_client_id()
 	until i == num_player_slots
 end
 
+
 -- Modified hardcoded value to prevent disabling the ability to join the server until actual limit is reached.
 function HostNetworkSession:chk_server_joinable_state()
-	logger("[HostNetworkSession: chk_server_joinable_state] table.size(self._peers): " .. tostring(table.size(self._peers)) .. "\n")
-	local num_player_slots = 7 -- Not global friendly? BigLobbyGlobals:num_player_slots() - 1
+	local num_player_slots = (BigLobbyGlobals:num_player_slots() - 1)
 
 
 
@@ -46,7 +45,6 @@ function HostNetworkSession:chk_server_joinable_state()
 
 	-- num_player_slots variable instead of hardcoded 3, prevent disabling join early.
 	if table.size(self._peers) >= num_player_slots then
-		logger("[HostNetworkSession: chk_server_joinable_state] table.size(self._peers) >= 3...set server false" .. "\n")
 		managers.network.matchmake:set_server_joinable(false)
 		return
 	end
