@@ -83,8 +83,16 @@
             "script_path": "lua/lib/tweak_data/_tweakdata.lua"
         },
         {
+            "hook_id": "lib/tweak_data/moneytweakdata",
+            "script_path": "lua/lib/tweak_data/_moneytweakdata.lua"
+        },
+        {
             "hook_id": "lib/managers/hudmanagerpd2",
             "script_path": "lua/lib/managers/_hudmanagerpd2.lua"
+        },
+        {
+            "hook_id": "lib/managers/mission/elementfilter",
+            "script_path": "lua/lib/managers/mission/_elementfilter.lua"
         },
         {
             "hook_id": "lib/managers/menu/menucomponentmanager",
