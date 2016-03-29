@@ -21,7 +21,11 @@
         { "hook_id" : "lib/managers/menu/menuinput", "script_path" : "lua/_custom/biglobby_globals.lua" },
         { "hook_id" : "core/lib/setups/coresetup", "script_path" : "lua/_custom/biglobby_globals.lua" },
         { "hook_id" : "lib/setups/gamesetup", "script_path" : "lua/_custom/biglobby_globals.lua" },
-
+        
+        {
+            "hook_id": "lib/managers/achievmentmanager",
+            "script_path": "lua/lib/managers/_achievementmanager.lua"
+        },
         {
             "hook_id": "lib/managers/criminalsmanager",
             "script_path": "lua/lib/managers/_criminalsmanager.lua"
