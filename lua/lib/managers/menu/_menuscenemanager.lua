@@ -68,6 +68,32 @@ function MenuSceneManager:_setup_lobby_characters()
 	end
 end
 
+function MenuSceneManager:_select_lobby_character_pose(peer_id, unit, weapon_info)
+
+
+    -- Original Code --
+	local state = unit:play_redirect(Idstring("idle_menu"))
+	local weapon_id = managers.weapon_factory:get_weapon_id_by_factory_id(weapon_info.factory_id)
+	local category = tweak_data.weapon[weapon_id].category
+	local lobby_poses = self._lobby_poses[weapon_id]
+	lobby_poses = lobby_poses or self._lobby_poses[category]
+	lobby_poses = lobby_poses or self._lobby_poses.generic
+	if type(lobby_poses[1]) == "string" then
+		local pose = lobby_poses[math.random(#lobby_poses)]
+		unit:anim_state_machine():set_parameter(state, pose, 1)
+	else
+    -- End Original Code --
+    
+        -- Only modification is using math.min to make sure peer_id is greater than the max index of the lobby_poses
+		local pose = lobby_poses[math.min(peer_id, #lobby_poses)][math.random(#lobby_poses[math.min(peer_id, #lobby_poses)])]
+        
+     -- Original Code --   
+		unit:anim_state_machine():set_parameter(state, pose, 1)
+	end
+    -- End Original Code --
+    
+end
+
 
 -- TODO: This shouldn't be relevant to gameplay, should be safe to delete.
 -- Not required for this mod to work, just updates the test function to work with more players
@@ -235,6 +261,8 @@ end
 
 -- I run the original method, but then need to correct a hardcoded 4 which requires running a bunch
 -- of logic again. Should be safe.
+
+
 local orig__MenuSceneManager = {}
 orig__MenuSceneManager.set_lobby_character_out_fit = MenuSceneManager.set_lobby_character_out_fit
 function MenuSceneManager:set_lobby_character_out_fit(i, outfit_string, rank)
