@@ -15,6 +15,11 @@ Many others who helped test, feel free to get in touch and I'll update :)
 
 **Rara** - Very helpful with testing.
 
+#How to install
+1. You will need [Bundle Modder](http://downloads.lastbullet.net/197) and [BLT](http://paydaymods.com/download/) to run this mod.
+2. Install the .pdmod provided using the Bundle Modder, instructions on how to use the Bundle Modder can be found [here](http://steamcommunity.com/sharedfiles/filedetails/?id=231568439).
+3. Install BLT by copying it's contents into your Payday 2 directory.
+4. Then copy the "biglobby" folder into the "mods" folder, found inside your Payday 2 directory.
 
 #Technical Details
 My previous version from December 2015(see commits) was much heavier in code with a hacky JSON approach to re-route network messages from the `Network` class. This mostly worked, with one blocker being the unit network handler class where I couldn't re-route the functions there due to not being able to serialize the unit param into JSON.
