@@ -35,3 +35,34 @@ function BaseNetworkSession:_get_peer_outfit_versions_str()
 	end
 	return outfit_versions_str
 end
+
+-- Modified to provide all peers with a character, regardless of free characters.
+function BaseNetworkSession:check_peer_preferred_character(preferred_character)
+    -- Original Code --
+	local free_characters = clone(CriminalsManager.character_names())
+	for _, peer in pairs(self._peers_all) do
+		local character = peer:character()
+        if table.contains(free_characters, character) then
+            table.delete(free_characters, character)
+        end
+	end
+	local preferreds = string.split(preferred_character, " ")
+	for _, preferred in ipairs(preferreds) do
+		if table.contains(free_characters, preferred) then
+			return preferred
+		end
+	end
+    -- End Original Code --
+    
+    -- Only modification is to select a random character once all availiable characters in the game have been taken.
+    if #free_characters == 0 then
+        local all_characters = clone(CriminalsManager.character_names())
+        local character = all_characters[math.random(#all_characters)]
+        print("No free chracters left. Player will be", character, "instead of", preferred_character)
+        return character
+    else
+        local character = free_characters[math.random(#free_characters)]
+        print("Player will be", character, "instead of", preferred_character)
+        return character
+    end
+end

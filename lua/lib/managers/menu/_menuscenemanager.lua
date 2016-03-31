@@ -84,8 +84,8 @@ function MenuSceneManager:_select_lobby_character_pose(peer_id, unit, weapon_inf
 	else
     -- End Original Code --
     
-        -- Only modification is using math.min to make sure peer_id is greater than the max index of the lobby_poses
-		local pose = lobby_poses[math.min(peer_id, #lobby_poses)][math.random(#lobby_poses[math.min(peer_id, #lobby_poses)])]
+        -- Only modification is to use modulus to make sure our lobby peer is given a pose
+		local pose = lobby_poses[peer_id % 4 + 1][math.random(#lobby_poses[peer_id % 4 + 1])]
         
      -- Original Code --   
 		unit:anim_state_machine():set_parameter(state, pose, 1)
