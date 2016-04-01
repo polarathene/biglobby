@@ -6,7 +6,7 @@ if not _G.BigLobbyGlobals then
     BigLobbyGlobals.num_players = 14
 
     function BigLobbyGlobals:num_player_slots()
-        return self.num_players
+        return (Global.player_num ~= nil and managers.network and managers.network:session() and not managers.network:session():is_host()) and Global.player_num or self.num_players
     end
 
     -- Semantic versioning

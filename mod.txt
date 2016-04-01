@@ -113,6 +113,14 @@
         {
             "hook_id": "lib/managers/hud/hudteammate",
             "script_path": "lua/_hudteammate.lua"
+        },
+        {
+            "hook_id": "lib/network/base/handlers/connectionnetworkhandler",
+            "script_path": "lua/lib/network/base/handlers/_connectionnetworkhandler.lua"
+        },
+        {
+            "hook_id": "lib/network/base/clientnetworksession",
+            "script_path": "lua/lib/network/base/_clientnetworksession.lua"
         }
     ]
 }

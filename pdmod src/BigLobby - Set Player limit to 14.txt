@@ -1,7 +1,0 @@
-@Name BigLobby - Set Player limit to 14
-@Author Kwhali
-@Description All peer max id have been set from 4  to 14. Also the preplanning colour index is updated from 4 to 14.
-@Version 1.15
-
-;Files included in this project
-settings/network.network_settings : mod\network.network_settings
