@@ -11,9 +11,13 @@ if not _G.BigLobbyGlobals then
 
     -- Semantic versioning
     function BigLobbyGlobals:version()
-        return "1.0.0"
+        return "1.1.0"
     end
-
+    
+    -- GameVersion for matchmaking
+    function BigLobbyGlobals:gameversion()
+        return 110
+    end
 
     -- Nothing calls this anymore for the time being.
     local log_data = true -- Can use to turn the logging on/off

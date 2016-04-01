@@ -85,7 +85,7 @@ function MenuSceneManager:_select_lobby_character_pose(peer_id, unit, weapon_inf
     -- End Original Code --
     
         -- Only modification is to use modulus to make sure our lobby peer is given a pose
-		local pose = lobby_poses[peer_id % #lobby_poses + 1][math.random(#lobby_poses[peer_id % #lobby_poses + 1])]
+		local pose = lobby_poses[(peer_id % #lobby_poses) + 1][math.random(#lobby_poses[(peer_id % #lobby_poses) + 1])]
         
      -- Original Code --   
 		unit:anim_state_machine():set_parameter(state, pose, 1)
