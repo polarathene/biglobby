@@ -14,13 +14,15 @@ if not _G.BigLobbyGlobals then
     function BigLobbyGlobals:version()
         return "1.1.0"
     end
-    
+
     -- GameVersion for matchmaking
     function BigLobbyGlobals:gameversion()
         return 110
     end
 
 
+    -- These tables show the network messages we've modified in the network settings pdmod
+    -- We will use them for switching to biglobby prefixed messages when in big lobbies.
     local connection_network_handler_funcs = {
     	'kick_peer',
     	'remove_peer_confirmation',
@@ -64,6 +66,7 @@ if not _G.BigLobbyGlobals then
     	'sync_vehicle_interact_trunk'
     }
 
+    -- Builds a single table from our two string based keys for each handler above
     BigLobbyGlobals.network_handler_funcs = {}
     function add_handler_funcs(handler_funcs)
         for i = 1, #handler_funcs do
@@ -74,10 +77,11 @@ if not _G.BigLobbyGlobals then
     add_handler_funcs(connection_network_handler_funcs)
     add_handler_funcs(unit_network_handler_funcs)
 
+    -- Takes the network keys we defined above and prefixes any matches on the given handler
     function BigLobbyGlobals:rename_handler_funcs(NetworkHandler)
-        for key, value in pairs(NetworkHandler) do
-            if BigLobbyGlobals.network_handler_funcs[key] then
-                NetworkHandler['biglobby__' .. key] = value
+        for key, value in pairs(BigLobbyGlobals.network_handler_funcs) do
+            if NetworkHandler[key] then
+                NetworkHandler['biglobby__' .. key] = NetworkHandler[key]
             end
         end
     end
