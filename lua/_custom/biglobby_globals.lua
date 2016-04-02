@@ -3,10 +3,11 @@ if not _G.BigLobbyGlobals then
 
     -- The new player limit is defined here, it should not be greater than
     -- the max values set in the pdmod file.
-    BigLobbyGlobals.num_players = 14
+    -- Prefer `Global.num_players` set by BigLobby host
+    BigLobbyGlobals.num_players = Global.num_players or 8
 
     function BigLobbyGlobals:num_player_slots()
-        return (Global.player_num ~= nil and managers.network and managers.network:session() and not managers.network:session():is_host()) and Global.player_num or self.num_players
+        return self.num_players
     end
 
     -- Semantic versioning
