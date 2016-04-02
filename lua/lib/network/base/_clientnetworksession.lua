@@ -1,10 +1,24 @@
-local ClientNetworkSession_on_join_request_reply = ClientNetworkSession.on_join_request_reply
+local orig__ClientNetworkSession = {}
+orig__ClientNetworkSession.on_join_request_reply = ClientNetworkSession.on_join_request_reply
 
-function ClientNetworkSession:on_join_request_reply(reply, my_peer_id, my_character, level_index, difficulty_index, state_index, server_character, user_id, mission, job_id_index, job_stage, alternative_job_stage, interupt_job_stage_level_index, xuid, auth_ticket, num_players, sender)
-    ClientNetworkSession_on_join_request_reply(self, reply, my_peer_id, my_character, level_index, difficulty_index, state_index, server_character, user_id, mission, job_id_index, job_stage, alternative_job_stage, interupt_job_stage_level_index, xuid, auth_ticket, sender)
-	if reply == 1 then
-        if num_players then
-            Global.player_num = num_players
-        end
-	end
+function ClientNetworkSession:on_join_request_reply(...)
+    -- Place params in table
+    local params = {...}
+
+    -- Get params we want based on if the func signature is correct
+    local reply = params[1]
+    local sender = #params==17 and params[17] -- Should be the last param
+    local num_players = sender and type(params[16])=='number' and params[16]
+
+    -- If the response is `1`(ok), set BigLobby to use host preference or 4 if
+    -- a regular lobby.
+    if reply == 1 then
+        Global.num_players = num_players or 4
+    end
+
+    -- Assign sender to original param 16 for the original func call to use
+    if sender then params[16] = params[17] end
+
+    -- Pass params on to the original call
+    orig__ClientNetworkSession.on_join_request_reply(self, unpack(params))
 end

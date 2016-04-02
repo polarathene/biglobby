@@ -1,5 +1,6 @@
 -- Store the original _check_players function for use later
-local ElementFilter_check_players = ElementFilter._check_players
+local orig__ElementFilter = {}
+orig__ElementFilter._check_players = ElementFilter._check_players
 
 -- This function must be modified to allow for proper objective activation with greater than 4 players
 function ElementFilter:_check_players()
@@ -18,5 +19,5 @@ function ElementFilter:_check_players()
 	end
 
 	-- Call the original function and return its value if the code above does not return anything
-	return ElementFilter_check_players(self)
+	return orig__ElementFilter._check_players(self)
 end
