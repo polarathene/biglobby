@@ -4,7 +4,7 @@ if not _G.BigLobbyGlobals then
     -- The new player limit is defined here, it should not be greater than
     -- the max values set in the pdmod file.
     -- Prefer `Global.num_players` set by BigLobby host
-    BigLobbyGlobals.num_players = Global.num_players or 8 -- TODO: replace this with BLT menu setting
+    BigLobbyGlobals.num_players = Global.num_players or Global.num_players_settings or 8
 
     function BigLobbyGlobals:num_player_slots()
         return self.num_players

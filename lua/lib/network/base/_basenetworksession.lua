@@ -16,7 +16,8 @@ function BaseNetworkSession:on_network_stopped()
 
 	-- Resets host lobby size preference when leaving their lobby
 	Global.num_players = nil
-	BigLobbyGlobals.num_players = 8 -- TODO: replace this with BLT menu setting
+	-- Update this variable in case the player left from lobby screen (doesn't reload the mod)
+	BigLobbyGlobals.num_players = Global.num_players_settings
 end
 
 

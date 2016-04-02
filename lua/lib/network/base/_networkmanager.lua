@@ -11,7 +11,7 @@ function NetworkManager:on_peer_added(peer, peer_id)
 		local ratio = managers.network:session():amount_of_players() / BigLobbyGlobals:num_player_slots()
 		local ratio_to_icon = math.ceil(4 * ratio)
 		-- Ensure the value is at minimum 1
-		if ratio_to_icon <= 1 then ratio_to_icon = 1
+		if ratio_to_icon <= 1 then ratio_to_icon = 1 end
 
 		managers.network.matchmake:set_num_players( ratio_to_icon )
 	end
