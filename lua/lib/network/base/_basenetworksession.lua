@@ -13,6 +13,9 @@ function BaseNetworkSession:on_network_stopped()
 	if self._local_peer then
 		self:on_drop_in_pause_request_received(self._local_peer:id(), nil, false)
 	end
+
+	-- Resets host lobby size preference when leaving their lobby
+	Global.num_players = nil
 end
 
 
