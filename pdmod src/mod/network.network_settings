@@ -16,12 +16,12 @@
 		</message>
 
 		<message name="kick_peer" delivery="ordered" receiver="connection" check="server_to_client">
-			<param type="int" min="1" max="128" /> <!-- Peer id -->
+			<param type="int" min="1" max="4" /> <!-- Peer id -->
 			<param type="int" min="0" max="2" /> <!-- Message id -->
 		</message>
 
 		<message name="remove_peer_confirmation" delivery="ordered" receiver="connection" check="client_to_server">
-			<param type="int" min="1" max="128" /> <!-- Peer id -->
+			<param type="int" min="1" max="4" /> <!-- Peer id -->
 		</message>
 
 		<!--message name="request_player_name" delivery="ordered" receiver="connection"/-->
@@ -45,7 +45,7 @@
 
 		<message name="join_request_reply" delivery="ordered" receiver="connection">
 			<param type="int" min="0" max="8" /> <!-- Reply info 0 == may not join, 1 == ok, 2 == kicked, 3 == game started, 4 = map not owned, 5 = full, 6 = low lvl, 7 = wrong game version, 8 = authentication failed -->
-			<param type="int" min="0" max="128" /> <!-- Peer id ~=0 when accepted -->
+			<param type="int" min="0" max="4" /> <!-- Peer id ~=0 when accepted -->
 			<param type="string" />				<!-- My character -->
 			<param type="int" min="1" max="127" /> <!-- level index -->
 			<param type="int" min="1" max="6" /> <!-- difficulty index -->
@@ -59,12 +59,11 @@
 			<param type="int" min="0" max="127" /> <!-- interupt stage level index -->
 			<param type="xuid" />
 			<param type="longstring" /> <!-- Authentic Steam Ticket ID -->
-			<param type="int" min="4" max="128" /> <!-- BigLobby host `num_players` setting -->
 		</message>
 
 		<message name="peer_handshake" delivery="ordered" receiver="connection" check="server_to_client">
 			<param type="string" /> <!-- Peer Name -->
-			<param type="int" min="1" max="128" /> <!-- Peer id -->
+			<param type="int" min="1" max="4" /> <!-- Peer id -->
 			<param type="string" /> <!-- Peer User_ID -->
 			<param type="bool" /> <!-- In lobby -->
 			<param type="bool" /> <!-- Loading -->
@@ -76,15 +75,15 @@
 		</message>
 
 		<message name="peer_exchange_info" delivery="ordered" receiver="connection">
-			<param type="int" min="1" max="128" /> <!-- Peer id -->
+			<param type="int" min="1" max="4" /> <!-- Peer id -->
 		</message>
 
 		<message name="connection_established" delivery="ordered" receiver="connection">
-			<param type="int" min="1" max="128" /> <!-- id of the peer that was introduced to us -->
+			<param type="int" min="1" max="4" /> <!-- id of the peer that was introduced to us -->
 		</message>
 
 		<message name="mutual_connection" delivery="ordered" receiver="connection" check="server_to_client">
-			<param type="int" min="1" max="128" /> <!-- id of the other peer -->
+			<param type="int" min="1" max="4" /> <!-- id of the other peer -->
 		</message>
 
 		<message name="steam_p2p_ping" delivery="unreliable" receiver="connection"/>
@@ -98,7 +97,7 @@
 		</message>
 
 		<message name="set_member_ready" delivery="ordered" receiver="connection">
-			<param type="int" min="1" max="128" /> <!-- Peer ID -->
+			<param type="int" min="1" max="4" /> <!-- Peer ID -->
 			<param type="int" min="0" max="100" /> <!-- state. 0 = false -->
 			<param type="int" min="1" max="4" /> <!-- 1=ready button_state, 2=streaming state, 3=outfits_loaded, 4=server asks if outfits_loaded-->
 			<param type="string" />	<!-- outfit_versions -->
@@ -114,13 +113,13 @@
 		<!--</message> -->
 
 		<message name="request_drop_in_pause" delivery="ordered" receiver="connection" check="server_to_client">
-			<param type="int" min="1" max="128" /> <!-- Peer id -->
+			<param type="int" min="1" max="4" /> <!-- Peer id -->
 			<param type="string" /> <!-- nickname -->
 			<param type="bool" /> <!-- pause_state -->
 		</message>
 
 		<message name="drop_in_pause_confirmation" delivery="ordered" receiver="connection" check="client_to_server">
-			<param type="int" min="1" max="128" /> <!-- Peer id -->
+			<param type="int" min="1" max="4" /> <!-- Peer id -->
 		</message>
 
 		<message name="set_loading_state" delivery="ordered" receiver="connection">
@@ -137,7 +136,7 @@
 		</message>
 
 		<message name="set_peer_synched" delivery="ordered" receiver="connection">
-			<param type="int" min="1" max="128" /> <!-- Peer id -->
+			<param type="int" min="1" max="4" /> <!-- Peer id -->
 		</message>
 
 		<message name="set_dropin" delivery="ordered" receiver="connection" check="server_to_client"/>
@@ -156,7 +155,7 @@
 		<message name="cancel_trade" delivery="ordered" receiver="connection" check="server_to_client"/>
 
 		<message name="dropin_progress" delivery="unreliable" receiver="connection" check="server_to_client">
-			<param type="int" min="1" max="128" /> <!-- Peer id -->
+			<param type="int" min="1" max="4" /> <!-- Peer id -->
 			<param type="int" min="0" max="100" /> <!-- progress percentage -->
 		</message>
 
@@ -270,7 +269,7 @@
 		</message>
 
 		<message name="report_dead_connection" delivery="ordered" receiver="connection" check="client_to_server">
-			<param type="int" min="1" max="128" /> <!-- ID of the peer that we have failed to connect to -->
+			<param type="int" min="1" max="4" /> <!-- ID of the peer that we have failed to connect to -->
 		</message>
 
 		<message name="sanity_check_network_status" delivery="unreliable" receiver="connection"/>
@@ -282,7 +281,7 @@
 		<message name="preplanning_reserved" delivery="ordered" receiver="connection" check="server_to_client">
 			<param type="string"/> <!-- type / plan -->
 			<param type="int" min="0" /> <!-- Mission element id -->
-			<param type="int" min="1" max="128" /> <!-- peer_id -->
+			<param type="int" min="1" max ="4" /> <!-- peer_id -->
 			<param type="int" min="0" max="2"/> <!-- 0=reserve, 1=unreserve, 2=vote -->
 		</message>
 		<message name="reserve_preplanning" delivery="ordered" receiver="connection" check="client_to_server">
@@ -297,7 +296,7 @@
 		<message name="draw_preplanning_event" delivery="ordered" receiver="connection">
 			<param type="int" min="1" max="5"/> <!-- Event: start, stop, undo, erase, erase_all -->
 			<param type="int" min="1" max="4"/> <!-- Event num 2: for 'start': line width -->
-			<param type="int" min="1" max="128"/> <!-- Event num 3: for 'start': line color index -->
+			<param type="int" min="1" max="4"/> <!-- Event num 3: for 'start': line color index -->
 		</message>
 
 		<!-- LOOT DROP -->
@@ -323,7 +322,7 @@
 			<param type="vector3" />									<!-- Position -->
 			<param type="vector3" /> 									<!-- Normal -->
 			<param type="int" min="0" max="16384" />	<!-- Damage -->
-			<param type="int" min="1" max="128" />			<!-- server_to_client: Peer ID | client_to_server: Player weapon selection index -->
+			<param type="int" min="1" max="4" />			<!-- server_to_client: Peer ID | client_to_server: Player weapon selection index -->
 		</message>
 
 		<!-- FlameBulletBase -->
@@ -331,7 +330,7 @@
 			<param type="vector3" />									<!-- Position -->
 			<param type="vector3" /> 									<!-- Normal -->
 			<param type="int" min="0" max="16384" />	<!-- Damage -->
-			<param type="int" min="1" max="128" />			<!-- server_to_client: Peer ID | client_to_server: Player weapon selection index -->
+			<param type="int" min="1" max="4" />			<!-- server_to_client: Peer ID | client_to_server: Player weapon selection index -->
 		</message>
 
 		<message name="sync_explosion_results" delivery="ordered" receiver="connection" check="server_to_client">
@@ -389,7 +388,7 @@
 			<param type="string" />	<!-- character name -->
 			<param type="longstring" />	<!-- outfit_string -->
 			<param type="int" min="0" max="100" /> <!-- outfit_version -->
-			<param type="int" min="0" max="128" /> <!-- Peer id. 0 means its an AI -->
+			<param type="int" min="0" max="4" /> <!-- Peer id. 0 means its an AI -->
 			<param type="string" />	<!-- team_id string -->
 		</message>
 
@@ -530,7 +529,7 @@
 		<message name="remove_corpse_by_id" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="int" min="0" max="4094" /> <!-- in engine: MAX_UNIT_ID = 4094 -->
 			<param type="bool" />	<!-- create body bag -->
-			<param type="int" min="1" max="128"/>		<!-- peer_id -->
+			<param type="int" min="1" max="4"/>		<!-- peer_id -->
 		</message>
 
 		<message name="set_unit_invulnerable" delivery="ordered" receiver="unit" check="server_to_client">
@@ -934,7 +933,7 @@
 		<message name="sync_trip_mine_setup" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />
 			<param type="bool" />
-			<param type="int" min="0" max="128"/> <!-- Peer id -->
+			<param type="int" min="0" max="4"/> <!-- Peer id -->
 		</message>
 
 		<message name="sync_trip_mine_explode" delivery="ordered" receiver="unit">
@@ -991,7 +990,7 @@
 		</message>
 
 		<message name="from_server_sentry_gun_place_result" delivery="ordered" receiver="unit" check="server_to_client">
-			<param type="int" min="1" max="128"/> <!-- owner peer_id -->
+			<param type="int" min="1" max="4"/> <!-- owner peer_id -->
 			<param type="int" min="0" max="32"/> <!-- equipment selection index. zero means fail -->
 			<param type="unit" /> <!-- sentry gun -->
 			<param type="float" min="0" max="7"/> <!-- rot_speed_mul upgrade multiplier -->
@@ -1060,7 +1059,7 @@
 		<message name="sync_equipment_setup" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />
 			<param type="float" min="0" max="2"/>
-			<param type="int" min="0" max="128"/> <!-- Peer id -->
+			<param type="int" min="0" max="4"/> <!-- Peer id -->
 		</message>
 
 		<message name="sync_ammo_bag_ammo_taken" delivery="ordered" receiver="unit">
@@ -1257,7 +1256,7 @@
 			<param type="vector3" /> <!-- direction -->
 			<param type="int" min="0" max="1"/> <!-- Upgrade level of throw distance multiplier -->
 			<param type="unit" /> <!-- If attach to zipline -->
-			<param type="int" min="0" max="128"/>		<!-- peer_id -->
+			<param type="int" min="0" max="4"/>		<!-- peer_id -->
 		</message>
 
 		<message name="sync_cocaine_stacks" delivery="ordered" receiver="unit">
@@ -1295,7 +1294,7 @@
 			<param type="vector3" /> <!-- position -->
 			<param type="vector3" /> <!-- direction -->
 			<param type="int" min="1" max="32"/> <!-- Projectile type index -->
-			<param type="int" min="0" max="128"/> <!-- Peer id -->
+			<param type="int" min="0" max="4"/> <!-- Peer id -->
 		</message>
 
 		<message name="sync_attach_projectile" delivery="ordered" receiver="unit">
@@ -1307,7 +1306,7 @@
 			<param type="vector3" /> 	<!-- local position -->
 			<param type="vector3" /> 	<!-- direction -->
 			<param type="int" min="1" max="32"/> <!-- Projectile type index -->
-			<param type="int" min="0" max="128"/> <!-- Peer id -->
+			<param type="int" min="0" max="4"/> <!-- Peer id -->
 		</message>
 
 		<message name="sync_detonate_molotov_grenade" delivery="ordered" receiver="unit">
@@ -1331,7 +1330,7 @@
 
 		<message name="sync_unlock_asset" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="string"/>	<!-- Asset id -->
-			<param type="int" min="0" max="128" /> <!-- Peer ID -->
+			<param type="int" min="0" max="4" /> <!-- Peer ID -->
 		</message>
 
 		<message name="sync_heist_time" delivery="ordered" receiver="unit" check="server_to_client">
@@ -1441,7 +1440,7 @@
 
 		<message name="mark_minion" delivery="reliable" receiver="unit" check="server_to_client">
 			<param type="unit" />		<!-- converted minion -->
-			<param type="int"  min="1" max="128"/> <!-- minion_owner_peer_id -->
+			<param type="int"  min="1" max="4"/> <!-- minion_owner_peer_id -->
 			<param type="int" min="0" max="3"/> <!-- convert_enemies_health_multiplier -->
 			<param type="int" min="0" max="3"/> <!-- passive_convert_enemies_health_multiplier -->
 		</message>
@@ -1495,13 +1494,13 @@
 		</message>
 
 		<message name="sync_statistics_result" delivery="ordered" receiver="unit" check="server_to_client">
-			<param type="int" min="1" max="128"/>			<!-- best killer -->
+			<param type="int" min="1" max="4"/>			<!-- best killer -->
 			<param type="int" min="0" max="10000"/>		<!-- best killer score -->
-			<param type="int" min="1" max="128"/>			<!-- best special killer -->
+			<param type="int" min="1" max="4"/>			<!-- best special killer -->
 			<param type="int" min="0" max="10000"/>		<!-- best special killer score -->
-			<param type="int" min="1" max="128"/>			<!-- best accuracy -->
+			<param type="int" min="1" max="4"/>			<!-- best accuracy -->
 			<param type="int" min="0" max="1000"/>		<!-- best accuracy score -->
-			<param type="int" min="1" max="128"/>			<!-- most downs -->
+			<param type="int" min="1" max="4"/>			<!-- most downs -->
 			<param type="int" min="0" max="1000"/>		<!-- most downs score -->
 			<param type="int" min="0" max="10000"/> 	<!-- total kills -->
 			<param type="int" min="0" max="10000"/> 	<!-- total specials kills -->
@@ -1582,7 +1581,7 @@
 		</message>
 
 		<message name="suspicion" delivery="ordered" receiver="unit" check="server_to_client">
-			<param type="int" min="1" max="128"/>	<!-- peer ID of the player under suspicion -->
+			<param type="int" min="1" max="4"/>	<!-- peer ID of the player under suspicion -->
 			<param type="int" min="0" max="255"/>	<!-- suspicion ratio. 0 means no suspicion, 255 means uncovered. values in between mean suspicion in progress -->
 		</message>
 
@@ -1692,20 +1691,20 @@
 		<message name="sync_enter_vehicle_host" delivery="ordered" receiver="unit">
 		   <param type="unit" /> <!-- the vehicle -->
 		   <param type="string" /> <!-- seat -->
-		   <param type="int" min="0" max="128" /> <!-- Peer id ~=0 when accepted -->
+		   <param type="int" min="0" max="4" /> <!-- Peer id ~=0 when accepted -->
 		   <param type="unit" /> <!-- player -->
 		 </message>
 
 		<message name="sync_vehicle_player" delivery="ordered" receiver="unit">
 			<param type="string" />		<!-- action (enter/exit) -->
 			<param type="unit" />	<!-- the vehicle -->
-			<param type="int" min="0" max="128" /> <!-- Peer id ~=0 when accepted -->
+			<param type="int" min="0" max="4" /> <!-- Peer id ~=0 when accepted -->
 			<param type="unit" />	<!-- player -->
 			<param type="string" />	<!-- seat name -->
 		</message>
 
 		<message name="sync_exit_vehicle" delivery="ordered" receiver="unit">
-			<param type="int" min="0" max="128" /> <!-- Peer id ~=0 when accepted -->
+			<param type="int" min="0" max="4" /> <!-- Peer id ~=0 when accepted -->
 			<param type="unit" />	<!-- the player -->
 		</message>
 
@@ -1763,14 +1762,14 @@
 
 		<message name="server_give_vehicle_loot_to_player" delivery="ordered" receiver="unit" check="client_to_server">
 			<param type="unit"/>	<!-- vehicle -->
-			<param type="int" min="1" max="128" /> <!-- peer_id -->
+			<param type="int" min="1" max ="4" /> <!-- peer_id -->
 		</message>
 
 		<message name="sync_give_vehicle_loot_to_player" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit"/>	<!-- vehicle -->
 			<param type="string"/>	<!-- Carry id -->
 			<param type="int" min="0" max="2"/> <!-- multiplier upgrade level for small loot -->
-			<param type="int" min="1" max="128" /> <!-- peer_id -->
+			<param type="int" min="1" max ="4" /> <!-- peer_id -->
 		</message>
 
 		<message name="sync_vehicle_change_stance" delivery="ordered" receiver="unit">
@@ -1780,7 +1779,7 @@
 
 		<message name="sync_vehicle_interact_trunk" delivery="ordered" receiver="unit">
 			<param type="unit"/>	<!-- vehicle -->
-			<param type="int" min="1" max="128" /> <!-- peer_id -->
+			<param type="int" min="1" max ="4" /> <!-- peer_id -->
 		</message>
 
 		<message name="sync_damage_reduction_buff" delivery="ordered" receiver="unit" check="server_to_client">
