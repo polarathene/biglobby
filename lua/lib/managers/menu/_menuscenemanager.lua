@@ -28,7 +28,6 @@ function MenuSceneManager:_setup_lobby_characters()
 	local steps = range / (num_player_slots-1)
 	-- The first half of rotations is for all peers except local peer:
 	for i = 1, num_player_slots do
-		log("rotations: " .. tostring(((i-1) * steps) + max))
 		self._characters_rotation[i] = (((i-1) * steps) + max)
 	end
 
@@ -83,15 +82,15 @@ function MenuSceneManager:_select_lobby_character_pose(peer_id, unit, weapon_inf
 		unit:anim_state_machine():set_parameter(state, pose, 1)
 	else
     -- End Original Code --
-    
+
         -- Only modification is to use modulus to make sure our lobby peer is given a pose
 		local pose = lobby_poses[(peer_id % #lobby_poses) + 1][math.random(#lobby_poses[(peer_id % #lobby_poses) + 1])]
-        
-     -- Original Code --   
+
+     -- Original Code --
 		unit:anim_state_machine():set_parameter(state, pose, 1)
 	end
     -- End Original Code --
-    
+
 end
 
 
@@ -270,6 +269,9 @@ function MenuSceneManager:set_lobby_character_out_fit(i, outfit_string, rank)
 
 	orig__MenuSceneManager.set_lobby_character_out_fit(self, i, outfit_string, rank)
 
+
+
+
 	-- Original Code -- as far as flow and relevance is concerned at least.
 	local unit = self._lobby_characters[i]
 	local is_me = i == managers.network:session():local_peer():id()
@@ -281,9 +283,11 @@ function MenuSceneManager:set_lobby_character_out_fit(i, outfit_string, rank)
 
 
 
+
 	-- Only the hardcoded 4 here is changed to a variable
 	-- The 4 refers to halfway point of the rotation table, not player count.
 	mrotation.set_yaw_pitch_roll(rot, self._characters_rotation[(is_me and num_player_slots or 0) + i], 0, 0)
+
 
 
 

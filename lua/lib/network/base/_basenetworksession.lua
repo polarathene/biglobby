@@ -57,7 +57,7 @@ function BaseNetworkSession:check_peer_preferred_character(preferred_character)
 		end
 	end
     -- End Original Code --
-    
+
     -- Only modification is to select a random character once all availiable characters in the game have been taken.
     if #free_characters == 0 then
         local all_characters = clone(CriminalsManager.character_names())
