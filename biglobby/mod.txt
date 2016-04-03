@@ -41,7 +41,7 @@
         },
         {
             "hook_id": "lib/managers/hud/hudteammate",
-            "script_path": "lua/managers/hud/_hudteammate.lua"
+            "script_path": "lua/lib/managers/hud/_hudteammate.lua"
         },
         {
             "hook_id": "lib/managers/menu/contractboxgui",
@@ -77,7 +77,7 @@
         },
         {
             "hook_id": "lib/managers/hudmanager",
-            "script_path": "lua/managers/_hudmanager.lua"
+            "script_path": "lua/lib/managers/_hudmanager.lua"
         },
         {
             "hook_id": "lib/managers/hudmanagerpd2",
