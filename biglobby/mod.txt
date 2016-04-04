@@ -21,12 +21,6 @@
         { "hook_id" : "lib/managers/menu/menuinput", "script_path" : "lua/_custom/biglobby_globals.lua" },
         { "hook_id" : "core/lib/setups/coresetup", "script_path" : "lua/_custom/biglobby_globals.lua" },
         { "hook_id" : "lib/setups/gamesetup", "script_path" : "lua/_custom/biglobby_globals.lua" },
-
-        {
-            "hook_id": "lib/managers/menumanager",
-            "script_path": "lua/_custom/menu.lua"
-        },
-
         {
             "hook_id": "lib/managers/group_ai_states/groupaistatebase",
             "script_path": "lua/lib/managers/group_ai_states/_groupaistatebase.lua"
