@@ -43,15 +43,31 @@ function MenuSceneManager:_setup_lobby_characters()
 	end
 
 
+	-- This added logic should alter positioning of players to start at the center
+	-- and expand outwards as the player count grows.
+	local offset = 0 -- Starting offset
+	local peer_rotations = #self._characters_rotation/2
+	-- eg 4/2->2, 5/2->2.5->3, 6/2->3, 7/2->3.5->4
+	local center_index = math.ceil(peer_rotations/2)
+	local function get_new_index(index)
+		local is_even = index%2==0
+		local new_index = is_even and center_index + offset or center_index - offset
+		-- After adding one to the left and one to the right, increase the offset
+		-- Unless starting index is odd, then increase straight after(no left/right)
+		if not is_even then offset = offset + 1 end
+
+		return new_index
+	end
 
 
-	-- Only code changed here was replacing a hardcoded value of 4 with the variable num_player_slots
+	-- Only code changed here was replacing a hardcoded value of 4 with the variable
+	-- num_player_slots and adding the local function above for set_yaw_pitch_roll
 	local mvec = Vector3()
 	local math_up = math.UP
 	local pos = Vector3()
 	local rot = Rotation()
 	for i = 1, num_player_slots do
-		mrotation.set_yaw_pitch_roll(rot, self._characters_rotation[i], 0, 0)
+		mrotation.set_yaw_pitch_roll(rot, self._characters_rotation[get_new_index(i)], 0, 0)
 		mvector3.set(pos, self._characters_offset)
 		mvector3.rotate_with(pos, rot)
 		mvector3.set(mvec, pos)
@@ -70,7 +86,7 @@ end
 function MenuSceneManager:_select_lobby_character_pose(peer_id, unit, weapon_info)
 
 
-    -- Original Code --
+	-- Original Code --
 	local state = unit:play_redirect(Idstring("idle_menu"))
 	local weapon_id = managers.weapon_factory:get_weapon_id_by_factory_id(weapon_info.factory_id)
 	local category = tweak_data.weapon[weapon_id].category
@@ -81,16 +97,15 @@ function MenuSceneManager:_select_lobby_character_pose(peer_id, unit, weapon_inf
 		local pose = lobby_poses[math.random(#lobby_poses)]
 		unit:anim_state_machine():set_parameter(state, pose, 1)
 	else
-    -- End Original Code --
+	-- End Original Code --
 
-        -- Only modification is to use modulus to make sure our lobby peer is given a pose
+		-- Only modification is to use modulus to make sure our lobby peer is given a pose
 		local pose = lobby_poses[(peer_id % #lobby_poses) + 1][math.random(#lobby_poses[(peer_id % #lobby_poses) + 1])]
 
-     -- Original Code --
+	-- Original Code --
 		unit:anim_state_machine():set_parameter(state, pose, 1)
 	end
-    -- End Original Code --
-
+	-- End Original Code --
 end
 
 
