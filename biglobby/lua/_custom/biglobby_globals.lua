@@ -3,25 +3,25 @@ if not _G.BigLobbyGlobals then
 
     BigLobbyGlobals.ModPath = ModPath
     BigLobbyGlobals.SavePath = SavePath
-    
+
     BigLobbyGlobals.ClassPath = "lua/_custom/"
-    
+
     BigLobbyGlobals.Classes = {
         "menu.lua"
     }
-    
+
     for _, class in pairs(BigLobbyGlobals.Classes) do
         dofile(BigLobbyGlobals.ModPath .. BigLobbyGlobals.ClassPath .. class)
     end
-    
+
     BigLobbyGlobals.Menu = bkin_bl__menu:new()
-    
+
     -- The new player limit is defined here, it should not be greater than
     -- the max values set in the pdmod file.
     -- Prefer `Global.num_players` set by BigLobby host
     -- Use Global.num_players_settings as it will either be the user option or the default value for the Player #
     BigLobbyGlobals.num_players = Global.num_players or Global.num_players_settings
-    
+
     function BigLobbyGlobals:num_player_slots()
         return self.num_players
     end
@@ -72,6 +72,8 @@ if not _G.BigLobbyGlobals then
     	'sync_trip_mine_setup',
     	'from_server_sentry_gun_place_result',
     	'sync_equipment_setup',
+        'sync_ammo_bag_setup',
+        'sync_grenades',
     	'sync_carry_data',
     	'sync_throw_projectile',
     	'sync_attach_projectile',
