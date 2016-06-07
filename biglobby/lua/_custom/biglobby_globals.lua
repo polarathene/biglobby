@@ -26,8 +26,11 @@ if not _G.BigLobbyGlobals then
         return self.num_players
     end
 
+    -- Regular lobby / Seamless switching support
     function BigLobbyGlobals:is_small_lobby()
-        return self.num_players<=4
+        --TODO: Changing lobby slot size without reloading mods such as in
+        -- Crime.Net won't properly update filters. Don't enable until working better
+        return false --self.num_players<=4
     end
 
     -- Semantic versioning
