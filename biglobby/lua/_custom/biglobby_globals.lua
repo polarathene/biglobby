@@ -26,6 +26,10 @@ if not _G.BigLobbyGlobals then
         return self.num_players
     end
 
+    function BigLobbyGlobals:is_small_lobby()
+        return self.num_players<=4
+    end
+
     -- Semantic versioning
     function BigLobbyGlobals:version()
         return "2.0.0"
