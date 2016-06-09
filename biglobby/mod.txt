@@ -106,6 +106,10 @@
             "script_path": "lua/lib/network/base/_networkmanager.lua"
         },
         {
+            "hook_id": "lib/network/base/networkpeer",
+            "script_path": "lua/lib/network/base/_networkpeer.lua"
+        },
+        {
             "hook_id": "lib/network/handlers/unitnetworkhandler",
             "script_path": "lua/lib/network/handlers/_unitnetworkhandler.lua"
         },
