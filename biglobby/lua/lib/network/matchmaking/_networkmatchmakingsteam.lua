@@ -9,7 +9,7 @@ end
 
 -- Prevent non BigLobby players from finding/joining this game.
 if not BigLobbyGlobals:is_small_lobby() then
-	NetworkMatchMakingSTEAM._BUILD_SEARCH_INTEREST_KEY = "biglobby"
+	NetworkMatchMakingSTEAM._BUILD_SEARCH_INTEREST_KEY = "biglobby-" .. BigLobbyGlobals:version()
 end
 -- TODO: Use the existing search key and concatenate "-biglobby" to it so other mods
 -- can use this filter/isolation method. Note at present it's nil

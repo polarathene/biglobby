@@ -2005,14 +2005,14 @@
 			<param type="int" min="0" max="128"/> <!-- Peer id -->
 		</message>
 
-		<message name="biglobby_sync_ammo_bag_setup" delivery="ordered" receiver="biglobby_unit" check="server_to_client">
+		<message name="biglobby__sync_ammo_bag_setup" delivery="ordered" receiver="biglobby__unit" check="server_to_client">
 			<param type="unit" />
 			<param type="int" min="0" max="255"/> <!-- uint8 -->
 			<param type="int" min="0" max="128"/> <!-- Peer id -->
 			<param type="int" min="0" max="2"/>	<!-- Bullet storm level -->
 		</message>
 
-		<message name="biglobby_sync_grenades" delivery="ordered" receiver="biglobby_unit">
+		<message name="biglobby__sync_grenades" delivery="ordered" receiver="biglobby__unit">
 			<param type="string"/>	<!-- Grenade id -->
 			<param type="int" min="0" max="31"/> <!-- Amount of grenades  -->
 			<param type="int" min="0" max="128" /> <!-- Peer id -->
