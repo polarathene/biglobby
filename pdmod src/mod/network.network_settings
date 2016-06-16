@@ -1997,6 +1997,7 @@
 			<param type="float" min="0" max="7"/> <!-- rot_speed_mul upgrade multiplier -->
 			<param type="float" min="0" max="1"/> <!-- spread upgrade multiplier -->
 			<param type="bool" /> <!-- shield -->
+			<param type="int" min="0" max="8" />	<!-- damage multiplier -->
 		</message>
 
 		<message name="biglobby__sync_equipment_setup" delivery="ordered" receiver="biglobby__unit" check="server_to_client">
