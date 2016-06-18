@@ -1810,7 +1810,17 @@
 			<param type="bool" /> <!-- reduced alert -->
 		</message>
 
+		<message name="auto_init_respawn_player" delivery="ordered" receiver="connection" check="client_to_server">
+			<param type="vector3" />	<!-- position -->
+			<param type="int" />	<!-- peer id -->
+		</message>
+
 		<message name="auto_respawn_player" delivery="ordered" receiver="connection" check="client_to_server">
+			<param type="vector3" />	<!-- position -->
+			<param type="int" />	<!-- peer id -->
+		</message>
+
+		<message name="start_super_syndrome_trade" delivery="ordered" receiver="connection" check="server_to_client">
 			<param type="vector3" />	<!-- position -->
 			<param type="int" />	<!-- peer id -->
 		</message>
