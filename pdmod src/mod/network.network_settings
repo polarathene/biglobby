@@ -221,6 +221,8 @@
 
 
 
+
+		
 		<message name="sync_on_retry_job_stage" delivery="ordered" receiver="connection" check="server_to_client"/>
 
 		<message name="lobby_sync_update_level_id" delivery="ordered" receiver="connection" check="server_to_client">
@@ -580,6 +582,12 @@
 				<param type="bool" /> <!-- from_idle-->
 			</message>
 
+			<message name="action_change_pose" delivery="ordered" receiver="unit">
+				<param type="unit" />
+				<param type="int" min="1" max="3" /> <!-- pose code -->
+				<param type="vector3" /> <!-- pose change position -->
+			</message>
+		
 			<message name="action_jump" delivery="ordered" receiver="unit">
 				<param type="unit" />
 				<param type="vector3" />

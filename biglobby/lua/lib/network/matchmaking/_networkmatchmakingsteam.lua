@@ -4,13 +4,15 @@ NetworkMatchMakingSTEAM.OPEN_SLOTS = BigLobbyGlobals:num_player_slots()
 
 -- Assign a gameversion, to prevent outdated clients from connecting
 if not BigLobbyGlobals:is_small_lobby() then
-	 NetworkMatchMakingSTEAM.GAMEVERSION = BigLobbyGlobals:gameversion()
+	-- Version is included in search key now, not sure of any benefit changing game version?
+	--NetworkMatchMakingSTEAM.GAMEVERSION = BigLobbyGlobals:gameversion()
 end
 
 -- Prevent non BigLobby players from finding/joining this game.
 if not BigLobbyGlobals:is_small_lobby() then
-	NetworkMatchMakingSTEAM._BUILD_SEARCH_INTEREST_KEY = "biglobby-" .. BigLobbyGlobals:version()
+	-- Use the existing search key and concatenate ":biglobby-{{version}}" to it
+	-- so other mods can use this filter/isolation method. Note at present it's nil
+	local bl_key = ":biglobby-" .. BigLobbyGlobals:version()
+	local current_key = NetworkMatchMakingSTEAM._BUILD_SEARCH_INTEREST_KEY
+	NetworkMatchMakingSTEAM._BUILD_SEARCH_INTEREST_KEY = current_key and current_key .. bl_key or bl_key
 end
--- TODO: Use the existing search key and concatenate "-biglobby" to it so other mods
--- can use this filter/isolation method. Note at present it's nil
---NetworkMatchMakingSTEAM._BUILD_SEARCH_INTEREST_KEY .. "-biglobby"

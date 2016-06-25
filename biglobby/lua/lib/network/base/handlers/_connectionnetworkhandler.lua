@@ -1,4 +1,5 @@
 -- Extends the ConnectionNetworkHandler class to add our own connection network calls
+-- For function modifications use the original function name it will be prefixed later
 BigLobby__ConnectionNetworkHandler = BigLobby__ConnectionNetworkHandler or class(ConnectionNetworkHandler)
 
 -- Additional `num_players` parameter(set in pdmod xml) for adjusting BigLobby to host lobby size preference
@@ -11,7 +12,7 @@ function BigLobby__ConnectionNetworkHandler:join_request_reply(...)
 	if not self._verify_in_client_session() then
 		return
 	end
-	
+
 	managers.network:session():on_join_request_reply(...)
 end
 
