@@ -965,7 +965,7 @@
 		<message name="request_place_ecm_jammer" delivery="ordered" receiver="unit" check="client_to_server">
 			<param type="vector3" />	<!-- ray pos -->
 			<param type="vector3" />	<!-- ray normal -->
-			<param type="int" min="0" max="255"/>	<!-- duration_multiplier * 100, to fit in a uint8 -->
+			<param type="int" min="0" max="3"/>	<!-- duration_multiplier * 100, to fit in a uint8 -->
 		</message>
 
 		<message name="sync_unit_event_id_16" delivery="ordered" receiver="unit">
@@ -1842,6 +1842,11 @@
 
 		<message name="sync_spawn_extra_ammo" delivery="ordered" receiver="unit" check="client_to_server">
 			<param type="unit" />
+		</message>
+		
+		<message name="sync_set_super_syndrome" delivery="ordered" receiver="connection" check="client_to_server">
+			<param type="int" /> 	<!-- peer id -->
+			<param type="bool" /> 	<!-- active -->
 		</message>
 	</rpc>
 
