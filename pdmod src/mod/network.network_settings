@@ -1,6 +1,6 @@
 <network>
 
-
+	
 	<!-- Connection -->
 	<rpc>
 		<message name="discover_host_reply" delivery="unreliable" receiver="connection">
@@ -16,17 +16,17 @@
 			<param type="int" min="1" max="4" /> <!-- Peer id -->
 			<param type="int" min="0" max="2" /> <!-- Message id -->
 		</message>
-
+		
 		<message name="remove_peer_confirmation" delivery="ordered" receiver="connection" check="client_to_server">
 			<param type="int" min="1" max="4" /> <!-- Peer id -->
 		</message>
-
+		
 		<!--message name="request_player_name" delivery="ordered" receiver="connection"/-->
-
+		
 		<message name="request_player_name_reply" delivery="ordered" receiver="connection">
 			<param type="string" />
 		</message>
-
+		
 		<message name="request_join" delivery="ordered" receiver="connection">
 			<param type="string" /> <!-- Peer Name -->
 			<!--<param type="string" />  Mask set -->
@@ -34,14 +34,15 @@
 			<param type="string" /> <!-- Dlcs "dlc1 dlc2" -->
 			<param type="xuid" />
 			<param type="int" min="0" max="100" /> <!-- Player level -->
+			<param type="int" min="0" max="25" /> <!-- Player rank -->
 			<param type="int" min="-1" max="1024" />  <!-- Gameversion, needed for XBOX -->
 			<!--<param type="xnaddr" />-->
 			<param type="int" min="1" max="65536" /> <!-- Join attempt unique identifier -->
 			<param type="longstring" /> <!-- Authentic Steam Ticket ID -->
 		</message>
-
-		<message name="join_request_reply" delivery="ordered" receiver="connection">
-			<param type="int" min="0" max="8" /> <!-- Reply info 0 == may not join, 1 == ok, 2 == kicked, 3 == game started, 4 = map not owned, 5 = full, 6 = low lvl, 7 = wrong game version, 8 = authentication failed -->
+		
+		<message name="join_request_reply" delivery="ordered" receiver="connection">	
+			<param type="int" min="0" max="9" /> <!-- Reply info 0 == may not join, 1 == ok, 2 == kicked, 3 == game started, 4 = map not owned, 5 = full, 6 = low lvl, 7 = wrong game version, 8 = authentication failed, 9 = banned -->
 			<param type="int" min="0" max="4" /> <!-- Peer id ~=0 when accepted -->
 			<param type="string" />				<!-- My character -->
 			<param type="int" min="1" max="127" /> <!-- level index -->
@@ -57,7 +58,7 @@
 			<param type="xuid" />
 			<param type="longstring" /> <!-- Authentic Steam Ticket ID -->
 		</message>
-
+		
 		<message name="peer_handshake" delivery="ordered" receiver="connection" check="server_to_client">
 			<param type="string" /> <!-- Peer Name -->
 			<param type="int" min="1" max="4" /> <!-- Peer id -->
@@ -70,65 +71,65 @@
 			<param type="xuid" />
 			<param type="xnaddr" />
 		</message>
-
+		
 		<message name="peer_exchange_info" delivery="ordered" receiver="connection">
 			<param type="int" min="1" max="4" /> <!-- Peer id -->
 		</message>
-
+		
 		<message name="connection_established" delivery="ordered" receiver="connection">
 			<param type="int" min="1" max="4" /> <!-- id of the peer that was introduced to us -->
 		</message>
-
+		
 		<message name="mutual_connection" delivery="ordered" receiver="connection" check="server_to_client">
 			<param type="int" min="1" max="4" /> <!-- id of the other peer -->
 		</message>
-
+		
 		<message name="steam_p2p_ping" delivery="unreliable" receiver="connection"/>
-
+		
 		<message name="enter_ingame_lobby_menu" delivery="ordered" receiver="connection" check="server_to_client">
 			<param type="int" min="1" max="1024" /> <!-- Load counter -->
 		</message>
-
+		
 		<message name="set_menu_sync_state_index" delivery="ordered" receiver="connection">
 			<param type="int" min="1" max="8" /> <!-- index of menu sync state -->
 		</message>
-
+		
 		<message name="set_member_ready" delivery="ordered" receiver="connection">
 			<param type="int" min="1" max="4" /> <!-- Peer ID -->
 			<param type="int" min="0" max="100" /> <!-- state. 0 = false -->
 			<param type="int" min="1" max="4" /> <!-- 1=ready button_state, 2=streaming state, 3=outfits_loaded, 4=server asks if outfits_loaded-->
 			<param type="string" />	<!-- outfit_versions -->
 		</message>
-
+		
 		<message name="request_drop_in_pause" delivery="ordered" receiver="connection" check="server_to_client">
 			<param type="int" min="1" max="4" /> <!-- Peer id -->
 			<param type="string" /> <!-- nickname -->
 			<param type="bool" /> <!-- pause_state -->
 		</message>
-
+		
 		<message name="drop_in_pause_confirmation" delivery="ordered" receiver="connection" check="client_to_server">
 			<param type="int" min="1" max="4" /> <!-- Peer id -->
 		</message>
-
+		
 		<message name="set_loading_state" delivery="ordered" receiver="connection">
 			<param type="bool" /> <!-- Loading -->
 			<param type="int" min="1" max="1024" /> <!-- Load counter -->
 		</message>
-
+		
 		<message name="re_open_lobby_request" delivery="ordered" receiver="connection" check="client_to_server">
 			<param type="bool" /> <!-- true to open, false to close-->
 		</message>
-
+		
 		<message name="re_open_lobby_reply" delivery="ordered" receiver="connection" check="server_to_client">
 			<param type="bool" /> <!-- true if the lobby has been re-opened. false means fuck off -->
 		</message>
-
+		
 		<message name="set_peer_synched" delivery="ordered" receiver="connection">
 			<param type="int" min="1" max="4" /> <!-- Peer id -->
 		</message>
-
+		
 		<message name="set_dropin" delivery="ordered" receiver="connection" check="server_to_client"/>
-
+		
 		<message name="spawn_dropin_penalty" delivery="ordered" receiver="connection" check="server_to_client">
 			<param type="bool" /> <!-- Spawn dead -->
 			<param type="bool" /> <!-- Spawn bleedout -->
@@ -137,19 +138,19 @@
 			<param type="int" min="0" max="10" /> <!-- Used Cable ties -->
 			<param type="int" min="0" max="15" /> <!-- Used body bags -->
 		</message>
-
+		
 		<message name="finish_trade" delivery="ordered" receiver="connection" check="server_to_client"/>
 		<message name="begin_trade" delivery="ordered" receiver="connection" check="server_to_client"/>
 		<message name="cancel_trade" delivery="ordered" receiver="connection" check="server_to_client"/>
-
+		
 		<message name="dropin_progress" delivery="unreliable" receiver="connection" check="server_to_client">
 			<param type="int" min="1" max="4" /> <!-- Peer id -->
 			<param type="int" min="0" max="100" /> <!-- progress percentage -->
 		</message>
-
-
-
-
+		
+		
+		
+	
 		<message name="set_trade_countdown" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="bool" />
 		</message>
@@ -158,7 +159,7 @@
 			<param type="string" /> <!-- Criminal name -->
 			<param type="float" min="0" max="180" step="0.1" exact="false"/>	<!-- time -->
 		</message>
-
+		
 		<message name="set_trade_death" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="string" /> <!-- Criminal name -->
 			<param type="int" min="0" max="2047" /> <!-- Respawn penalty -->
@@ -168,7 +169,7 @@
 		<message name="set_trade_spawn" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="string" /> <!-- Criminal name -->
 		</message>
-
+		
 		<message name="set_trade_replace" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="bool" /> <!-- Replace AI -->
 			<param type="string" /> <!-- Criminal name 1 -->
@@ -177,7 +178,7 @@
 		</message>
 
 		<message name="request_spawn_member" delivery="ordered" receiver="connection" check="client_to_server" />
-
+		
 		<message name="hostage_trade_dialog" delivery="ordered" receiver="connection" check="server_to_client">
 			<param type="int" min="1" max="8" />
 		</message>
@@ -185,33 +186,33 @@
 		<message name="warn_about_civilian_free" delivery="ordered" receiver="connection" check="server_to_client">
 			<param type="int" min="1" max="8" />
 		</message>
-
+		
 		<message name="ok_to_load_level" delivery="ordered" receiver="connection" check="server_to_client">
 			<param type="int" min="1" max="1024" /> <!-- Load counter -->
 		</message>
-
+		
 		<message name="ok_to_load_lobby" delivery="ordered" receiver="connection" check="server_to_client">
 			<param type="int" min="1" max="1024" /> <!-- Load counter -->
 		</message>
-
+		
 		<message name="set_peer_left" delivery="ordered" receiver="connection" />
 
 		<message name="set_peer_entered_lobby" delivery="ordered" receiver="connection" />
-
+		
 		<message name="sync_game_settings" delivery="ordered" receiver="connection" check="server_to_client">
 			<param type="int" min="0" max="127"/> <!-- Job id index -->
 			<param type="int" min="1" max="127" /> <!-- level index -->
 			<param type="int" min="1" max="6" /> <!-- difficulty index -->
 		</message>
-
+		
 		<message name="sync_stage_settings" delivery="ordered" receiver="connection" check="server_to_client">
 			<param type="int" min="1" max="127" /> <!-- level index -->
 			<param type="int" min="1" max="12" /> <!-- Job stage -->
 			<param type="int" min="0" max="4" /> <!-- alternative stage -->
 			<param type="int" min="0" max="127" /> <!-- interupt stage level index -->
 		</message>
-
-
+		
+		
 
 
 
@@ -225,32 +226,33 @@
 		
 		<message name="sync_on_retry_job_stage" delivery="ordered" receiver="connection" check="server_to_client"/>
 
+						
 		<message name="lobby_sync_update_level_id" delivery="ordered" receiver="connection" check="server_to_client">
 			<param type="int" min="1" max="256" />
 		</message>
-
+		
 		<message name="lobby_sync_update_difficulty" delivery="ordered" receiver="connection" check="server_to_client">
 			<param type="string" />
 		</message>
-
+		
 		<message name="lobby_info" delivery="ordered" receiver="connection">
 			<param type="int" min="0" max="100" /> <!-- Level -->
 			<param type="int" min="0" max="25" /> <!-- Rank -->
 			<param type="string" />					<!-- Character -->
 			<param type="string" />					<!-- Mask Set -->
 		</message>
-
+		
 		<message name="send_chat_message" delivery="reliable" receiver="connection">
 			<param type="int" min="1" max="4"/>	<!-- Channel id -->
 			<param type="string" />	<!-- Message -->
 		</message>
-
+		
 		<message name="sync_outfit" delivery="ordered" receiver="connection">
 			<param type="longstring" />				<!-- outfit string -->
 			<param type="int" min="0" max="100"/>	<!-- outfit_version -->
 			<param type="longstring" /> <!-- Steam tradable item signature -->
 		</message>
-
+		
 		<message name="sync_profile" delivery="ordered" receiver="connection">
 			<param type="int" min="0" max="100" /> <!-- Level -->
 			<param type="int" min="0" max="25" /> <!-- Rank -->
@@ -259,12 +261,12 @@
 		<message name="report_dead_connection" delivery="ordered" receiver="connection" check="client_to_server">
 			<param type="int" min="1" max="4" /> <!-- ID of the peer that we have failed to connect to -->
 		</message>
-
+		
 		<message name="sanity_check_network_status" delivery="unreliable" receiver="connection"/>
-
+		
 		<message name="sanity_check_network_status_reply" delivery="unreliable" receiver="connection"/>
-
-
+		
+		
 		<!-- PRE-PLANNING -->
 		<message name="preplanning_reserved" delivery="ordered" receiver="connection" check="server_to_client">
 			<param type="string"/> <!-- type / plan -->
@@ -286,7 +288,7 @@
 			<param type="int" min="1" max="4"/> <!-- Event num 2: for 'start': line width -->
 			<param type="int" min="1" max="4"/> <!-- Event num 3: for 'start': line color index -->
 		</message>
-
+		
 		<!-- LOOT DROP -->
 		<message name="feed_lootdrop" delivery="ordered" receiver="connection">
 			<param type="int" min="1" max="64" /> <!-- global value -->
@@ -303,8 +305,8 @@
 		<message name="choose_lootcard" delivery="ordered" receiver="connection">
 			<param type="int" min="1" max="3" /> <!-- chosen lootcard -->
 		</message>
-
-
+		
+		
 		<!-- InstantExplosiveBulletBase -->
 		<message name="sync_explode_bullet" delivery="ordered" receiver="connection">
 			<param type="vector3" />									<!-- Position -->
@@ -325,11 +327,11 @@
 			<param type="int" min="0" max="31" />			<!-- count_cops -->
 			<param type="int" min="0" max="31" />			<!-- count_gangsters -->
 			<param type="int" min="0" max="31" />			<!-- count_civilians -->
-
+			
 			<param type="int" min="0" max="31" />			<!-- count_cop_kills -->
 			<param type="int" min="0" max="31" />			<!-- count_gangster_kills -->
 			<param type="int" min="0" max="31" />			<!-- count_civilian_kills -->
-
+			
 			<param type="int" min="1" max="3" />			<!-- selection index -->
 		</message>
 
@@ -337,14 +339,14 @@
 			<param type="int" min="0" max="31" />			<!-- count_cops -->
 			<param type="int" min="0" max="31" />			<!-- count_gangsters -->
 			<param type="int" min="0" max="31" />			<!-- count_civilians -->
-
+			
 			<param type="int" min="0" max="31" />			<!-- count_cop_kills -->
 			<param type="int" min="0" max="31" />			<!-- count_gangster_kills -->
 			<param type="int" min="0" max="31" />			<!-- count_civilian_kills -->
-
+			
 			<param type="int" min="1" max="3" />			<!-- selection index -->
 		</message>
-
+		
 
 		<message name="voting_data" delivery="ordered" receiver="connection">
 			<param type="int" min="1" max="10" /> <!-- Type -->
@@ -355,8 +357,8 @@
 		<message name="sync_award_achievement" delivery="ordered" receiver="connection" check="server_to_client">
 			<param type="string" /> <!-- Achievement ID -->
 		</message>
-
-
+		
+		
 		<message name="propagate_alert" delivery="ordered" receiver="connection" check="client_to_server">
 			<param type="string" />   <!-- Type -->
 			<param type="vector3" />  <!-- Position -->
@@ -365,10 +367,14 @@
 			<param type="unit" />  <!-- Aggressor -->
 			<param type="vector3" />  <!-- Position -->
 		</message>
+
+		<message name="peer_joined_sound" delivery="ordered" receiver="connection" check="server_to_client">
+			<param type="bool" /> <!-- Infamous -->
+		</message>
 	</rpc>
 
 	<!-- END OF NETWORK BASE -->	<!-- END OF NETWORK BASE -->	<!-- END OF NETWORK BASE -->
-
+	
 	<!-- Unit -->
 	<rpc>
 		<message name="set_unit" delivery="ordered" receiver="unit" check="server_to_client">
@@ -384,72 +390,72 @@
 			<param type="unit"/> <!-- shooting unit -->
 			<param type="bool"/>
 		</message>
-
+		
 		<message name="shot_blank_reliable" delivery="ordered" receiver="unit">
 			<param type="unit"/> <!-- shooting unit -->
 			<param type="bool"/>
 		</message>
-
+		
 		<message name="reload_weapon" delivery="unreliable" receiver="unit">
 			<param type="unit"/> <!-- weilder unit -->
 		</message>
-
+		
 		<message name="set_equipped_weapon" delivery="ordered" receiver="unit">
 			<param type="unit" />		<!-- user unit -->
 			<param type="int" min="1" max="256"/>	<!-- weapon type index -->
 			<param type="string" /> <!-- blueprint_string -->
 			<param type="string" /> <!-- cosmetic id -->
 		</message>
-
+		
 		<message name="set_weapon_gadget_state" delivery="ordered" receiver="unit">
 			<param type="unit" />
 			<param type="int" min="0" max="4"/>
 		</message>
-
+		
 		<message name="set_look_dir" delivery="unreliable" receiver="unit">
 			<param type="unit" />
 			<param type="int" min="0" max="255"/><!-- Yaw -->
 			<param type="int" min="0" max="127"/><!-- Pitch -->
 		</message>
-
+		
 		<message name="action_aim_state" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />
 			<param type="bool"/>	<!-- true if start. false if stop -->
 		</message>
-
+		
 		<message name="set_allow_fire" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />
 			<param type="bool"/>	<!-- state -->
 		</message>
-
+		
 		<message name="set_attention" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />	<!-- observer unit -->
 			<param type="unit" />	<!-- target unit -->
 			<param type="int" min="1" max="16"/>	<!-- reaction. ex: AIAttentionObject.REACT_SHOOT -->
 		</message>
-
+		
 		<message name="cop_set_attention_pos" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />	<!-- cop unit -->
 			<param type="vector3" />	<!-- target pos -->
 		</message>
-
+		
 		<message name="set_stance" delivery="ordered" receiver="unit">
 			<param type="unit" />	<!-- cop unit -->
 			<param type="int" min="1" max="4"/>	<!-- 1. ntl 2. hos 3. cbt 4. wnd-->
 			<param type="bool"/>	<!-- true if instant -->
 			<param type="bool"/>	<!-- true if execute_queued -->
 		</message>
-
+		
 		<message name="set_pose" delivery="ordered" receiver="unit">
 			<param type="unit" />	<!-- cop unit -->
 			<param type="int" min="1" max="2"/>	<!-- 1. stand 2. crouch -->
 		</message>
-
+		
 		<message name="action_idle_start" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />
 			<param type="int" min="1" max="4"/>	<!-- body part -->
 		</message>
-
+		
 		<message name="action_act_start" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />
 			<param type="int" min="1" max="1024"/>	<!-- fix this number. I set it to something high.george -->
@@ -457,7 +463,7 @@
 			<param type="bool"/>	<!-- clamp_to_graph -->
 			<param type="bool"/>	<!-- needs_full_blend -->
 		</message>
-
+		
 		<message name="action_act_start_align" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />
 			<param type="int" min="1" max="1024"/>	<!-- fix this number. I set it to something high.george -->
@@ -467,7 +473,7 @@
 			<param type="int" min="0" max="255"/>	<!-- end_rotation yaw as a ratio of the full circle -->
 			<param type="vector3" />	<!-- start pos -->
 		</message>
-
+		
 		<message name="action_act_end" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />
 		</message>
@@ -481,23 +487,23 @@
 			<param type="float"/>	<!-- speed -->
 			<param type="int" min="0" max="10"/>	<!-- fire accuracy -->
 		</message>
-
+		
 		<message name="action_dodge_end" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />
 		</message>
-
+		
 		<message name="long_dis_interaction" delivery="ordered" receiver="unit">
 			<param type="unit" />	<!-- target unit -->
 			<param type="int" min="0" max="10"/>	<!-- 0 means call. 1-10 is intimidation strength. between teamates 1 means morale_boost-->
 			<param type="unit" />	<!-- aggressor unit -->
 		</message>
-
+		
 		<message name="unit_tied" delivery="ordered" receiver="unit" check="client_to_server">
 			<param type="unit" />	<!-- cop unit -->
 			<param type="unit" />	<!-- aggressor unit -->
 			<param type="bool" />	<!-- can flee? -->
 		</message>
-
+		
 		<message name="unit_traded" delivery="ordered" receiver="unit" check="client_to_server">
 			<param type="unit" />	<!-- hostage unit -->
 			<param type="vector3" />	<!-- position -->
@@ -508,49 +514,50 @@
 			<param type="unit" />	<!-- hostage unit -->
 			<param type="bool" />	<!-- enable -->
 			<param type="bool" />	<!-- trade success -->
+			<param type="bool" />	<!-- skip hint -->
 		</message>
-
+		
 		<message name="alarm_pager_interaction" delivery="ordered" receiver="unit">
 			<param type="int" min="0" max="4094" /> <!-- in engine: MAX_UNIT_ID = 4094 -->
 			<param type="string" /> <!-- tweak_data -->
 			<param type="int" min="1" max="3"/>	<!-- 1=start, 2=interrupted, 3=complete -->
 		</message>
-
+		
 		<message name="remove_corpse_by_id" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="int" min="0" max="4094" /> <!-- in engine: MAX_UNIT_ID = 4094 -->
 			<param type="bool" />	<!-- create body bag -->
 			<param type="int" min="1" max="4"/>		<!-- peer_id -->
 		</message>
-
+		
 		<message name="set_unit_invulnerable" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />	<!-- unit -->
 			<param type="bool" />	<!-- enable -->
 		</message>
-
+		
 		<message name="alert" delivery="unreliable" receiver="unit" check="client_to_server">
 			<param type="unit" />	<!-- alerted unit -->
 			<param type="unit" />	<!-- aggressor unit -->
 		</message>
-
+		
 		<message name="action_hurt_end" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />
 		</message>
-
+		
 		<message name="set_interaction_voice" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />
 			<param type="string" />	<!-- new voice -->
 		</message>
 
-
+		
 		<message name="is_inside_point_of_no_return" delivery="unreliable" receiver="unit" check="client_to_server">
 			<param type="bool" />	<!-- is_inside -->
 		</message>
-
+		
 		<message name="mission_ended" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="bool" />	<!-- win -->
 			<param type="int" min="0" max="15" /> <!-- num_is_inside -->
 		</message>
-
+		
 		<!-- Walk Action -->
 			<message name="action_walk_start" delivery="ordered" receiver="unit" check="server_to_client">
 				<param type="unit" />
@@ -564,16 +571,16 @@
 				<param type="bool" /> <!-- no_strafe-->
 				<param type="int" min="0" max="2" /> <!-- end_pose. 0=none, 1=stand, 2=crouch -->
 			</message>
-
+			
 			<message name="action_walk_nav_point" delivery="ordered" receiver="unit">
 				<param type="unit" />
 				<param type="vector3" />
 			</message>
-
+			
 			<message name="action_walk_stop" delivery="ordered" receiver="unit" check="server_to_client">
 				<param type="unit" />
 			</message>
-
+			
 			<message name="action_walk_nav_link" delivery="ordered" receiver="unit" check="server_to_client">
 				<param type="unit" />
 				<param type="vector3" /> <!-- anim play position -->
@@ -611,26 +618,26 @@
 				<param type="bool" /> <!-- true for flying strike-->
 				<param type="int" min="1" max="256" /> <!-- action incremental ID -->
 			</message>
-
+			
 			<message name="action_spooc_stop" delivery="ordered" receiver="unit">
 				<param type="unit" />
 				<param type="vector3" /> <!-- stop position -->
 				<param type="int" min="1" max="255" /> <!-- nav_point_index -->
 				<param type="int" min="1" max="256" /> <!-- action incremental ID -->
 			</message>
-
+			
 			<message name="action_spooc_nav_point" delivery="ordered" receiver="unit">
 				<param type="unit" />
 				<param type="vector3" />
 				<param type="int" min="1" max="256" /> <!-- action incremental ID -->
 			</message>
-
+			
 			<message name="action_spooc_strike" delivery="ordered" receiver="unit">
 				<param type="unit" />
 				<param type="vector3" />
 				<param type="int" min="1" max="256" /> <!-- action incremental ID -->
 			</message>
-
+		
 		<message name="action_warp_start" delivery="ordered" receiver="unit">
 			<param type="unit" />
 			<param type="bool" />	<!-- true if position data are present -->
@@ -638,12 +645,12 @@
 			<param type="bool" />	<!-- true if rotation data are present -->
 			<param type="int" min="0" max="255"/>	<!-- yaw as a ratio of the full circle -->
 		</message>
-
+			
 		<message name="friendly_fire_hit" delivery="ordered" receiver="unit" check="client_to_server">
 			<param type="unit" />	<!-- subject unit -->
 		</message>
 
-
+			
 		<message name="damage_bullet" delivery="ordered" receiver="unit">
 			<param type="unit" />	<!-- subject unit -->
 			<param type="unit" />	<!-- attacker unit -->
@@ -653,7 +660,7 @@
 			<param type="int" min="0" max="2" /> <!-- 0 = melee, 1 = knock_down, 2 = stagger -->
 			<param type="bool" /> <!-- true if character died -->
 		</message>
-
+		
 		<message name="damage_explosion_fire" delivery="ordered" receiver="unit">
 			<param type="unit" />	<!-- subject unit -->
 			<param type="unit" />	<!-- attacker unit -->
@@ -681,7 +688,7 @@
 			<param type="int" min="0" max="1" /> <!-- variant -->
 			<param type="bool" /> <!-- true if character died -->
 		</message>
-
+		
 		<message name="damage_dot" delivery="ordered" receiver="unit">
 			<param type="unit" />	<!-- subject unit -->
 			<param type="unit" />	<!-- attacker unit -->
@@ -690,7 +697,7 @@
 			<param type="string" /> <!-- Variant -->
 			<param type="bool" /> <!-- hurt animation -->
 		</message>
-
+		
 		<message name="damage_melee" delivery="ordered" receiver="unit">
 			<param type="unit" />	<!-- subject unit -->
 			<param type="unit" />	<!-- attacker unit -->
@@ -701,72 +708,72 @@
 			<param type="int" min="0" max="6"/> <!-- 0 = melee, 1 = shield_knock, 2 = counter_tased, 3 = melee + remove alarm pager, 4 = counter_spooc, 5 = taser_tased, 6 = dismember -->
 			<param type="bool" /> <!-- true if character died -->
 		</message>
-
+		
 		<message name="from_server_damage_bullet" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />	<!-- subject unit -->
 			<param type="unit" />	<!-- attacker unit -->
 			<param type="int" min="0" max="300"/> <!-- height hit offset -->
 			<param type="int" min="0" max="7"/> <!-- hurt, bleedout, death, light_hurt, heavy_hurt, fatal -->
 		</message>
-
+		
 		<message name="from_server_damage_explosion_fire" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />	<!-- subject unit -->
 			<param type="unit" />	<!-- attacker unit -->
 			<param type="int" min="0" max="7"/> <!-- hurt, bleedout, death, light_hurt, heavy_hurt, fatal -->
 			<param type="int" min="1" max="8"/> <!-- attack variant index (explosion, stun...) -->
 		</message>
-
+		
 		<message name="from_server_damage_melee" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />	<!-- subject unit -->
 			<param type="unit" />	<!-- attacker unit -->
 			<param type="int" min="0" max="300"/> <!-- height hit offset -->
 			<param type="int" min="0" max="7"/><!-- hurt, bleedout, death, light_hurt, heavy_hurt, fatal -->
 		</message>
-
+		
 		<message name="from_server_damage_tase" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />	<!-- subject unit -->
 		</message>
-
+		
 		<message name="from_server_damage_bleeding" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />	<!-- subject unit. the result is assumed to be death -->
 		</message>
-
+		
 		<message name="from_server_damage_incapacitated" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />	<!-- subject unit -->
 		</message>
-
+		
 		<message name="from_server_unit_recovered" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />	<!-- subject unit -->
 		</message>
-
+		
 		<message name="run_mission_element" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="int" min="0" />		<!-- Element id -->
 			<param type="unit" />				<!-- Instigator -->
 			<param type="int" min="0" max="100" />	<!-- Orientation element index -->
 		</message>
-
+		
 		<message name="run_mission_element_no_instigator" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="int" min="0" />		<!-- Element id -->
 			<param type="int" min="0" max="100" />	<!-- Orientation element index -->
 		</message>
-
+		
 		<message name="to_server_mission_element_trigger" delivery="ordered" receiver="unit" check="client_to_server">
 			<param type="int" min="0" />		<!-- Element id -->
 			<param type="unit" />				<!-- Instigator -->
 		</message>
-
+		
 		<message name="to_server_area_event" delivery="ordered" receiver="unit" check="client_to_server">
 			<param type="int" min="1" max="4" /><!-- Event id -->
 			<param type="int" min="0" />		<!-- Element id -->
 			<param type="unit" />				<!-- Instigator -->
 		</message>
-
+		
 		<message name="to_server_access_camera_trigger" delivery="ordered" receiver="unit" check="client_to_server">
 			<param type="int" min="0" />		<!-- Element id -->
 			<param type="string" />				<!-- Trigger -->
 			<param type="unit" />				<!-- Instigator -->
 		</message>
-
+		
 		<message name="sync_body_damage_bullet" delivery="ordered" receiver="unit">
 			<param type="body" />
 			<param type="unit" />
@@ -777,87 +784,87 @@
 			<param type="int" min="0" max="63"/>	<!-- Direction Pitch -->
 			<param type="int" min="0" max="16384" />
 		</message>
-
+		
 		<message name="sync_body_damage_lock" delivery="ordered" receiver="unit">
 			<param type="body" /> 		<!-- which body -->
 			<param type="float" min="0" max="200" step="0.01" /> <!-- damage -->
 		</message>
-
+		
 		<message name="sync_body_damage_melee" delivery="ordered" receiver="unit">
 			<param type="body" />
 			<param type="unit" />
 			<param type="vector3" />
-			<param type="vector3" />
+			<param type="vector3" /> 
 			<param type="vector3" />
 			<param type="float" min="0" max="63" step="0.1" exact="false"/>
 		</message>
-
+		
 		<message name="sync_body_damage_explosion" delivery="ordered" receiver="unit">
 			<param type="body" />
 			<param type="unit" />
 			<param type="vector3" />
-			<param type="vector3" />
+			<param type="vector3" /> 
 			<param type="vector3" />
 			<param type="int" min="0" max="32768" /> <!-- damage is multiplied with 163.84, giving a max damage of 200 -->
 		</message>
-
+		
 		<message name="sync_body_damage_explosion_no_attacker" delivery="ordered" receiver="unit">
 			<param type="body" />
 			<param type="vector3" />
-			<param type="vector3" />
+			<param type="vector3" /> 
 			<param type="vector3" />
 			<param type="int" min="0" max="32768" /> <!-- damage is multiplied with 163.84, giving a max damage of 200 -->
 		</message>
-
+		
 		<message name="sync_body_damage_fire" delivery="ordered" receiver="unit">
 			<param type="body" />
 			<param type="unit" />
 			<param type="vector3" />
-			<param type="vector3" />
+			<param type="vector3" /> 
 			<param type="vector3" />
 			<param type="int" min="0" max="32768" /> <!-- damage is multiplied with 163.84, giving a max damage of 200 -->
 		</message>
-
+		
 		<message name="sync_body_damage_fire_no_attacker" delivery="ordered" receiver="unit">
 			<param type="body" />
 			<param type="vector3" />
-			<param type="vector3" />
+			<param type="vector3" /> 
 			<param type="vector3" />
 			<param type="int" min="0" max="32768" /> <!-- damage is multiplied with 163.84, giving a max damage of 200 -->
 		</message>
 
-
+		
 		<message name="play_distance_interact_redirect" delivery="ordered" receiver="unit">
 			<param type="unit" />
 			<param type="string" />
-		</message>
-
+		</message>		
+		
 		<message name="action_tase_event" delivery="ordered" receiver="unit">
 			<param type="unit" />
 			<param type="int" min="1" max="3" /> <!-- event_type 1=start, 2=stop, 3=fire -->
 		</message>
-
+		
 		<message name="sync_interacted" delivery="ordered" receiver="unit">
 			<param type="unit" />
 			<param type="int" min="-2" max="4094" /> <!-- in engine: MAX_UNIT_ID = 4094. -2 means no unit_id check is required -->
 			<param type="string" /> <!-- tweak_data -->
 			<param type="int" min="1" max="256" /> <!-- status. interpreted depending on the interaction type -->
 		</message>
-
+		
 		<message name="sync_multiple_equipment_bag_interacted" delivery="ordered" receiver="unit">
 			<param type="unit" />
 			<param type="int" min="0" max="15" /> <!-- amount wanted by the player -->
 		</message>
-
+		
 		<message name="sync_interacted_by_id" delivery="ordered" receiver="unit">
 			<param type="int" min="-2" max="4094" /> <!-- in engine: MAX_UNIT_ID = 4094. -2 means no unit_id check is required -->
 			<param type="string" /> <!-- tweak_data -->
 		</message>
-
+		
 		<message name="sync_interaction_reply" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="bool" /> <!-- true if approved, false if denied -->
 		</message>
-
+		
 		<message name="interaction_set_active" delivery="ordered" receiver="unit">
 			<param type="unit" />
 			<param type="int" min="0" max="4094" /> <!-- in engine: MAX_UNIT_ID = 4094. -2 means no unit_id check is required -->
@@ -865,7 +872,7 @@
 			<param type="string" /> <!-- tweak_data -->
 			<param type="bool" /> <!-- true if outline is flashing -->
 		</message>
-
+		
 		<message name="sync_teammate_progress" delivery="ordered" receiver="unit">
 			<param type="int" min="1" max="3"/> <!-- Use this for differect interpetation od the string arg. 1 = interact, 2 = deploying, 3 = putting on mask -->
 			<param type="bool" /> <!-- enabled flag -->
@@ -873,7 +880,7 @@
 			<param type="float" min="0" max="120" step="0.1" exact="false"/>	<!-- time -->
 			<param type="bool" /> <!-- success complete (valid when stopping interaction) -->
 		</message>
-
+		
 		<message name="revive_player" delivery="ordered" receiver="unit">
 			<param type="int" min="0" max="16"/> <!-- revive_health_multiplier skill level -->
 			<param type="int" min="0" max="4"/> <!-- damage_reduction_multiplier skill level -->
@@ -882,52 +889,52 @@
 			<param type="float" min="0" max="120" step="0.1" exact="false"/>	<!-- time -->
 		</message>
 		<message name="interupt_revive_player" delivery="ordered" receiver="unit"/>
-
+		
 		<message name="revive_unit" delivery="ordered" receiver="unit" check="client_to_server">
 			<param type="unit" />
 			<param type="unit" /> <!-- Reviving unit -->
 		</message>
-
+		
 		<message name="start_free_player" delivery="ordered" receiver="unit"/>
 		<message name="interupt_free_player" delivery="ordered" receiver="unit"/>
-
+		
 		<message name="pause_bleed_out" delivery="ordered" receiver="unit">
 			<param type="unit" />
 		</message>
-
+		
 		<message name="unpause_bleed_out" delivery="ordered" receiver="unit">
 			<param type="unit" />
 		</message>
-
+		
 		<message name="interaction_set_waypoint_paused" delivery="ordered" receiver="unit">
 			<param type="unit" />
 			<param type="bool" />
 		</message>
-
+		
 		<message name="pause_arrested_timer" delivery="ordered" receiver="unit">
 			<param type="unit" />
 		</message>
-
+		
 		<message name="unpause_arrested_timer" delivery="ordered" receiver="unit">
 			<param type="unit" />
 		</message>
-
+		
 		<message name="place_trip_mine" delivery="ordered" receiver="unit" check="client_to_server">
 			<param type="vector3" />			<!-- Position -->
 			<param type="vector3" />			<!-- Normal of place surface -->
 			<param type="bool" />					<!-- If upgraded with sensor module -->
 		</message>
-
+		
 		<message name="activate_trip_mine" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />
 		</message>
-
+		
 		<message name="sync_trip_mine_setup" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />
 			<param type="bool" />
 			<param type="int" min="0" max="4"/> <!-- Peer id -->
 		</message>
-
+		
 		<message name="sync_trip_mine_explode" delivery="ordered" receiver="unit">
 			<param type="unit" />
 			<param type="unit" />	<!-- user unit -->
@@ -947,7 +954,7 @@
 			<param type="float" />	<!-- added time -->
 			<param type="float" />	<!-- range multiplier -->
 		</message>
-
+		
 		<message name="sync_trip_mine_explode_no_user" delivery="ordered" receiver="unit">
 			<param type="unit" />
 			<param type="vector3" />				<!-- ray from -->
@@ -955,55 +962,63 @@
 			<param type="int" min="0" max="1000"/>	<!-- damage size -->
 			<param type="int" min="0" max="500"/>	<!-- damage -->
 		</message>
-
+		
 		<message name="sync_trip_mine_set_armed" delivery="ordered" receiver="unit">
 			<param type="unit" />
 			<param type="bool" />
 			<param type="int" min="0" max="500" />
 		</message>
-
+		
 		<message name="request_place_ecm_jammer" delivery="ordered" receiver="unit" check="client_to_server">
 			<param type="vector3" />	<!-- ray pos -->
 			<param type="vector3" />	<!-- ray normal -->
 			<param type="int" min="0" max="3"/>	<!-- duration_multiplier * 100, to fit in a uint8 -->
 		</message>
-
+		
 		<message name="sync_unit_event_id_16" delivery="ordered" receiver="unit">
 			<param type="unit" />
 			<param type="string" /><!-- extension name -->
 			<param type="int" min="1" max="16"/>
 		</message>
-
+		
 		<message name="from_server_ecm_jammer_place_result" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />	<!-- jammer unit. nil if failed -->
 		</message>
-
+		
 		<message name="sync_pickup" delivery="ordered" receiver="unit" check="client_to_server">
 			<param type="unit" />
 		</message>
-
+		
 		<message name="place_sentry_gun" delivery="ordered" receiver="unit" check="client_to_server">
 			<param type="vector3" />
 			<param type="rotation" />
 			<param type="int" min="0" max="32"/> <!-- equipment selection index -->
 			<param type="unit" /> <!-- user_unit -->
 			<param type="int" min="1" max="2" /> <!-- idstring index for sentry type to spawn -->
+			<param type="int" min="1" max="2" /> <!-- ammo upgrade level -->
 		</message>
 
-		<message name="remove_sentry_gun" delivery="ordered" receiver="unit" check="client_to_server">
-			<param type="unit" /> <!-- sentry gun unit -->
+		<message name="picked_up_sentry_gun" delivery="ordered" receiver="unit" check="client_to_server">
+			<param type="unit" /> <!-- sentry gun user_unit -->
 		</message>
 
+		<message name="picked_up_sentry_gun_response" delivery="ordered" receiver="unit" check="server_to_client">
+			<param type="int" /> <!-- sentry uid -->
+			<param type="int" min="0" max="255" /> <!-- current ammo -->
+			<param type="int" min="0" max="255" /> <!-- max ammo -->
+			<param type="int" min="1" max="2" /> <!-- sentry type index -->
+		</message>
+		
 		<message name="from_server_sentry_gun_place_result" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="int" min="1" max="4"/> <!-- owner peer_id -->
 			<param type="int" min="0" max="32"/> <!-- equipment selection index. zero means fail -->
 			<param type="unit" /> <!-- sentry gun -->
-			<param type="float" min="0" max="7"/> <!-- rot_speed_mul upgrade multiplier -->
-			<param type="float" min="0" max="1"/> <!-- spread upgrade multiplier -->
+			<param type="int" min="1" max="2"/> <!-- rotation speed upgrade level -->
+			<param type="int" min="1" max="2"/> <!-- spread upgrade level -->
 			<param type="bool" /> <!-- shield -->
-			<param type="int" min="0" max="8" />	<!-- damage multiplier -->
+			<param type="int" min="1" max="2" /> <!-- ammo upgrade level -->
 		</message>
-
+		
 		<message name="sentrygun_ammo" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />
 			<param type="int" min="0" max="16"/><!-- sentrygun_ammo ratio -->
@@ -1018,12 +1033,12 @@
 			<param type="unit" />	<!-- fire mode unit -->
 			<param type="int" />	<!-- owner id -->
 		</message>
-
+		
 		<message name="sentrygun_health" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />
 			<param type="int" min="0" max="5"/><!-- sentrygun_health ratio -->
 		</message>
-
+		
 		<message name="turret_idle_state" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />
 			<param type="bool" />
@@ -1041,11 +1056,11 @@
 
 		<message name="turret_complete_repairing" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />
-		</message>
+		</message>		
 
 		<message name="turret_repair_shield" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />
-		</message>
+		</message>		
 
 		<message name="sync_unit_module" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" /> <!-- parent_unit -->
@@ -1054,7 +1069,7 @@
 			<param type="string" /><!-- module ID -->
 			<param type="string" /><!-- parent extension name -->
 		</message>
-
+		
 		<message name="run_unit_module_function" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" /> <!-- parent_unit -->
 			<param type="string" /><!-- module ID -->
@@ -1063,7 +1078,7 @@
 			<param type="string" /><!-- func_name -->
 			<param type="string" /><!-- param -->
 		</message>
-
+		
 		<message name="sync_player_kill_statistic" delivery="reliable" receiver="unit" check="server_to_client">
 			<param type="string" /><!-- tweak_table_name -->
 			<param type="bool"/><!-- is_headshot -->
@@ -1071,7 +1086,7 @@
 			<param type="string" /><!-- variant -->
 			<param type="string" /><!-- stats_name -->
 		</message>
-
+		
 		<message name="sync_equipment_setup" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />
 			<param type="int" min="0" max="255"/> <!-- uint8 -->
@@ -1084,12 +1099,12 @@
 			<param type="int" min="0" max="4"/> <!-- Peer id -->
 			<param type="int" min="0" max="2"/>	<!-- Bullet storm level -->
 		</message>
-
+				
 		<message name="sync_ammo_bag_ammo_taken" delivery="ordered" receiver="unit">
 			<param type="unit" />
 			<param type="float" exact="true"/>
 		</message>
-
+		
 		<message name="place_deployable_bag" delivery="ordered" receiver="unit" check="client_to_server">
 			<param type="string" />	<!-- Bag class name -->
 			<param type="vector3" />
@@ -1103,77 +1118,77 @@
 			<param type="int" min="0" max="255"/>
 			<param type="int" min="0" max="2"/>	<!-- Bullet storm level -->
 		</message>
-
+		
 		<message name="used_deployable" delivery="ordered" receiver="unit" check="client_to_server"/>
 
 		<message name="sync_doctor_bag_taken" delivery="ordered" receiver="unit">
 			<param type="unit" />
 			<param type="float" exact="true"/>
 		</message>
-
+		
 		<message name="sync_money_wrap_money_taken" delivery="ordered" receiver="unit">
 			<param type="unit" />
 			<!--<param type="int" min="1" max="1000"/>-->
 		</message>
-
+		
 		<message name="sync_small_loot_taken" delivery="ordered" receiver="unit" check="client_to_server">
 			<param type="unit" />
 			<param type="int" min="0" max="2"/> <!-- multiplier upgrade level -->
 		</message>
-
+		
 		<message name="sync_hostage_headcount" delivery="reliable" receiver="unit" check="server_to_client">
 			<param type="int" min="0" max="63"/> <!-- nr hostages -->
 		</message>
-
+		
 		<message name="start_timer_gui" delivery="ordered" receiver="unit">
 			<param type="unit"/>
 			<param type="int" min="1" max="2000"/>
 		</message>
-
+		
 		<message name="give_equipment" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="string"/>
 			<param type="int" min="0" max="10"/>
 			<param type="bool"/> <!-- transferred from another player -->
 		</message>
-
+		
 		<message name="killzone_set_unit" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="string"/>
 		</message>
-
+		
 		<message name="dangerzone_set_level" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="int" min="1" max="4"/>
 		</message>
-
+		
 		<message name="sync_player_movement_state" delivery="ordered" receiver="unit">
 			<param type="unit" />
 			<param type="string"/>
 			<param type="int" min="0" max="1023"/>
 			<param type="string"/> <!-- unit:id() as string -->
 		</message>
-
+		
 		<message name="sync_show_hint" delivery="unreliable" receiver="unit">
 			<param type="string"/>
 		</message>
-
+		
 		<message name="sync_show_action_message" delivery="unreliable" receiver="unit">
 			<param type="unit"/>
 			<param type="string"/>
 		</message>
-
+		
 		<message name="say" delivery="unreliable" receiver="unit">
 			<param type="unit"/>
-			<param type="float" exact="true"/> <!-- Wwise event_id cast to 4-byte float -->
+			<param type="float" exact="true" bitmask="true"/> <!-- Wwise event_id cast to 4-byte float -->
 		</message>
-
+		
 		<message name="unit_sound_play" delivery="reliable" receiver="unit">
 			<param type="unit" />
-			<param type="float" exact="true"/> <!-- Wwise event_id cast to 4-byte float -->
+			<param type="float" exact="true" bitmask="true"/> <!-- Wwise event_id cast to 4-byte float -->
 			<param type="string"/> <!-- source name -->
 		</message>
-
+		
 		<message name="corpse_sound_play" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="int" min="0" max="4094" /> <!-- in engine: MAX_UNIT_ID = 4094 -->
-			<param type="float" exact="true"/> <!-- Wwise event_id cast to 4-byte float -->
+			<param type="float" exact="true" bitmask="true"/> <!-- Wwise event_id cast to 4-byte float -->
 			<param type="string"/> <!-- source name -->
 		</message>
 
@@ -1184,7 +1199,7 @@
 
 		<message name="sync_waiting_for_player_skip" delivery="reliable" receiver="unit" check="server_to_client">
 		</message>
-
+		
 		<message name="criminal_hurt" delivery="unreliable" receiver="unit">
 			<param type="unit" />
 			<param type="unit" /><!-- attacker -->
@@ -1194,32 +1209,32 @@
 		<message name="arrested" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit"/>
 		</message>
-
+		
 		<message name="suspect_uncovered" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit"/><!-- enemy that uncovered the local player -->
 		</message>
-
+		
 		<message name="add_synced_team_upgrade" delivery="ordered" receiver="unit">
 			<param type="string"/>				<!-- category -->
 			<param type="string"/>				<!-- upgrade -->
 			<param type="int" min="1" max="5"/> <!-- upgrade level -->
 		</message>
-
+		
 		<message name="sync_deployable_equipment" delivery="ordered" receiver="unit">
 			<param type="string"/>	<!-- Deployable equipment id -->
 			<param type="int" min="0" max="100"/> <!-- Amount of deployables -->
 		</message>
-
+		
 		<message name="sync_cable_ties" delivery="ordered" receiver="unit">
 			<param type="int" min="-1" max="50"/> <!-- Amount of cable ties, -1 is unlimited amount -->
 		</message>
-
+		
 		<message name="sync_grenades" delivery="ordered" receiver="unit">
 			<param type="string"/>	<!-- Grenade id -->
 			<param type="int" min="0" max="31"/> <!-- Amount of grenades  -->
 			<param type="int" min="0" max="4" /> <!-- Peer id -->
 		</message>
-
+				
 		<message name="sync_ammo_amount" delivery="ordered" receiver="unit">
 			<param type="int" min="1" max="3"/> <!-- Selection index -->
 			<!-- max_clip, current_clip, current_left, max -->
@@ -1233,7 +1248,7 @@
 			<param type="string"/> <!-- Category -->
 			<param type="string"/> <!-- Upgrade -->
 		</message>
-
+		
 		<message name="sync_bipod" delivery="ordered" receiver="unit">
 			<param type="vector3" /> <!-- bipod position -->
 			<param type="vector3" /> <!-- body position -->
@@ -1246,9 +1261,9 @@
 			<param type="bool"/> <!-- has_dye_pack -->
 			<param type="int" min="0" max="100"/> <!-- dye_value_multiplier -->
 		</message>
-
+		
 		<message name="sync_remove_carry" delivery="ordered" receiver="unit" />
-
+		
 		<message name="server_drop_carry" delivery="ordered" receiver="unit">
 			<param type="string"/>	<!-- Carry id -->
 			<param type="int" min="0" max="2"/> <!-- multiplier upgrade level for small loot -->
@@ -1261,7 +1276,7 @@
 			<param type="int" min="0" max="1"/> <!-- Upgrade level of throw distance multiplier -->
 			<param type="unit" /> <!-- If attach to zipline -->
 		</message>
-
+		
 		<message name="sync_carry_data" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />
 			<param type="string"/>	<!-- Carry id -->
@@ -1283,24 +1298,24 @@
 			<param type="int" min="0" max="1"/> <!-- power level of cocaine stacks on me the peer -->
 		</message>
 
-
+				
 		<message name="server_secure_loot" delivery="ordered" receiver="unit" check="client_to_server">
 			<param type="string"/>	<!-- Carry id -->
 			<param type="int" min="0" max="2"/> <!-- multiplier upgrade level for small loot -->
 		</message>
-
+		
 		<message name="sync_secure_loot" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="string"/>	<!-- Carry id -->
 			<param type="int" min="0" max="2"/> <!-- multiplier upgrade level for small loot -->
 			<param type="bool"/> <!-- silent, no presetation message -->
 		</message>
-
+				
 		<message name="request_throw_projectile" delivery="ordered" receiver="unit" check="client_to_server">
 			<param type="int" min="1" max="32"/> <!-- Projectile type index -->
 			<param type="vector3" /> <!-- position -->
 			<param type="vector3" /> <!-- direction -->
 		</message>
-
+		
 		<message name="sync_throw_projectile" delivery="ordered" receiver="unit">
 			<param type="unit" />
 			<param type="vector3" /> <!-- position -->
@@ -1319,7 +1334,7 @@
 			<param type="vector3" /> 	<!-- direction -->
 			<param type="int" min="1" max="32"/> <!-- Projectile type index -->
 			<param type="int" min="0" max="4"/> <!-- Peer id -->
-		</message>
+		</message>		
 
 		<message name="sync_detonate_molotov_grenade" delivery="ordered" receiver="unit">
 			<param type="unit" />
@@ -1342,41 +1357,41 @@
 			<param type="int"/> <!-- dot_length -->
 			<param type="int"/> <!-- dot_damage -->
 		</message>
-
+		
 		<message name="server_unlock_asset" delivery="ordered" receiver="unit" check="client_to_server">
 			<param type="string"/>	<!-- Asset id -->
 		</message>
-
+		
 		<message name="sync_unlock_asset" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="string"/>	<!-- Asset id -->
 			<param type="int" min="0" max="4" /> <!-- Peer ID -->
 		</message>
-
+		
 		<message name="sync_heist_time" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="float" min="0" step="0.1" exact="false"/>
 		</message>
-
+		
 		<message name="run_mission_door_sequence" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />
 			<param type="string"/>	<!-- sequence_name -->
 		</message>
-
+		
 		<message name="run_mission_door_device_sequence" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />
 			<param type="string"/>	<!-- sequence_name -->
 		</message>
-
+		
 		<message name="set_mission_door_device_powered" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />
 			<param type="bool"/>	<!-- powered -->
 			<param type="bool"/>	<!-- enable interaction -->
 		</message>
-
+						
 		<message name="server_place_mission_door_device" delivery="ordered" receiver="unit" check="client_to_server">
 			<param type="unit" /> <!-- device -->
 			<param type="unit" /> <!-- player -->
 		</message>
-
+		
 		<message name="result_place_mission_door_device" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" /> <!-- device -->
 			<param type="bool"/>
@@ -1403,34 +1418,34 @@
 			<!--<param type="int" min="1" max="100"/>-->
 		</message>
 
-
+		
 		<message name="sync_equipment_possession" delivery="ordered" receiver="unit">
 			<param type="int" min="1" max="4"/>
 			<!--<param type="unit" />-->
 			<param type="string"/>
 			<param type="int" min="0" max="10"/>
 		</message>
-
+		
 		<message name="sync_remove_equipment_possession" delivery="ordered" receiver="unit">
 			<param type="int" min="1" max="4"/>
 			<!--<param type="unit" />-->
 			<param type="string"/>
 		</message>
-
+		
 		<!-- <message name="sync_start_anticipation" delivery="ordered" receiver="unit" check="server_to_client"/> -->
-
+		
 		<message name="sync_start_anticipation_music" delivery="ordered" receiver="unit" check="server_to_client"/>
-
+				
 		<message name="sync_start_assault" delivery="ordered" receiver="unit" check="server_to_client"/>
-
+		
 		<message name="sync_end_assault" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="int" min="0" max="2"/> <!-- Result -->
 		</message>
-
+		
 		<message name="sync_assault_dialog" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="int" min="1" max="11"/>
 		</message>
-
+		
 		<message name="sync_smoke_grenade" receiver="unit" delivery="reliable" check="server_to_client">
 			<param type="vector3" exact="false"/>
 			<param type="vector3" exact="false"/>
@@ -1447,12 +1462,12 @@
 		</message>
 
 		<message name="sync_cs_grenade_kill" receiver="unit" delivery="reliable" check="server_to_client"/>
-
+		
 		<message name="sync_remove_one_teamAI" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="string" />
 			<param type="bool" />
 		</message>
-
+		
 		<message name="remove_unit" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />
 		</message>
@@ -1472,26 +1487,26 @@
 			<param type="bool" /> <!-- state, add (true) or remove (false) -->
 			<param type="float" min="1" max="8" /> <!-- multiplier on the time -->
 		</message>
-
+		
 		<message name="count_down_player_minions" delivery="reliable" receiver="unit" check="server_to_client"/>
-
+		
 		<message name="sync_teammate_helped_hint" delivery="ordered" receiver="unit">
 			<param type="int" min="1" max="3"/> <!-- What hint type -->
 			<param type="unit" /> <!-- Helped unit -->
 			<param type="unit" /> <!-- Helping unit -->
 		</message>
-
+		
 		<message name="sync_assault_mode" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="bool"/>
 		</message>
 
 		<message name="begin_gameover_fadeout" delivery="ordered" receiver="unit" check="server_to_client"/>
-
+		
 		<message name="sync_hostage_killed_warning" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="int" min="1" max="3"/> <!-- Warning -->
 		</message>
-
-
+		
+		
 		<message name="sync_teammate_comment" delivery="ordered" receiver="unit">
 			<param type="int" min="1" max="512"/> 	<!-- Message -->
 			<param type="vector3" exact="false"/> 	<!-- Position -->
@@ -1503,7 +1518,7 @@
 			<param type="unit" /> 					<!-- Instigator -->
 			<param type="int" min="1" max="512"/> 	<!-- Message -->
 		</message>
-
+		
 		<message name="send_statistics" delivery="ordered" receiver="unit" check="client_to_server">
 			<param type="int" min="0" max="5000"/> 	<!-- total kills -->
 			<param type="int" min="0" max="5000"/> 	<!-- total specials kills -->
@@ -1511,7 +1526,7 @@
 			<param type="int" min="0" max="1000"/> 	<!-- accuracy -->
 			<param type="int" min="0" max="1000"/> 	<!-- downs -->
 		</message>
-
+		
 		<message name="sync_statistics_result" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="int" min="1" max="4"/>			<!-- best killer -->
 			<param type="int" min="0" max="10000"/>		<!-- best killer score -->
@@ -1527,20 +1542,20 @@
 			<param type="int" min="0" max="1000"/>		<!-- group accuracy -->
 			<param type="int" min="0" max="2000"/>		<!-- group downs -->
 		</message>
-
+		
 		<message name="statistics_tied" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="string"/>	<!-- Tweakdata table name of tied down unit -->
 		</message>
-
+		
 		<message name="bain_comment" delivery="ordered" receiver="unit">
 			<param type="string" />
 		</message>
-
+		
 		<message name="sync_level_up" delivery="reliable" receiver="unit">
 			<param type="int" min="0" max="100"/>	<!-- level -->
 		</message>
-
-
+		
+	
 		<message name="m79grenade_explode_on_client" delivery="ordered" receiver="unit">
 			<param type="vector3" exact="true"/> <!-- position -->
 			<param type="vector3" />				<!-- normal -->
@@ -1549,8 +1564,8 @@
 			<param type="int" min="0" max="1000"/>	<!-- range -->
 			<param type="float" min="0" max="10" step="0.1" exact="false"/>	<!-- curve pow -->
 		</message>
-
-
+		
+		
 		<message name="element_explode_on_client" delivery="ordered" receiver="unit">
 			<param type="vector3" exact="true"/>	<!-- position -->
 			<param type="vector3" />				<!-- normal -->
@@ -1563,60 +1578,60 @@
 			<param type="unit" />
 			<param type="bool" />
 		</message>
-
+		
 		<message name="sync_run_sequence_char" delivery="ordered" receiver="unit">
 			<param type="unit" />
 			<param type="string" />
 		</message>
-
+		
 		<message name="set_attention_enabled" delivery="ordered" receiver="unit">
 			<param type="unit" />
 			<param type="int" min="1" max="256"/>	<!-- attention setting index -->
 			<param type="bool" />	<!-- on/off -->
 		</message>
-
+		
 		<message name="link_attention_no_rot" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />	<!-- parent -->
 			<param type="unit" />	<!-- child -->
 			<param type="string" />	<!-- parent object name -->
 			<param type="vector3" />	<!-- child local pos -->
 		</message>
-
+		
 		<message name="unlink_attention" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />	<!-- child -->
 		</message>
-
+		
 		<message name="suspicion" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="int" min="1" max="4"/>	<!-- peer ID of the player under suspicion -->
 			<param type="int" min="0" max="255"/>	<!-- suspicion ratio. 0 means no suspicion, 255 means uncovered. values in between mean suspicion in progress -->
 		</message>
-
+		
 		<message name="suspicion_hud" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />	<!-- observer_unit -->
 			<param type="int" min="0" max="5"/>	<!-- status: 0=aborted, 1=in_progress, 2=detected, 3=calling, 4=called, 5=call_interrupted -->
 		</message>
-
+		
 		<message name="suppression" delivery="ordered" receiver="unit" check="client_to_server">
 			<param type="unit" />	<!-- suppressed character -->
 			<param type="int" min="1" max="16"/>	<!-- suppression built as a ratio of the character's max. 15 = max, 16 = panic -->
 		</message>
-
+		
 		<message name="suppressed_state" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />	<!-- suppressed character -->
 			<param type="bool"/>	<!-- suppressed or not -->
 		</message>
-
+		
 		<message name="sync_upgrade" delivery="ordered" receiver="unit" check="client_to_server">
 			<param type="string" />	<!-- category name -->
 			<param type="string" />	<!-- upgrade_value name -->
 			<param type="int" min="1" max="16"/>	<!-- upgrade_level -->
 		</message>
-
+		
 		<message name="group_ai_event" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="int" min="0" max="255"/>	<!-- event ID. check GroupAIStateBase.lua -->
 			<param type="int" min="0" max="255"/>	<!-- blame ID. check GroupAIStateBase.lua -->
 		</message>
-
+		
 		<message name="start_timespeed_effect" delivery="ordered" receiver="unit" >
 			<param type="string" />	<!-- effect instance id -->
 			<param type="string" />	<!-- timer name -->
@@ -1626,35 +1641,35 @@
 			<param type="float" min="0" max="255" step="0.1" exact="false"/>	<!-- sustain -->
 			<param type="float" min="0" max="255" step="0.1" exact="false"/>	<!-- fade_out -->
 		</message>
-
+		
 		<message name="stop_timespeed_effect" delivery="ordered" receiver="unit" >
 			<param type="string" />	<!-- effect instance id -->
 			<param type="float" min="0" max="255" step="0.1" exact="false"/>	<!-- fade-out time -->
 		</message>
-
+		
 		<message name="camera_yaw_pitch" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />
 			<param type="int" min="0" max="255"/>	<!-- yaw -->
 			<param type="int" min="0" max="255"/>	<!-- pitch -->
 		</message>
-
+		
 		<message name="loot_link" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />	<!-- loot unit -->
 			<param type="unit" />	<!-- parent unit ( if same as loot unit then unlink ) -->
 		</message>
-
+		
 		<message name="sync_gui_net_event" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />	<!-- digital unit -->
 			<param type="int" min="0" max="7"/> <!-- event id -->
 			<param type="float" min="0" step="0.1" exact="false"/> <!-- value -->
 		</message>
-
+		
 		<message name="sync_proximity_activation" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />	<!-- unit -->
 			<param type="string"/> <!-- proximity name -->
 			<param type="string"/> <!-- range data string -->
 		</message>
-
+		
 		<message name="sync_inflict_body_damage" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="body" />	<!-- body -->
 			<param type="unit" />	<!-- inflictor unit -->
@@ -1664,18 +1679,18 @@
 			<param type="int"/> 	<!-- damage -->
 			<param type="vector3"/> <!-- velocity -->
 		</message>
-
+		
 		<message name="sync_team_relation" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="int" min="1" max="16"/> <!-- team_index_1 -->
 			<param type="int" min="1" max="16"/> <!-- team_index_2 -->
 			<param type="int" min="1" max="3"/> <!-- relation_code. 1=neutral, 2=friend, 3=foe -->
 		</message>
-
+		
 		<message name="sync_char_team" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />
 			<param type="int" min="1" max="256"/> <!-- team_index -->
 		</message>
-
+		
 		<message name="sync_vehicle_driving" delivery="ordered" receiver="unit">
 			<param type="string" />		<!-- action (start/stop) -->
 			<param type="unit" />	<!-- the vehicle -->
@@ -1687,7 +1702,7 @@
 			<param type="float" min="-1" max="1" step="0.0001" /> <!-- acceleration -->
 			<param type="float" min="-1" max="1" step="0.0001" /> <!-- steering -->
 			<param type="float" min="0" max="1" step="0.0001" /> <!-- brake -->
-			<param type="float" min="0" max="1" step="0.0001" /> <!-- handbrake -->
+			<param type="float" min="0" max="1" step="0.0001" /> <!-- handbrake -->	
 			<param type="bool" /> <!-- gear change up -->
 			<param type="bool" /> <!-- gear change down -->
 			<param type="int" min="-1" max="10"/>   <!-- gear -->
@@ -1699,7 +1714,7 @@
 		   <param type="int" min="0" max="4" /> <!-- Peer id ~=0 when accepted -->
 		   <param type="unit" /> <!-- player -->
 		 </message>
-
+		  
 		<message name="sync_vehicle_player" delivery="ordered" receiver="unit">
 			<param type="string" />		<!-- action (enter/exit) -->
 			<param type="unit" />	<!-- the vehicle -->
@@ -1719,7 +1734,7 @@
 			<param type="rotation"/> 	<!-- rotation -->
 			<param type="vector3"/> 	<!-- velocity -->
 		</message>
-
+		
 		<message name="sync_vehicle_data" delivery="ordered" receiver="unit">
 			<param type="unit" />		<!-- the vehicle -->
 			<param type="string"/>      <!-- Vehicle state -->
@@ -1728,13 +1743,13 @@
 			<param type="unit" />		<!-- passanger_back_left -->
 			<param type="unit" />		<!-- passanger_back_right -->
 			<param type="bool" /> 		<!-- is trunk open -->
-		</message>
+		</message>		
 
 		<message name="sync_npc_vehicle_data" delivery="ordered" receiver="unit">
 			<param type="unit" />		<!-- the vehicle -->
 			<param type="string"/>      <!-- NPC vehicle state -->
 			<param type="unit" />		<!-- target -->
-		</message>
+		</message>		
 
 		<message name="sync_vehicle_loot" delivery="ordered" receiver="unit">
 			<param type="unit" />		<!-- the vehicle -->
@@ -1744,27 +1759,27 @@
 			<param type="int" min="0" max="2" />		<!-- multiplier upgrade level for small loot -->
 			<param type="string" />		<!-- carry_id3 -->
 			<param type="int" min="0" max="2" />		<!-- multiplier upgrade level for small loot -->
-		</message>
-
+		</message>		
+		
 		<message name="sync_ai_vehicle_action" delivery="ordered" receiver="unit">
 			<param type="string" />		<!-- action (enter/exit) -->
 			<param type="unit" />		<!-- the vehicle -->
 			<param type="string" />		<!-- seat name -->
 			<param type="unit" />		<!-- team AI -->
-		</message>
+		</message>			
 
 		<message name="server_store_loot_in_vehicle" delivery="ordered" receiver="unit" check="client_to_server">
 			<param type="unit"/>	<!-- vehicle -->
 			<param type="unit"/>    <!-- loot bag unit -->
 		</message>
-
+		
 		<message name="sync_store_loot_in_vehicle" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit"/>	<!-- vehicle -->
 			<param type="unit"/>    <!-- loot bag unit -->
 			<param type="string"/>	<!-- Carry id -->
 			<param type="int" min="0" max="2"/> <!-- multiplier upgrade level for small loot -->
 		</message>
-
+				
 		<message name="server_give_vehicle_loot_to_player" delivery="ordered" receiver="unit" check="client_to_server">
 			<param type="unit"/>	<!-- vehicle -->
 			<param type="int" min="1" max ="4" /> <!-- peer_id -->
@@ -1833,6 +1848,17 @@
 			<param type="int" />	<!-- peer id -->
 		</message>
 
+		<message name="request_stockholm_syndrome" delivery="ordered" receiver="connection" check="client_to_server">
+			<param type="vector3" />	<!-- position -->
+			<param type="int" />	<!-- peer id -->
+			<param type="bool" />	<!-- auto activate -->
+		</message>
+
+		<message name="stockholm_syndrome_results" delivery="ordered" receiver="connection" check="server_to_client">
+			<param type="bool" />	<!-- can trade true/false -->
+			<param type="int" min="0" max="3"/>	<!-- feedback, used for displaying hints -->
+		</message>
+
 		<message name="sync_stored_pos" delivery="ordered" receiver="unit">
 			<param type="unit" />
 			<param type="bool"/> 		<!-- allow sync -->
@@ -1843,23 +1869,35 @@
 		<message name="sync_spawn_extra_ammo" delivery="ordered" receiver="unit" check="client_to_server">
 			<param type="unit" />
 		</message>
-		
+
 		<message name="sync_set_super_syndrome" delivery="ordered" receiver="connection" check="client_to_server">
 			<param type="int" /> 	<!-- peer id -->
 			<param type="bool" /> 	<!-- active -->
 		</message>
+
+		<message name="sync_player_swansong" delivery="ordered" receiver="unit" check="client_to_server">
+			<param type="unit" />
+			<param type="bool" /> 	<!-- active -->
+		</message>
+
+		<message name="special_eq_response" delivery="ordered" receiver="unit" check="server_to_client">
+			<param type="unit" />
+		</message>
+
+		<message name="sync_swansong_hud" delivery="ordered" receiver="unit" check="server_to_client">
+			<param type="unit" />
+			<param type="int" /> <!-- id of the player who got swansong -->
+		</message>
+
+		<message name="sync_swansong_timer" delivery="orderer" receiver="unit">
+			<param type="unit" />
+			<param type="float" />	<!-- current -->
+			<param type="float" />	<!-- total -->
+			<param type="int" />	<!-- revives -->
+			<param type="int" />	<!-- id of the player with swansong -->
+		</message>
 	</rpc>
-
-
-
-
-
-
-
-
-
-
-
+	
 
 
 

@@ -7,20 +7,20 @@ function bkin_bl__menu:init()
 
     -- Load the user options
     self:Load()
-    
+
     -- Ensure a value exists for the lobby_size
-    self._data.lobby_size = self._data.lobby_size or 8
-    
+    self._data.lobby_size = self._data.lobby_size or 16
+
     -- Set the Global num_players_settings to the 'setting' value for lobby_size
     Global.num_players_settings = self._data.lobby_size
-    
+
     -- Register the hooks for creating the option menu
     self:RegisterHooks()
 end
 
 function bkin_bl__menu:Save()
 	local file = io.open( self._data_path, "w+" )
-    
+
 	if file then
 		local json_enc = json.encode( self._data )
 
@@ -40,7 +40,7 @@ function bkin_bl__menu:Load()
 end
 
 function bkin_bl__menu:RegisterHooks()
-    
+
     Hooks:Add("LocalizationManagerPostInit", "LocalizationManagerPostInit__bkin_bl", function( loc )
         loc:load_localization_file(BigLobbyGlobals.ModPath .. "l10n/en.json")
     end)

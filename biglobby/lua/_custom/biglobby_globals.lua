@@ -35,7 +35,7 @@ if not _G.BigLobbyGlobals then
 
     -- Semantic versioning
     function BigLobbyGlobals:version()
-        return "2.0.6"
+        return "2.0.7"
     end
 
     -- GameVersion for matchmaking

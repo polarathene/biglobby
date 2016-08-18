@@ -1,3 +1,7 @@
+local orig_BaseNetworkSession = {
+	check_peer_preferred_character = BaseNetworkSession.check_peer_preferred_character
+}
+
 -- Modified to support additional peers.
 function BaseNetworkSession:on_network_stopped()
 	local num_player_slots = BigLobbyGlobals:num_player_slots()
@@ -43,31 +47,30 @@ end
 
 -- Modified to provide all peers with a character, regardless of free characters.
 function BaseNetworkSession:check_peer_preferred_character(preferred_character)
-    -- Original Code --
-	local free_characters = clone(CriminalsManager.character_names())
-	for _, peer in pairs(self._peers_all) do
-		local character = peer:character()
-        if table.contains(free_characters, character) then
-            table.delete(free_characters, character)
-        end
-	end
-	local preferreds = string.split(preferred_character, " ")
-	for _, preferred in ipairs(preferreds) do
-		if table.contains(free_characters, preferred) then
-			return preferred
-		end
-	end
-    -- End Original Code --
+	local all_characters = clone(CriminalsManager.character_names())
 
-    -- Only modification is to select a random character once all availiable characters in the game have been taken.
-    if #free_characters == 0 then
-        local all_characters = clone(CriminalsManager.character_names())
-        local character = all_characters[math.random(#all_characters)]
-        print("No free chracters left. Player will be", character, "instead of", preferred_character)
-        return character
-    else
-        local character = free_characters[math.random(#free_characters)]
-        print("Player will be", character, "instead of", preferred_character)
-        return character
+	local character
+	-- Only get a character through the normal method if one is availiable
+	if #self._peers_all < #all_characters then
+		-- Original Code --
+		character = orig_BaseNetworkSession.check_peer_preferred_character(self, preferred_character)
+		-- End Original Code --
+	end
+
+    -- Get a new character if all have already been taken
+    if character == nil then
+		-- Allow them to use their preferred character first
+		local preferreds = string.split(preferred_character, " ")
+		for _, preferred in ipairs(preferreds) do
+			if table.contains(all_characters, preferred) then
+				return preferred
+			end
+		end
+
+		-- Fallback to just getting a random character
+        character = all_characters[math.random(#all_characters)]
+        log(string.format("No free chracters left. Player will be %s instead of %s", character, preferred_character))
     end
+
+	return character
 end
