@@ -14,7 +14,7 @@
     local darkgreen = Vector3(0, 150, 0) / 255
     local brightpurple = Vector3(255, 100, 230) / 255
     local gray = Vector3(175, 175, 175) / 255
-    
+
 	local team_ai = Vector3(0.2, 0.8, 1)
 
 	-- Fixed colours
