@@ -2,6 +2,7 @@ local orig_BaseNetworkSession = {
 	check_peer_preferred_character = BaseNetworkSession.check_peer_preferred_character
 }
 
+
 -- Modified to support additional peers.
 function BaseNetworkSession:on_network_stopped()
 	local num_player_slots = BigLobbyGlobals:num_player_slots()
@@ -45,20 +46,20 @@ function BaseNetworkSession:_get_peer_outfit_versions_str()
 	return outfit_versions_str
 end
 
+
 -- Modified to provide all peers with a character, regardless of free characters.
 function BaseNetworkSession:check_peer_preferred_character(preferred_character)
 	local all_characters = clone(CriminalsManager.character_names())
-
 	local character
+
 	-- Only get a character through the normal method if one is availiable
 	if #self._peers_all < #all_characters then
-		-- Original Code --
+		-- Call Original Code
 		character = orig_BaseNetworkSession.check_peer_preferred_character(self, preferred_character)
-		-- End Original Code --
 	end
 
-    -- Get a new character if all have already been taken
-    if character == nil then
+	-- Get a new character if all have already been taken
+	if character == nil then
 		-- Allow them to use their preferred character first
 		local preferreds = string.split(preferred_character, " ")
 		for _, preferred in ipairs(preferreds) do
@@ -68,9 +69,8 @@ function BaseNetworkSession:check_peer_preferred_character(preferred_character)
 		end
 
 		-- Fallback to just getting a random character
-        character = all_characters[math.random(#all_characters)]
-        log(string.format("No free chracters left. Player will be %s instead of %s", character, preferred_character))
-    end
+		character = all_characters[math.random(#all_characters)]
+	end
 
 	return character
 end

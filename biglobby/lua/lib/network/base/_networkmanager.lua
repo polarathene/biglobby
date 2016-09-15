@@ -1,5 +1,6 @@
 -- CAN REMOVE/DELETE
 
+
 -- Modified to alter the display of player count in lobbies
 function NetworkManager:on_peer_added(peer, peer_id)
 	cat_print("multiplayer_base", "NetworkManager:on_peer_added", peer, peer_id)
@@ -34,5 +35,6 @@ function NetworkManager:start_network()
 		self:register_handler("biglobby__connection", BigLobby__ConnectionNetworkHandler)
 		self:register_handler("biglobby__unit", BigLobby__UnitNetworkHandler)
 	end
+	
 	orig__NetworkManager.start_network(self)
 end

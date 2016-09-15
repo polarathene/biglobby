@@ -394,6 +394,7 @@ function ContractBoxGui:create_contract_box()
 
 
 
+
 	-- Only code changed was replacing hardcoded 4 with variable num_player_slots
 	for i = 1, num_player_slots do
 		local peer = managers.network:session():peer(i)

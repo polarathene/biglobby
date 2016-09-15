@@ -9,11 +9,11 @@
 	local brown = Vector3(204, 161, 102) / 255
 	local pink = Vector3(255, 182, 193) / 255
 	local purple = Vector3(186, 90, 186) / 255
-    local darkblue = Vector3(39, 60, 189) / 255
-    local orange = Vector3(255, 120, 0) / 255
-    local darkgreen = Vector3(0, 150, 0) / 255
-    local brightpurple = Vector3(255, 100, 230) / 255
-    local gray = Vector3(175, 175, 175) / 255
+	local darkblue = Vector3(39, 60, 189) / 255
+	local orange = Vector3(255, 120, 0) / 255
+	local darkgreen = Vector3(0, 150, 0) / 255
+	local brightpurple = Vector3(255, 100, 230) / 255
+	local gray = Vector3(175, 175, 175) / 255
 
 	local team_ai = Vector3(0.2, 0.8, 1)
 
@@ -25,11 +25,11 @@
 		brown,
 		pink,
 		purple,
-        darkblue,
-        orange,
-        darkgreen,
-        brightpurple,
-        gray
+		darkblue,
+		orange,
+		darkgreen,
+		brightpurple,
+		gray
 	}
 
 	-- This doesn't appear to be referenced, not sure why it still exists in codebase
@@ -40,11 +40,11 @@
 		"mrpink",
 		"mrbrown",
 		"mrpurple",
-        "mrdarkblue",
-        "mrorange",
-        "mrdarkgreen",
-        "mrbrightpurple",
-        "mrgray"
+		"mrdarkblue",
+		"mrorange",
+		"mrdarkgreen",
+		"mrbrightpurple",
+		"mrgray"
 	}
 
 	-- Make sure we have enough colours to support the number of player slots, creates random colours
@@ -53,7 +53,7 @@
 		math.randomseed( 1337 )
 
 		for i = #tweak_data.peer_vector_colors, num_player_slots do
-            -- RGB channels
+			-- RGB channels
 			local red, blue, green
 			local random_colour
 			red   = math.random(0, 255)

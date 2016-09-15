@@ -1,6 +1,9 @@
 function MenuSceneManager:_setup_lobby_characters()
 	local num_player_slots = BigLobbyGlobals:num_player_slots()
 
+
+
+
 	-- Original Code --
 	if self._lobby_characters then
 		for _, unit in ipairs(self._lobby_characters) do
@@ -86,6 +89,8 @@ end
 function MenuSceneManager:_select_lobby_character_pose(peer_id, unit, weapon_info)
 
 
+
+
 	-- Original Code --
 	local state = unit:play_redirect(Idstring("idle_menu"))
 	local weapon_id = managers.weapon_factory:get_weapon_id_by_factory_id(weapon_info.factory_id)
@@ -99,8 +104,14 @@ function MenuSceneManager:_select_lobby_character_pose(peer_id, unit, weapon_inf
 	else
 	-- End Original Code --
 
+
+
+
 		-- Only modification is to use modulus to make sure our lobby peer is given a pose
 		local pose = lobby_poses[(peer_id % #lobby_poses) + 1][math.random(#lobby_poses[(peer_id % #lobby_poses) + 1])]
+
+
+
 
 	-- Original Code --
 		unit:anim_state_machine():set_parameter(state, pose, 1)

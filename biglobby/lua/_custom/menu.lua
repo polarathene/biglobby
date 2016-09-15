@@ -3,20 +3,21 @@ bkin_bl__menu.menu_id = "bkin_bl__menu"
 bkin_bl__menu._data_path = BigLobbyGlobals.SavePath .. "bkin_bl__settings.json"
 bkin_bl__menu._data = bkin_bl__menu._data or {}
 
+
 function bkin_bl__menu:init()
+	-- Load the user options
+	self:Load()
 
-    -- Load the user options
-    self:Load()
+	-- Ensure a value exists for the lobby_size
+	self._data.lobby_size = self._data.lobby_size or 16
 
-    -- Ensure a value exists for the lobby_size
-    self._data.lobby_size = self._data.lobby_size or 16
+	-- Set the Global num_players_settings to the 'setting' value for lobby_size
+	Global.num_players_settings = self._data.lobby_size
 
-    -- Set the Global num_players_settings to the 'setting' value for lobby_size
-    Global.num_players_settings = self._data.lobby_size
-
-    -- Register the hooks for creating the option menu
-    self:RegisterHooks()
+	-- Register the hooks for creating the option menu
+	self:RegisterHooks()
 end
+
 
 function bkin_bl__menu:Save()
 	local file = io.open( self._data_path, "w+" )
@@ -33,53 +34,52 @@ end
 
 function bkin_bl__menu:Load()
 	local file = io.open( self._data_path, "r" )
+
 	if file then
 		self._data = json.decode( file:read("*all") )
 		file:close()
 	end
 end
 
+
 function bkin_bl__menu:RegisterHooks()
-
-    Hooks:Add("LocalizationManagerPostInit", "LocalizationManagerPostInit__bkin_bl", function( loc )
-        loc:load_localization_file(BigLobbyGlobals.ModPath .. "l10n/en.json")
-    end)
-
-
-    Hooks:Add("MenuManagerSetupCustomMenus", "MenuManagerSetupCustomMenus__bkin_bl", function( menu_manager, nodes )
-        MenuHelper:NewMenu( self.menu_id )
-    end)
+	Hooks:Add("LocalizationManagerPostInit", "LocalizationManagerPostInit__bkin_bl", function( loc )
+		loc:load_localization_file(BigLobbyGlobals.ModPath .. "l10n/en.json")
+	end)
 
 
-    Hooks:Add("MenuManagerPopulateCustomMenus", "MenuManagerPopulateCustomMenus__bkin_bl", function( menu_manager, nodes )
-
-        --Updates data for saving to file after user changes value
-        MenuCallbackHandler.bkin_bl__set_size__clbk = function(menu_clbk, item)
-            local num = math.floor(item:value())
-            item:set_value(num) -- Update the slider display to avoid floating point numbers
-            self._data.lobby_size = num -- Update so it can be saved
-            Global.num_players_settings = num -- The variable that BigLobby references
-            self:Save()
-        end
-
-        MenuHelper:AddSlider({
-            id = "lobby_size", --ID only needs to be unique in the scope of the options node we are creating
-            title = "bkin_bl__set_size__title",
-            desc = "bkin_bl__set_size__desc",
-            callback = "bkin_bl__set_size__clbk",
-            value = self._data.lobby_size,
-            min = 4,
-            max = 128,
-            step = 1,
-            show_value = true,
-            menu_id = self.menu_id
-        })
-    end)
+	Hooks:Add("MenuManagerSetupCustomMenus", "MenuManagerSetupCustomMenus__bkin_bl", function( menu_manager, nodes )
+		MenuHelper:NewMenu( self.menu_id )
+	end)
 
 
-    Hooks:Add("MenuManagerBuildCustomMenus", "MenuManagerBuildCustomMenus__bkin_bl", function(menu_manager, nodes)
-        nodes[self.menu_id] = MenuHelper:BuildMenu( self.menu_id )
-        MenuHelper:AddMenuItem( MenuHelper.menus.lua_mod_options_menu, self.menu_id, "bkin_bl__menu__title", "bkin_bl__menu__desc", 1 )
-    end)
+	Hooks:Add("MenuManagerPopulateCustomMenus", "MenuManagerPopulateCustomMenus__bkin_bl", function( menu_manager, nodes )
+		--Updates data for saving to file after user changes value
+		MenuCallbackHandler.bkin_bl__set_size__clbk = function(menu_clbk, item)
+			local num = math.floor(item:value())
+			item:set_value(num) -- Update the slider display to avoid floating point numbers
+			self._data.lobby_size = num -- Update so it can be saved
+			Global.num_players_settings = num -- The variable that BigLobby references
+			self:Save()
+		end
 
+		MenuHelper:AddSlider({
+			id = "lobby_size", --ID only needs to be unique in the scope of the options node we are creating
+			title = "bkin_bl__set_size__title",
+			desc = "bkin_bl__set_size__desc",
+			callback = "bkin_bl__set_size__clbk",
+			value = self._data.lobby_size,
+			min = 4,
+			max = 128,
+			step = 1,
+			show_value = true,
+			menu_id = self.menu_id
+		})
+	end)
+
+
+	Hooks:Add("MenuManagerBuildCustomMenus", "MenuManagerBuildCustomMenus__bkin_bl", function(menu_manager, nodes)
+		nodes[self.menu_id] = MenuHelper:BuildMenu( self.menu_id )
+		MenuHelper:AddMenuItem( MenuHelper.menus.lua_mod_options_menu, self.menu_id, "bkin_bl__menu__title", "bkin_bl__menu__desc", 1 )
+	end)
 end
