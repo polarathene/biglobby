@@ -1,0 +1,70 @@
+# Docs: https://git-scm.com/docs/gitattributes
+
+
+
+################################################################################
+## RELEASES
+################################################################################
+
+# Releases use `git archive`, `export-ignore` excludes the file/directory/pattern
+# from the release.
+# https://feeding.cloud.geek.nz/posts/excluding-files-from-git-archive/
+
+.gitattributes   export-ignore
+.gitignore       export-ignore
+/pdmod*          export-ignore # directory
+LICENSE          export-ignore
+README.md        export-ignore
+
+
+
+################################################################################
+## LINE ENDINGS - TEXT
+################################################################################
+
+# https://help.github.com/articles/dealing-with-line-endings/
+# http://adaptivepatchwork.com/2012/03/01/mind-the-end-of-your-line/
+
+# This ensures that all files that git considers to be text will have
+# normalized (LF) line endings in the repository.
+# The core.eol configuration variable controls which line endings git
+# will use for normalized files in your working directory; the default
+# is to use the native line ending for your platform.
+# Source: https://www.kernel.org/pub/software/scm/git/docs/gitattributes.html
+
+# `text=auto` as described above overrides the `core.autocrlf` git config setting.
+# `!eol` overrides the `core.eol` git config setting to `unspecified`
+
+* text=auto !eol
+
+
+
+# These files are text and should be normalized (Convert CRLF => LF)
+
+*.lua              text
+*.xml              text
+*.txt              text
+*.network_settings text
+*.json             text
+
+# Documentation
+*.md               text
+LICENSE            text
+
+# git config
+.gitattributes     text
+.gitignore         text
+
+# Editor config
+.editorconfig      text
+
+
+
+################################################################################
+## LINE ENDINGS - BINARY
+################################################################################
+
+# These files are binary and should be left untouched
+# `binary` is a macro for -text -diff
+
+*.pdmod   binary
