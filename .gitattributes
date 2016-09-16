@@ -12,7 +12,7 @@
 
 .gitattributes   export-ignore
 .gitignore       export-ignore
-/pdmod*          export-ignore # directory
+pdmod**/*        export-ignore
 LICENSE          export-ignore
 README.md        export-ignore
 
