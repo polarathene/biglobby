@@ -226,7 +226,6 @@
 		
 		<message name="sync_on_retry_job_stage" delivery="ordered" receiver="connection" check="server_to_client"/>
 
-						
 		<message name="lobby_sync_update_level_id" delivery="ordered" receiver="connection" check="server_to_client">
 			<param type="int" min="1" max="256" />
 		</message>
@@ -496,6 +495,7 @@
 			<param type="unit" />	<!-- target unit -->
 			<param type="int" min="0" max="10"/>	<!-- 0 means call. 1-10 is intimidation strength. between teamates 1 means morale_boost-->
 			<param type="unit" />	<!-- aggressor unit -->
+			<param type="bool" />	<!-- secondary -->
 		</message>
 		
 		<message name="unit_tied" delivery="ordered" receiver="unit" check="client_to_server">
@@ -655,13 +655,22 @@
 			<param type="unit" />	<!-- subject unit -->
 			<param type="unit" />	<!-- attacker unit -->
 			<param type="int" min="0" max="512" /> <!-- incremental damage amount as a % of the total health of the unit -->
-			<param type="int" min="0" max="12"/> <!-- body_hit_index -->
+			<param type="int" min="0" max="23"/> <!-- body_hit_index -->
 			<param type="int" min="0" max="300"/> <!-- height hit offset -->
 			<param type="int" min="0" max="2" /> <!-- 0 = melee, 1 = knock_down, 2 = stagger -->
 			<param type="bool" /> <!-- true if character died -->
 		</message>
 		
 		<message name="damage_explosion_fire" delivery="ordered" receiver="unit">
+			<param type="unit" />	<!-- subject unit -->
+			<param type="unit" />	<!-- attacker unit -->
+			<param type="int" min="0" max="512" /> <!-- incremental damage amount as a % of the total health of the unit -->
+			<param type="int" min="1" max="8"/> <!-- attack variant index (explosion, stun...) -->
+			<param type="bool" /> <!-- true if character died -->
+			<param type="vector3" /> <!-- explosion direction -->
+		</message>
+
+		<message name="damage_explosion_stun" delivery="ordered" receiver="unit">
 			<param type="unit" />	<!-- subject unit -->
 			<param type="unit" />	<!-- attacker unit -->
 			<param type="int" min="0" max="512" /> <!-- incremental damage amount as a % of the total health of the unit -->
@@ -873,6 +882,14 @@
 			<param type="bool" /> <!-- true if outline is flashing -->
 		</message>
 		
+		<message name="pause_downed_timer" delivery="ordered" receiver="unit" check="server_to_client">
+			<param type="unit" />
+		</message>
+
+		<message name="unpause_downed_timer" delivery="ordered" receiver="unit" check="server_to_client">
+			<param type="unit" />
+		</message>
+
 		<message name="sync_teammate_progress" delivery="ordered" receiver="unit">
 			<param type="int" min="1" max="3"/> <!-- Use this for differect interpetation od the string arg. 1 = interact, 2 = deploying, 3 = putting on mask -->
 			<param type="bool" /> <!-- enabled flag -->
@@ -1356,6 +1373,7 @@
 			<param type="unit" /><!-- weapon_unit -->
 			<param type="int"/> <!-- dot_length -->
 			<param type="int"/> <!-- dot_damage -->
+			<param type="unit" /> <!-- attacker unit if any -->
 		</message>
 		
 		<message name="server_unlock_asset" delivery="ordered" receiver="unit" check="client_to_server">
@@ -1827,7 +1845,8 @@
 
 		<message name="sync_drill_upgrades" delivery="ordered" receiver="unit">
 			<param type="unit" />	<!-- unit -->
-			<param type="int" min="0" max ="2" /> <!-- autorepair level -->
+			<param type="int" min="0" max ="1" /> <!-- autorepair level 1 -->
+			<param type="int" min="0" max ="1" /> <!-- autorepair level 2 -->
 			<param type="int" min="0" max ="2" /> <!-- drill speed level -->
 			<param type="bool" /> <!-- silent -->
 			<param type="bool" /> <!-- reduced alert -->
@@ -1889,12 +1908,17 @@
 			<param type="int" /> <!-- id of the player who got swansong -->
 		</message>
 
-		<message name="sync_swansong_timer" delivery="orderer" receiver="unit">
+		<message name="sync_swansong_timer" delivery="ordered" receiver="unit">
 			<param type="unit" />
 			<param type="float" />	<!-- current -->
 			<param type="float" />	<!-- total -->
 			<param type="int" />	<!-- revives -->
 			<param type="int" />	<!-- id of the player with swansong -->
+		</message>
+
+		<message name="sync_team_ai_stopped" delivery="ordered" receiver="unit" check="server_to_client">
+			<param type="unit" />		<!-- team ai unit -->
+			<param type="bool" />	<!-- stopped -->
 		</message>
 	</rpc>
 	

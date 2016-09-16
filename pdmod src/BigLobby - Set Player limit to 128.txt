@@ -1,6 +1,6 @@
-@Name BigLobby - Set Player limit to 128 v2.0.7
+@Name BigLobby - Set Player limit to 128 v2.28
 @Author Kwhali
-@Description All peer max id have been set from 4 to 128. Also the preplanning colour index is updated from 4 to 128.
+@Description Original file + All peer max id and the preplanning colour index have been set from 4 to 128, marked with `biglobby__` prefix.
 @Version 1.16
 
 ;Files included in this project
