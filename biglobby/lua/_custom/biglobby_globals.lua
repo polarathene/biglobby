@@ -6,9 +6,10 @@ if not _G.BigLobbyGlobals then
 
 	BigLobbyGlobals.ClassPath = "lua/_custom/"
 
-	BigLobbyGlobals.Classes = {
-		"menu.lua"
-	}
+    BigLobbyGlobals.Classes = {
+        "menu.lua",
+        "husl.lua"
+    }
 
 	for _, class in pairs(BigLobbyGlobals.Classes) do
 		dofile(BigLobbyGlobals.ModPath .. BigLobbyGlobals.ClassPath .. class)
