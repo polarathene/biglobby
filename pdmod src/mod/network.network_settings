@@ -90,7 +90,7 @@
 		</message>
 
 		<message name="set_menu_sync_state_index" delivery="ordered" receiver="connection">
-			<param type="int" min="1" max="8" /> <!-- index of menu sync state -->
+			<param type="int" min="1" max="9" /> <!-- index of menu sync state -->
 		</message>
 
 		<message name="set_member_ready" delivery="ordered" receiver="connection">
@@ -388,7 +388,7 @@
 
 		<message name="set_equipped_weapon" delivery="ordered" receiver="unit">
 			<param type="unit" />                  <!-- user unit -->
-			<param type="int" min="1" max="256" /> <!-- weapon type index -->
+			<param type="int" min="1" max="512"/>	<!-- weapon type index -->
 			<param type="string" />                <!-- blueprint_string -->
 			<param type="string" />                <!-- cosmetic id -->
 		</message>
@@ -1473,6 +1473,10 @@
 			<param type="int"  min="1" max="4" /> <!-- minion_owner_peer_id -->
 			<param type="int" min="0" max="3" />  <!-- convert_enemies_health_multiplier -->
 			<param type="int" min="0" max="3" />  <!-- passive_convert_enemies_health_multiplier -->
+		</message>
+
+		<message name="remove_minion" delivery="reliable" receiver="unit" check="server_to_client">
+			<param type="unit" />	<!-- unit -->
 		</message>
 
 		<message name="sync_contour_state" delivery="ordered" receiver="unit">
