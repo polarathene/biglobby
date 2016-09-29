@@ -14,7 +14,9 @@ function ClientNetworkSession:on_join_request_reply(...)
 	-- If the response is `1`(ok), set BigLobby to use host preference or 4 if
 	-- a regular lobby.
 	if reply == 1 then
+		-- Had to use BigLobbyGlobals to properly sync player count, is Global.num_players still helpful?
 		Global.num_players = num_players or 4
+		BigLobbyGlobals.num_players = Global.num_players
 	end
 
 	-- Assign sender to original param 16 for the original func call to use
