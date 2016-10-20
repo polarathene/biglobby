@@ -8,7 +8,7 @@
 			<param type="string" />                <!-- Level Name. Used for production levels -->
 			<param type="string" />                <!-- The IP the host uses to send us packets-->
 			<param type="int" min="1" max="4" />   <!--The state the server is in, lobby ingame etc-->
-			<param type="string" />                <!-- difficulty, easy, normal, hard, overkill -->
+			<param type="string" />                <!-- difficulty, easy, normal, hard, overkill etc. -->
 		</message>
 
 		<message name="kick_peer" delivery="ordered" receiver="connection" check="server_to_client">
@@ -45,7 +45,7 @@
 			<param type="int" min="0" max="4" />   <!-- Peer id ~=0 when accepted -->
 			<param type="string" />                <!-- My character -->
 			<param type="int" min="1" max="127" /> <!-- level index -->
-			<param type="int" min="1" max="6" />   <!-- difficulty index -->
+			<param type="int" min="1" max="8" />   <!-- difficulty index -->
 			<param type="int" min="0" max="4" />   <!-- Game State ~=0 when accepted, lobby, in game etc -->
 			<param type="string" />                <!-- Server character (it was Mask set) -->
 			<param type="string" />                <!-- Steam User ID (used for pc only) -->
@@ -200,7 +200,7 @@
 		<message name="sync_game_settings" delivery="ordered" receiver="connection" check="server_to_client">
 			<param type="int" min="0" max="127" /> <!-- Job id index -->
 			<param type="int" min="1" max="127" /> <!-- level index -->
-			<param type="int" min="1" max="6" />   <!-- difficulty index -->
+			<param type="int" min="1" max="8" />   <!-- difficulty index -->
 		</message>
 
 		<message name="sync_stage_settings" delivery="ordered" receiver="connection" check="server_to_client">
@@ -356,6 +356,23 @@
 
 		<message name="peer_joined_sound" delivery="ordered" receiver="connection" check="server_to_client">
 			<param type="bool" /> <!-- Infamous -->
+		</message>
+
+		<message name="client_used_weapon" delivery="reliable" receiver="connection" check="client_to_server">
+			<param type="string" /> <!-- weapon id -->
+		</message>
+
+		<message name="sync_used_weapon" delivery="reliable" receiver="connection" check="server_to_client">
+			<param type="string" /> <!-- weapon id -->
+		</message>
+
+		<!-- Auto fire sound sync -->
+		<message name="sync_start_auto_fire_sound" delivery="ordered" receiver="unit">
+			<param type="unit" /> <!-- husk -->
+		</message>
+
+		<message name="sync_stop_auto_fire_sound" delivery="ordered" receiver="unit">
+			<param type="unit" /> <!-- husk -->
 		</message>
 	</rpc>
 
@@ -642,7 +659,7 @@
 			<param type="int" min="0" max="512" /> <!-- incremental damage amount as a % of the total health of the unit -->
 			<param type="int" min="0" max="23" />  <!-- body_hit_index -->
 			<param type="int" min="0" max="300" /> <!-- height hit offset -->
-			<param type="int" min="0" max="2" />   <!-- 0 = melee, 1 = knock_down, 2 = stagger -->
+			<param type="int" min="0" max="3" />   <!-- 0 = melee, 1 = knock_down, 2 = stagger, 3 = healed -->
 			<param type="bool" />                  <!-- true if character died -->
 		</message>
 
@@ -653,6 +670,7 @@
 			<param type="int" min="1" max="8" />   <!-- attack variant index (explosion, stun...) -->
 			<param type="bool" />                  <!-- true if character died -->
 			<param type="vector3" />               <!-- explosion direction -->
+			<param type="unit" />                  <!-- weapon unit -->
 		</message>
 
 		<message name="damage_explosion_stun" delivery="ordered" receiver="unit">
@@ -673,6 +691,7 @@
 			<param type="vector3" />               <!-- explosion direction -->
 			<param type="int" min="0" max="5" />
 			<param type="string" />
+			<param type="bool" />                  <!-- if true the unit got healed -->
 		</message>
 
 		<message name="damage_tase" delivery="ordered" receiver="unit">
@@ -690,6 +709,7 @@
 			<param type="bool" />                  <!-- true if character died -->
 			<param type="string" />                <!-- Variant -->
 			<param type="bool" />                  <!-- hurt animation -->
+			<param type="string" />                <!-- weapon id -->
 		</message>
 
 		<message name="damage_melee" delivery="ordered" receiver="unit">
@@ -699,7 +719,7 @@
 			<param type="int" min="0" max="512" /> <!-- incremental damage effect amount as a % of the total health of the unit -->
 			<param type="int" min="0" max="128" /> <!-- body_hit_index -->
 			<param type="int" min="0" max="300" /> <!-- height hit offset -->
-			<param type="int" min="0" max="6" />   <!-- 0 = melee, 1 = shield_knock, 2 = counter_tased, 3 = melee + remove alarm pager, 4 = counter_spooc, 5 = taser_tased, 6 = dismember -->
+			<param type="int" min="0" max="7"/>    <!-- 0 = melee, 1 = shield_knock, 2 = counter_tased, 3 = melee + remove alarm pager, 4 = counter_spooc, 5 = taser_tased, 6 = dismember, 7 = healed -->
 			<param type="bool" />                  <!-- true if character died -->
 		</message>
 
@@ -1360,6 +1380,7 @@
 			<param type="int" />  <!-- dot_length -->
 			<param type="int" />  <!-- dot_damage -->
 			<param type="unit" /> <!-- attacker unit if any -->
+			<param type="bool" /> <!-- true if the fire source is a molotov -->
 		</message>
 
 		<message name="server_unlock_asset" delivery="ordered" receiver="unit" check="client_to_server">
@@ -1432,7 +1453,9 @@
 
 		<message name="sync_start_anticipation_music" delivery="ordered" receiver="unit" check="server_to_client" />
 
-		<message name="sync_start_assault" delivery="ordered" receiver="unit" check="server_to_client" />
+		<message name="sync_start_assault" delivery="ordered" receiver="unit" check="server_to_client">
+			<param type="int" min="0" max="1024"/> <!-- Assault Number -->
+		</message>
 
 		<message name="sync_end_assault" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="int" min="0" max="2" /> <!-- Result -->
@@ -1897,6 +1920,45 @@
 		<message name="sync_team_ai_stopped" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" /> <!-- team ai unit -->
 			<param type="bool" /> <!-- stopped -->
+		</message>
+
+		<message name="sync_medic_heal" delivery="reliable" receiver="unit">
+			<param type="unit" /> <!-- medic unit -->
+		</message>
+
+		<message name="sync_explosion_to_client" delivery="ordered" receiver="unit" check="server_to_client">
+			<param type="unit" />                                            <!-- instigator unit -->
+			<param type="vector3" exact="true" />                            <!-- position -->
+			<param type="vector3" />                                         <!-- normal -->
+			<param type="int" min="0" />                                     <!-- damage -->
+			<param type="int" min="0" max="4000" />                          <!-- range -->
+			<param type="float" min="0" max="10" step="0.1" exact="false" /> <!-- curve pow -->
+		</message>
+
+		<message name="sync_friendly_fire_damage" delivery="reliable" receiver="unit">
+			<param type="int" />                            <!-- peer_id -->
+			<param type="unit" />                           <!-- unit -->
+			<param type="float" step="0.1" exact="false" /> <!-- damage -->
+			<param type="string" />                         <!-- variant -->
+		</message>
+
+		<message name="sync_mutators_launch" delivery="reliable" receiver="connection" check="server_to_client">
+			<param type="int" /> <!-- countdown time -->
+		</message>
+
+		<message name="sync_mutators_launch_ready" delivery="reliable" receiver="connection" check="client_to_server">
+			<param type="int" />  <!-- peer id -->
+			<param type="bool" /> <!-- is ready -->
+		</message>
+
+		<message name="sync_mutator_hydra_split" delivery="reliable" receiver="connection" check="server_to_client">
+			<param type="vector3" /> <!-- split position -->
+		</message>
+
+		<message name="sync_synced_unit_outfit" delivery="reliable" receiver="connection" check="server_to_client">
+			<param type="int" />    <!-- unit id -->
+			<param type="string" /> <!-- type -->
+			<param type="string" /> <!-- outfit string -->
 		</message>
 	</rpc>
 
