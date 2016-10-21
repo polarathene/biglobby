@@ -12,7 +12,7 @@ function ClientNetworkSession:on_join_request_reply(...)
 	local num_players = sender and type(params[16])=='number' and params[16]
 
 	-- If the response is `1`(ok), set BigLobby to use host preference or 4 if
-	-- a regular lobby.
+	-- a regular lobby (num_players param is falsey).
 	if reply == 1 then
 		-- Had to use BigLobbyGlobals to properly sync player count, is Global.num_players still helpful?
 		Global.num_players = num_players or 4
