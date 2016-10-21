@@ -1,5 +1,5 @@
 {
-	"name": "Bigger Lobbies",
+	"name": "BigLobby",
 	"description": "Increase the player limit of a lobby from the original 4.",
 	"author": "Polarathene",
 	"contact": "no@support.com",
