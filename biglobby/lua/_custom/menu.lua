@@ -10,6 +10,7 @@ function bkin_bl__menu:init()
 
 	-- The new player limit is defined here, it should not be greater than
 	-- the max values set in the pdmod file.
+	self._constants = {}
 	self._constants.MAX_SLOTS       = 128
 	self._constants.UNIQUE_HEISTERS = 16
 	self._data.lobby_size           = self._data.lobby_size      or self._constants.UNIQUE_HEISTERS
@@ -73,7 +74,7 @@ function bkin_bl__menu:RegisterHooks()
 			self:Save()
 		end
 
-		MenuCallbackHandler.bkin_bl__allow_num_bots__clbk = function(menu_clbk, item)
+		MenuCallbackHandler.bkin_bl__allow_more_bots__clbk = function(menu_clbk, item)
 			local allow = item:value()
 
 			item:set_value(allow)
