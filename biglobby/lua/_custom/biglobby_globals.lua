@@ -1,6 +1,19 @@
+if not Global.BigLobbyPersist then
+	Global.BigLobbyPersist = {
+		num_players = nil -- Set when joining lobbies, nil'd upon leaving
+	}
+end
+
+
 if not _G.BigLobbyGlobals then
 	_G.BigLobbyGlobals = {}
 
+	-- Settings affected by BigLobby Mod Options
+	BigLobbyGlobals.num_players_settings     = nil
+	BigLobbyGlobals.num_bots_settings        = nil
+	BigLobbyGlobals.allow_more_bots_settings = nil
+
+	-- Load custom lua files without specifying them in mod.txt --
 	BigLobbyGlobals.ModPath = ModPath
 	BigLobbyGlobals.SavePath = SavePath
 
@@ -14,18 +27,25 @@ if not _G.BigLobbyGlobals then
 	for _, class in pairs(BigLobbyGlobals.Classes) do
 		dofile(BigLobbyGlobals.ModPath .. BigLobbyGlobals.ClassPath .. class)
 	end
+	-- End custom lua load --
 
+
+	-- Initializing menu will apply the default/saved settings
 	BigLobbyGlobals.Menu = bkin_bl__menu:new()
 
-	-- The new player limit is defined here, it should not be greater than
-	-- the max values set in the pdmod file.
-	-- Prefer `Global.num_players` set by BigLobby host
-	-- Use Global.num_players_settings as it will either be the user option or the default value for the Player #
-	BigLobbyGlobals.num_players = Global.num_players or Global.num_players_settings
+	-- Set to the size of lobby you join, otherwise use your lobby size preferences for hosting
+	BigLobbyGlobals.num_players = Global.BigLobbyPersist.num_players or BigLobbyGlobals.num_players_settings
 
 
 	function BigLobbyGlobals:num_player_slots()
 		return self.num_players
+	end
+
+
+	-- It's probably not going to cause any problems, but I'm capping the
+	-- bot_slots to the lobby size just in case
+	function BigLobbyGlobals:num_bot_slots()
+		return math.min(self.num_bots_settings, self:num_player_slots())
 	end
 
 
