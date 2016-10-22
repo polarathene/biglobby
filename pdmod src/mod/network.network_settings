@@ -1922,6 +1922,15 @@
 			<param type="bool" /> <!-- stopped -->
 		</message>
 
+		<message name="sync_damage_achievements" delivery="ordered" receiver="unit" check="server_to_client">
+			<param type="unit" />  <!-- enemy unit -->
+			<param type="unit" />  <!-- weapon unit -->
+			<param type="unit" />  <!-- attacker unit -->
+			<param type="float" /> <!-- distance -->
+			<param type="float" /> <!-- damage -->
+			<param type="bool" />  <!-- head shot -->
+		</message>
+
 		<message name="sync_medic_heal" delivery="reliable" receiver="unit">
 			<param type="unit" /> <!-- medic unit -->
 		</message>
@@ -1978,11 +1987,11 @@
 		</message>
 
 		<message name="biglobby__join_request_reply" delivery="ordered" receiver="biglobby__connection">
-			<param type="int" min="0" max="8" />   <!-- Reply info 0 == may not join, 1 == ok, 2 == kicked, 3 == game started, 4 = map not owned, 5 = full, 6 = low lvl, 7 = wrong game version, 8 = authentication failed -->
+			<param type="int" min="0" max="9" />   <!-- Reply info 0 == may not join, 1 == ok, 2 == kicked, 3 == game started, 4 = map not owned, 5 = full, 6 = low lvl, 7 = wrong game version, 8 = authentication failed, 9 = banned -->
 			<param type="int" min="0" max="128" /> <!-- Peer id ~=0 when accepted -->
 			<param type="string" />                <!-- My character -->
 			<param type="int" min="1" max="127" /> <!-- level index -->
-			<param type="int" min="1" max="6" />   <!-- difficulty index -->
+			<param type="int" min="1" max="8" />   <!-- difficulty index -->
 			<param type="int" min="0" max="4" />   <!-- Game State ~=0 when accepted, lobby, in game etc -->
 			<param type="string" />                <!-- Server character (it was Mask set) -->
 			<param type="string" />                <!-- Steam User ID (used for pc only) -->
@@ -2111,10 +2120,10 @@
 			<param type="int" min="1" max="128" /> <!-- owner peer_id -->
 			<param type="int" min="0" max="32" />  <!-- equipment selection index. zero means fail -->
 			<param type="unit" />                  <!-- sentry gun -->
-			<param type="float" min="0" max="7" /> <!-- rot_speed_mul upgrade multiplier -->
-			<param type="float" min="0" max="1" /> <!-- spread upgrade multiplier -->
+			<param type="int" min="1" max="2" />   <!-- rotation speed upgrade level -->
+			<param type="int" min="1" max="2" />   <!-- spread upgrade level -->
 			<param type="bool" />                  <!-- shield -->
-			<param type="int" min="0" max="8" />   <!-- damage multiplier -->
+			<param type="int" min="1" max="2" />   <!-- ammo upgrade level -->
 		</message>
 
 		<message name="biglobby__sync_equipment_setup" delivery="ordered" receiver="biglobby__unit" check="server_to_client">
