@@ -1,37 +1,33 @@
--- TODO: I'm not sure exactly what these functions are doing and if their hardcoded 4
--- should have been overriden by the player count. May want to remove on release
--- and restore from old commit if needed?
+-- Instead of overriding methods, I am now hooking them and continuiing the loop
+-- to handle >4 peers.
+local orig__MenuComponentManager = {
+	create_contract_gui = MenuComponentManager.create_contract_gui,
+	show_contract_character = MenuComponentManager.show_contract_character
+}
 
--- Seems to affect the contract UI in lobby screen when Host chooses/changes the contract
+
+-- I believe this creates/updates label state based on what the player is doing?
 function MenuComponentManager:create_contract_gui()
+	orig__MenuComponentManager.create_contract_gui(self)
+
 	local num_player_slots = BigLobbyGlobals:num_player_slots()
-
-	-- Only code changed was replacing hardcoded 4 with variable num_player_slots
-	-- And a quick fix for a decompile error
-	self:close_contract_gui()
-	self._contract_gui = ContractBoxGui:new(self._ws, self._fullscreen_ws)
-
-	--[[
-	if not managers.menu:get_all_peers_state() then
-		local peers_state = {}
-	end
-	]]
-	-- Above version is what the codebase changed to some time ago, obviously broke
-	-- and doesn't make sense, corrected here:
 	local peers_state = managers.menu:get_all_peers_state() or {}
 
-	for i = 1, num_player_slots do
+	for i = 5, num_player_slots do
 		self._contract_gui:update_character_menu_state(i, peers_state[i])
 	end
 end
 
 
+-- Shows the peer label over character with alpha of 1 if loaded, or 0.4 if still
+-- in a loading/joining state?
 function MenuComponentManager:show_contract_character(state)
+	orig__MenuComponentManager.create_contract_gui(self, state)
+
 	local num_player_slots = BigLobbyGlobals:num_player_slots()
 
-	-- Only code changed was replacing hardcoded 4 with variable num_player_slots
 	if self._contract_gui then
-		for i = 1, num_player_slots do
+		for i = 5, num_player_slots do
 			self._contract_gui:set_character_panel_alpha(i, state and 1 or 0.4)
 		end
 	end
