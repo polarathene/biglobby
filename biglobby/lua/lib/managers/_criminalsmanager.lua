@@ -1,5 +1,6 @@
--- Optionally we could increase this too, but I don't believe it's relevant to the mod
--- CriminalsManager.MAX_NR_TEAM_AI = 2
+if BigLobbyGlobals.allow_more_bots_settings then
+	CriminalsManager.MAX_NR_TEAM_AI = BigLobbyGlobals:num_bot_slots()
+end
 -- Not sure how useful this is, just updating it in case.
 CriminalsManager.MAX_NR_CRIMINALS = BigLobbyGlobals:num_player_slots()
 
