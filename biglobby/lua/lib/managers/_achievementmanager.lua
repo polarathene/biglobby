@@ -1,9 +1,9 @@
 -- Disable achievement progress if lobby size is greater than 4 players.
 local orig__AchievmentManager = {
-	award               = AchievmentManager.award
-	_give_reward        = AchievmentManager._give_reward
-	award_progress      = AchievmentManager.award_progress
-	award_steam         = AchievmentManager.award_steam
+	award               = AchievmentManager.award,
+	_give_reward        = AchievmentManager._give_reward,
+	award_progress      = AchievmentManager.award_progress,
+	award_steam         = AchievmentManager.award_steam,
 	steam_unlock_result = AchievmentManager.steam_unlock_result
 }
 
