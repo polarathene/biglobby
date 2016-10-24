@@ -3,11 +3,11 @@
 	"description": "Increase the player limit of a lobby from the original 4.",
 	"author": "Polarathene",
 	"contact": "no@support.com",
-	"version": "2.32",
+	"version": "2.33",
 	"priority" : 400,
 	"updates": [
 		{
-			"revision": 2.32,
+			"revision": 2.33,
 			"identifier": "bkin-biglobby"
 		}
 	],
