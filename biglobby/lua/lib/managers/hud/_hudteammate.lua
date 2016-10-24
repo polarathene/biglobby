@@ -2,9 +2,11 @@
 -- Unfortunately the function is massive and that data is hardcoded at the start of
 -- the function. Thankfully we might still be able to work around it without breaking
 -- other mods such as hud mods which may heavily modify this code.
+local orig__HUDTeammate = {
+	init = HUDTeammate.init
+}
 
-local orig__HUDTeammate = {}
-orig__HUDTeammate.init = HUDTeammate.init
+
 function HUDTeammate:init(i, teammates_panel, is_player, width)
 	-- Main difference in this function is based on the `main_player` variable
 	-- This refers to the local/client player, so as long as we can make that
