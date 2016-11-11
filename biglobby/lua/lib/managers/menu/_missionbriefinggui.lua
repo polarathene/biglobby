@@ -1,23 +1,14 @@
--- Instead of overriding methods, I am now hooking them and continuiing the loop
--- to handle >4 peers.
-local orig__TeamLoadoutItem = {
-	init = TeamLoadoutItem.init,
-	reduce_to_small_font = TeamLoadoutItem.reduce_to_small_font
-}
-
-
 -- Modified to support displaying additional peers loadouts.
--- TODO: This becomes undesirable visually the larger the player count and requires a reworked UI.
-function TeamLoadoutItem:init(...)
-	orig__TeamLoadoutItem.init(self, ...)
-
+-- TODO: This becomes undesirable the larger the player count and requires a reworked UI.
+function TeamLoadoutItem:init(panel, text, i)
 	local num_player_slots = BigLobbyGlobals:num_player_slots()
 
 	-- Only code changed was replacing two hardcoded values of 4 with the variable num_player_slots
+	TeamLoadoutItem.super.init(self, panel, text, i)
 	self._player_slots = {}
 	local quarter_width = self._panel:w() / num_player_slots
 	local slot_panel
-	for i = 5, num_player_slots do
+	for i = 1, num_player_slots do
 		local old_right = slot_panel and slot_panel:right() or 0
 		slot_panel = self._panel:panel({
 			x = old_right,
@@ -46,13 +37,11 @@ end
 
 -- Modified to support additional players. Seems to just reduce font size when needed?
 function TeamLoadoutItem:reduce_to_small_font()
-	orig__TeamLoadoutItem.reduce_to_small_font(self)
-
 	local num_player_slots = BigLobbyGlobals:num_player_slots()
 
 	-- Only code changed was replacing hardcoded 4 with variable num_player_slots
 	TeamLoadoutItem.super.reduce_to_small_font(self)
-	for i = 5, num_player_slots do
+	for i = 1, num_player_slots do
 		if self._player_slots[i].box then
 			self._player_slots[i].box:create_sides(self._player_slots[i].panel, {
 				sides = {
