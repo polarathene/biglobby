@@ -1175,6 +1175,10 @@
 			<param type="bool" /> <!-- transferred from another player -->
 		</message>
 
+		<message name="on_sole_criminal_respawned" delivery="ordered" receiver="unit">
+			<param type="int" min="0" max="4" /> <!-- Peer id -->
+		</message>
+
 		<message name="killzone_set_unit" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="string" />
 		</message>
@@ -1334,7 +1338,7 @@
 		</message>
 
 		<message name="request_throw_projectile" delivery="ordered" receiver="unit" check="client_to_server">
-			<param type="int" min="1" max="32" /> <!-- Projectile type index -->
+			<param type="int" min="1" max="64"/ > <!-- Projectile type index -->
 			<param type="vector3" />              <!-- position -->
 			<param type="vector3" />              <!-- direction -->
 		</message>
@@ -1343,7 +1347,7 @@
 			<param type="unit" />
 			<param type="vector3" />              <!-- position -->
 			<param type="vector3" />              <!-- direction -->
-			<param type="int" min="1" max="32" /> <!-- Projectile type index -->
+			<param type="int" min="1" max="64"/ > <!-- Projectile type index -->
 			<param type="int" min="0" max="4" />  <!-- Peer id -->
 		</message>
 
@@ -1355,7 +1359,7 @@
 			<param type="object3d" />             <!-- attach object -->
 			<param type="vector3" />              <!-- local position -->
 			<param type="vector3" />              <!-- direction -->
-			<param type="int" min="1" max="32" /> <!-- Projectile type index -->
+			<param type="int" min="1" max="64"/ > <!-- Projectile type index -->
 			<param type="int" min="0" max="4" />  <!-- Peer id -->
 		</message>
 
@@ -1644,6 +1648,17 @@
 			<param type="string" />               <!-- category name -->
 			<param type="string" />               <!-- upgrade_value name -->
 			<param type="int" min="1" max="16" /> <!-- upgrade_level -->
+		</message>
+
+		<message name="sync_temporary_upgrade_owned" delivery="ordered" receiver="unit" check="client_to_server">
+			<param type="string" />                <!-- category name -->
+			<param type="string" />                <!-- upgrade_value name -->
+			<param type="int" min="1" max="16" />  <!-- upgrade_level -->
+			<param type="int" min="1" max="128" /> <!-- upgrade index. If we add more that 128 temporary upgrades that needs syncing we need to rethink what we're doing -->
+		</message>
+
+		<message name="sync_temporary_upgrade_activated" delivery="ordered" receiver="unit" check="client_to_server">
+			<param type="int" min="1" max="128" /> <!-- upgrade index. If we add more that 128 temporary upgrades that needs syncing we need to rethink what we're doing -->
 		</message>
 
 		<message name="group_ai_event" delivery="ordered" receiver="unit" check="server_to_client">
@@ -1969,6 +1984,27 @@
 			<param type="string" /> <!-- type -->
 			<param type="string" /> <!-- outfit string -->
 		</message>
+
+		<message name="sync_flashbang_event" receiver="unit" delivery="reliable">
+			<param type="unit" />                <!-- Flashbang unit -->
+			<param type="int" min="0" max="8" /> <!-- Flashbang event id -->
+		</message>
+
+		<message name="sync_ability_hud" receiver="unit" delivery="ordered">
+			<param type="int" /> <!-- the id of the temporary ability -->
+			<param type="int" /> <!-- how long the ability should be active -->
+		</message>
+
+		<message name="sync_ability_hud_cooldown" receiver="unit" delivery="ordered">
+			<param type="int" /> <!-- the id of the temporary ability -->
+			<param type="int" /> <!-- cooldown left -->
+		</message>
+
+		<message name="sync_underbarrel_switch" receiver="unit" delivery="reliable">
+			<param type="int" />    <!-- Weapon slot -->
+			<param type="string" /> <!-- Underbarrel weapon id -->
+			<param type="bool" />   <!-- Underbarrel active state -->
+		</message>
 	</rpc>
 
 
@@ -2137,6 +2173,10 @@
 			<param type="int" min="0" max="255" /> <!-- uint8 -->
 			<param type="int" min="0" max="128" /> <!-- Peer id -->
 			<param type="int" min="0" max="2" />   <!-- Bullet storm level -->
+		</message>
+
+		<message name="biglobby__on_sole_criminal_respawned" delivery="ordered" receiver="unit">
+			<param type="int" min="0" max="128" /> <!-- Peer id -->
 		</message>
 
 		<message name="biglobby__sync_grenades" delivery="ordered" receiver="biglobby__unit">
