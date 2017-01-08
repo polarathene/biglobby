@@ -59,13 +59,13 @@ if not _G.BigLobbyGlobals then
 
 	-- Semantic versioning
 	function BigLobbyGlobals:version()
-		return "2.36"
+		return "2.37"
 	end
 
 
 	-- GameVersion for matchmaking, integer is expected
 	function BigLobbyGlobals:gameversion()
-		return 236
+		return 237
 	end
 
 
@@ -98,6 +98,7 @@ if not _G.BigLobbyGlobals then
 		'from_server_sentry_gun_place_result',
 		'sync_equipment_setup',
 		'sync_ammo_bag_setup',
+		'on_sole_criminal_respawned',
 		'sync_grenades',
 		'sync_carry_data',
 		'sync_throw_projectile',
