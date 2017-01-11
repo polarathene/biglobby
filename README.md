@@ -3,6 +3,9 @@ This mod makes it possible to have more than 4 players in a map. The search_key 
 
 
 # How to install
+
+[Video guide by B33croft](https://www.youtube.com/watch?v=rkxwfFdFXnI).
+
 1. Download the latest `.zip` file at the bottom of the [latest release](https://github.com/polarathene/biglobby/releases/latest)
 2. You will need [Bundle Modder](http://downloads.lastbullet.net/197) and [BLT](http://paydaymods.com/download/) to run this mod.
 3. Install the `.pdmod` file provided using Bundle Modder, instructions on how to use the Bundle Modder can be found [here](http://steamcommunity.com/sharedfiles/filedetails/?id=231568439).
