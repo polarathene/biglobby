@@ -10,11 +10,13 @@
 # from the release.
 # https://feeding.cloud.geek.nz/posts/excluding-files-from-git-archive/
 
-.gitattributes   export-ignore
-.gitignore       export-ignore
-pdmod**/*        export-ignore
-LICENSE          export-ignore
-README.md        export-ignore
+.editorconfig         export-ignore
+.gitattributes        export-ignore
+.gitignore            export-ignore
+pdmod**/*             export-ignore
+Custom_HUD_support.md export-ignore
+LICENSE               export-ignore
+README.md             export-ignore
 
 
 
