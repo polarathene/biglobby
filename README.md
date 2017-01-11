@@ -28,13 +28,13 @@ If the game has updated, you may need to verify cache to restore original code a
 
 
 # Development Status
-Still in alpha/beta, not officially released on Last Bullet yet. I'm swamped with work but will do my best for bug fixes when updates break it as long as you can help report/test it. Actual release to Last Bullet requires few more features to be done, but they require time, no ETA when that will happen.
+Still in beta, not officially released on Mod Workshop yet. I'm swamped with work but will do my best for bug fixes when updates break it as long as you can help report/test it. Actual release to Mod Workshop requires few more features to be done, but they require time, no ETA when that will happen.
 
 
 # Technical Details
 My previous version from December 2015(see commits) was much heavier in code with a hacky JSON approach to re-route network messages from the `Network` class. This mostly worked, with one blocker being the unit network handler class where I couldn't re-route the functions there due to not being able to serialize the unit param into JSON.
 
-The "bug" being worked around turns was due to the asset `settings/network.network_settings`, an XML file that the `Network` class uses.
+The "bug" being worked around turns out it was due to the asset `settings/network.network_settings`, an XML file that the `Network` class uses.
 
 A later update can provide a fix by allowing multiples of a character to join the game.
 
