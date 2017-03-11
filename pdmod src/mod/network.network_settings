@@ -1979,6 +1979,16 @@
 			<param type="vector3" /> <!-- split position -->
 		</message>
 
+		<message name="sync_unit_surrendered" receiver="unit" delivery="ordered">
+			<param type="unit" />
+			<param type="bool" /> <!-- Surrender on/off -->
+		</message>
+
+		<message name="sync_safehouse_room_tier" delivery="reliable" receiver="connection" check="server_to_client">
+			<param type="string" /> <!-- room name -->
+			<param type="int" />    <!-- room tier -->
+		</message>
+
 		<message name="sync_synced_unit_outfit" delivery="reliable" receiver="connection" check="server_to_client">
 			<param type="int" />    <!-- unit id -->
 			<param type="string" /> <!-- type -->
@@ -2005,6 +2015,49 @@
 			<param type="string" /> <!-- Underbarrel weapon id -->
 			<param type="bool" />   <!-- Underbarrel active state -->
 		</message>
+
+		<message name="sync_ai_throw_bag" receiver="unit" delivery="ordered">
+			<param type="unit" /> <!-- AI unit -->
+			<param type="unit" /> <!-- carry unit -->
+			<param type="unit" /> <!-- target unit -->
+		</message>
+
+		<message name="request_carried_bag_unit" receiver="unit" delivery="ordered">
+			<param type="unit" /> <!-- AI unit -->
+		</message>
+
+		<message name="sync_carried_bag_unit" receiver="unit" delivery="ordered">
+			<param type="unit" /> <!-- AI unit -->
+			<param type="unit" /> <!-- carry unit -->
+		</message>
+
+
+		<!-- /// Manage Spawned Units extension begin /// -->
+		<message name="sync_unit_spawn" delivery="ordered" receiver="unit" check="server_to_client">
+			<param type="unit" />   <!-- parent_unit -->
+			<param type="unit" />   <!-- spawn_unit -->
+			<param type="string" /> <!-- align -->
+			<param type="string" /> <!-- unit ID -->
+			<param type="string" /> <!-- parent extension name -->
+		</message>
+
+		<message name="run_spawn_unit_sequence" delivery="ordered" receiver="unit" check="server_to_client">
+			<param type="unit" />   <!-- parent_unit -->
+			<param type="string" /> <!-- parent extension name -->
+			<param type="string" /> <!-- unit ID -->
+			<param type="string" /> <!-- sequence name -->
+		</message>
+
+		<message name="run_local_push_child_unit" delivery="ordered" receiver="unit" check="server_to_client">
+			<param type="unit" />   <!-- parent_unit -->
+			<param type="string" /> <!-- parent extension name -->
+			<param type="string" /> <!-- unit ID -->
+			<param type="int" />    <!-- mass -->
+			<param type="int" />    <!-- pow -->
+			<param type="string" /> <!-- obj1 -->
+			<param type="string" /> <!-- obj2 -->
+		</message>
+		<!-- /// Manage Spawned Units extension end /// -->
 	</rpc>
 
 
