@@ -2294,7 +2294,7 @@
 			<param type="unit" />
 			<param type="vector3" />               <!-- position -->
 			<param type="vector3" />               <!-- direction -->
-			<param type="int" min="1" max="32" />  <!-- Projectile type index -->
+			<param type="int" min="1" max="64" />  <!-- Projectile type index -->
 			<param type="int" min="0" max="128" /> <!-- Peer id -->
 		</message>
 
@@ -2306,7 +2306,7 @@
 			<param type="object3d" />              <!-- attach object -->
 			<param type="vector3" />               <!-- local position -->
 			<param type="vector3" />               <!-- direction -->
-			<param type="int" min="1" max="32" />  <!-- Projectile type index -->
+			<param type="int" min="1" max="64" />  <!-- Projectile type index -->
 			<param type="int" min="0" max="128" /> <!-- Peer id -->
 		</message>
 
@@ -2393,7 +2393,7 @@
 			<param type="int" min="1" max="128" /> <!-- peer_id -->
 		</message>
 
-		<message name="biglobby__sync_crime_spree_level" receiver="connection" delivery="ordered">
+		<message name="biglobby__sync_crime_spree_level" receiver="biglobby__connection" delivery="ordered">
 			<param type="int" min="0" max="128" /> <!-- Peer ID -->
 			<param type="int" />                   <!-- Crime Spree Level -->
 			<param type="bool" />                  <!-- Has failed, host only -->
