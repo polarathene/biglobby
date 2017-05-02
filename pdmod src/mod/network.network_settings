@@ -1645,13 +1645,13 @@
 			<param type="bool" /> <!-- suppressed or not -->
 		</message>
 
-		<message name="sync_upgrade" delivery="ordered" receiver="unit" check="client_to_server">
+		<message name="sync_upgrade" delivery="ordered" receiver="unit">
 			<param type="string" />               <!-- category name -->
 			<param type="string" />               <!-- upgrade_value name -->
 			<param type="int" min="1" max="16" /> <!-- upgrade_level -->
 		</message>
 
-		<message name="sync_temporary_upgrade_owned" delivery="ordered" receiver="unit" check="client_to_server">
+		<message name="sync_temporary_upgrade_owned" delivery="ordered" receiver="unit">
 			<param type="string" />                <!-- category name -->
 			<param type="string" />                <!-- upgrade_value name -->
 			<param type="int" min="1" max="16" />  <!-- upgrade_level -->
