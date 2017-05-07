@@ -59,13 +59,13 @@ if not _G.BigLobbyGlobals then
 
 	-- Semantic versioning
 	function BigLobbyGlobals:version()
-		return "2.41"
+		return "2.42"
 	end
 
 
 	-- GameVersion for matchmaking, integer is expected
 	function BigLobbyGlobals:gameversion()
-		return 241
+		return 242
 	end
 
 
