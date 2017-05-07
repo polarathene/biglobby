@@ -2017,6 +2017,11 @@
 			<param type="bool" />   <!-- Underbarrel active state -->
 		</message>
 
+		<message name="sync_spawn_smoke_screen" receiver="unit" delivery="reliable">
+			<param type="unit" /> <!-- Spawning unit -->
+			<param type="bool"/>  <!-- Has dodge bonus -->
+		</message>
+
 		<message name="sync_ai_throw_bag" receiver="unit" delivery="ordered">
 			<param type="unit" /> <!-- AI unit -->
 			<param type="unit" /> <!-- carry unit -->
@@ -2095,6 +2100,11 @@
 		<message name="sync_crime_spree_gage_asset_event" receiver="connection" delivery="ordered" >
 			<param type="int" min="0" max="127" /> <!-- Event ID -->
 			<param type="string" />                <!-- Asset ID -->
+		</message>
+
+		<message name="sync_special_character_material" receiver="unit" delivery="ordered">
+			<param type="unit" />   <!-- Character unit -->
+			<param type="string" /> <!-- Name of special material -->
 		</message>
 	</rpc>
 
