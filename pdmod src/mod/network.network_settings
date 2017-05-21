@@ -127,6 +127,10 @@
 			<param type="int" min="1" max="4" /> <!-- Peer id -->
 		</message>
 
+		<message name="kick_to_briefing" delivery="ordered" receiver="connection" check="server_to_client"/>
+
+		<message name="set_waiting" delivery="ordered" receiver="connection" check="server_to_client"/>
+
 		<message name="set_dropin" delivery="ordered" receiver="connection" check="server_to_client" />
 
 		<message name="spawn_dropin_penalty" delivery="ordered" receiver="connection" check="server_to_client">
