@@ -1345,13 +1345,13 @@
 		<message name="request_throw_projectile" delivery="ordered" receiver="unit" check="client_to_server">
 			<param type="int" min="1" max="64"/ > <!-- Projectile type index -->
 			<param type="vector3" />              <!-- position -->
-			<param type="vector3" />              <!-- direction -->
+			<param type="vector3" exact="true" /> <!-- direction -->
 		</message>
 
 		<message name="sync_throw_projectile" delivery="ordered" receiver="unit">
 			<param type="unit" />
 			<param type="vector3" />              <!-- position -->
-			<param type="vector3" />              <!-- direction -->
+			<param type="vector3" exact="true" /> <!-- direction -->
 			<param type="int" min="1" max="64"/ > <!-- Projectile type index -->
 			<param type="int" min="0" max="4" />  <!-- Peer id -->
 		</message>
@@ -2110,6 +2110,22 @@
 			<param type="unit" />   <!-- Character unit -->
 			<param type="string" /> <!-- Name of special material -->
 		</message>
+
+		<message name="sync_enemy_buff" receiver="unit" delivery="ordered" check="server_to_client">
+			<param type="unit" />   <!-- Enemy unit -->
+			<param type="string" /> <!-- Buff category name -->
+			<param type="int" />    <!-- Buff total * 1000 -->
+		</message>
+
+		<message name="sync_tear_gas_grenade_properties" receiver="unit" delivery="ordered" check="server_to_client">
+			<param type="unit" />        <!-- Grenade unit -->
+			<param type="int" min="0" /> <!-- Range -->
+			<param type="int" min="0" /> <!-- Damage * 10 -->
+		</message>
+
+		<message name="sync_tear_gas_grenade_detonate" receiver="unit" delivery="ordered" check="server_to_client">
+			<param type="unit" /> <!-- Grenade unit -->
+		</message>
 	</rpc>
 
 
@@ -2269,7 +2285,7 @@
 
 		<message name="biglobby__sync_equipment_setup" delivery="ordered" receiver="biglobby__unit" check="server_to_client">
 			<param type="unit" />
-			<param type="float" min="0" max="2" />
+			<param type="float" min="0" max="255" />
 			<param type="int" min="0" max="128" /> <!-- Peer id -->
 		</message>
 
