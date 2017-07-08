@@ -403,8 +403,24 @@
 			<param type="bool" />
 		</message>
 
-		<message name="reload_weapon" delivery="unreliable" receiver="unit">
-			<param type="unit" /> <!-- weilder unit -->
+		<message name="reload_weapon_cop" delivery="unreliable" receiver="unit" check="server_to_client">
+			<param type="unit"/> <!-- weilder unit -->
+		</message>
+
+		<message name="reload_weapon" delivery="reliable" receiver="unit">
+			<param type="unit" />  <!-- weilder unit -->
+			<param type="int" />   <!-- is empty reload or shells to reload -->
+			<param type="float" /> <!-- reload speed multiplier -->
+		</message>
+
+		<message name="reload_weapon_interupt" delivery="reliable" receiver="unit">
+			<param type="unit"/> <!-- weilder unit -->
+		</message>
+
+		<message name="switch_weapon" delivery="ordered" receiver="unit">
+			<param type="unit" />  <!-- user unit -->
+			<param type="float" /> <!-- unequip speed multi -->
+			<param type="float" /> <!-- equip speed multi -->
 		</message>
 
 		<message name="set_equipped_weapon" delivery="ordered" receiver="unit">
@@ -547,6 +563,17 @@
 			<param type="unit" /> <!-- aggressor unit -->
 		</message>
 
+		<message name="action_hurt_start" delivery="ordered" receiver="unit">
+			<param type="unit" />
+			<param type="int" min="1" max="31" /> <!-- block_type/hurt_type -->
+			<param type="int" min="1" max="7" />  <!-- body_part -->
+			<param type="int" min="1" max="7" />  <!-- death_type -->
+			<param type="int" min="1" max="15" /> <!-- type -->
+			<param type="int" min="1" max="15" /> <!-- variant -->
+			<param type="vector3" />              <!-- direction_vec -->
+			<param type="vector3" />              <!-- hit_pos -->
+		</message>
+
 		<message name="action_hurt_end" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="unit" />
 		</message>
@@ -576,12 +603,18 @@
 			<param type="int" min="0" max="255" />  <!-- end_rotation yaw as a ratio of the full circle -->
 			<param type="bool" />                   <!-- no_walk-->
 			<param type="bool" />                   <!-- no_strafe-->
+			<param type="int" min="0" max="2" />    <!-- pose. 0=none, 1=stand, 2=crouch -->
 			<param type="int" min="0" max="2" />    <!-- end_pose. 0=none, 1=stand, 2=crouch -->
 		</message>
 
 		<message name="action_walk_nav_point" delivery="ordered" receiver="unit">
 			<param type="unit" />
 			<param type="vector3" />
+		</message>
+
+		<message name="action_change_speed" delivery="ordered" receiver="unit">
+			<param type="unit" />
+			<param type="float" />
 		</message>
 
 		<message name="action_walk_stop" delivery="ordered" receiver="unit" check="server_to_client">
@@ -600,6 +633,11 @@
 			<param type="unit" />
 			<param type="int" min="1" max="3" /> <!-- pose code -->
 			<param type="vector3" />             <!-- pose change position -->
+		</message>
+
+		<message name="action_change_run" delivery="ordered" receiver="unit">
+			<param type="unit" />
+			<param type="bool" />
 		</message>
 
 		<message name="action_jump" delivery="ordered" receiver="unit">
@@ -854,6 +892,12 @@
 		<message name="play_distance_interact_redirect" delivery="ordered" receiver="unit">
 			<param type="unit" />
 			<param type="string" />
+		</message>
+
+		<message name="play_distance_interact_redirect_delay" delivery="ordered" receiver="unit">
+			<param type="unit" />
+			<param type="string" /> <!-- redirect -->
+			<param type="float" />  <!-- delay -->
 		</message>
 
 		<message name="action_tase_event" delivery="ordered" receiver="unit">
@@ -2125,6 +2169,28 @@
 
 		<message name="sync_tear_gas_grenade_detonate" receiver="unit" delivery="ordered" check="server_to_client">
 			<param type="unit" /> <!-- Grenade unit -->
+		</message>
+
+		<message name="sync_melee_start" delivery="ordered" receiver="unit">
+			<param type="unit" /> <!-- Unit -->
+		</message>
+
+		<message name="sync_melee_discharge" delivery="ordered" receiver="unit">
+			<param type="unit" /> <!-- Unit -->
+		</message>
+
+		<message name="sync_interaction_anim" delivery="ordered" receiver="unit">
+			<param type="unit" />   <!-- Unit -->
+			<param type="bool" />   <!-- interaction start/stop -->
+			<param type="string" /> <!-- interaction tweak -->
+		</message>
+
+		<message name="sync_shotgun_push" delivery="reliable" receiver="unit">
+			<param type="unit" />                <!-- push unit id -->
+			<param type="vector3" step="0.01" /> <!-- hit pos -->
+			<param type="vector3" step="0.01" /> <!-- direction -->
+			<param type="int" />                 <!-- distance -->
+			<param type="unit" />                <!-- attacker -->
 		</message>
 	</rpc>
 
