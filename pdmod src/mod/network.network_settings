@@ -59,14 +59,14 @@
 		</message>
 
 		<message name="peer_handshake" delivery="ordered" receiver="connection" check="server_to_client">
-			<param type="string" />              <!-- Peer Name -->
-			<param type="string" />              <!-- Peer User_ID -->
-			<param type="bool" />                <!-- In lobby -->
-			<param type="bool" />                <!-- Loading -->
-			<param type="bool" />                <!-- Synched -->
-			<param type="string" />              <!-- Character -->
-			<param type="string" />              <!-- Mask set -->
+			<param type="string" />               <!-- Peer Name -->
 			<param type="int" min="1" max="15" /> <!-- Peer id -->
+			<param type="string" />               <!-- Peer User_ID -->
+			<param type="bool" />                 <!-- In lobby -->
+			<param type="bool" />                 <!-- Loading -->
+			<param type="bool" />                 <!-- Synched -->
+			<param type="string" />               <!-- Character -->
+			<param type="string" />               <!-- Mask set -->
 			<param type="xuid" />
 			<param type="xnaddr" />
 		</message>
@@ -101,9 +101,9 @@
 		</message>
 
 		<message name="request_drop_in_pause" delivery="ordered" receiver="connection" check="server_to_client">
-			<param type="string" />              <!-- nickname -->
-			<param type="bool" />                <!-- pause_state -->
 			<param type="int" min="1" max="15" /> <!-- Peer id -->
+			<param type="string" />               <!-- nickname -->
+			<param type="bool" />                 <!-- pause_state -->
 		</message>
 
 		<message name="drop_in_pause_confirmation" delivery="ordered" receiver="connection" check="client_to_server">
@@ -257,10 +257,10 @@
 
 		<!-- PRE-PLANNING -->
 		<message name="preplanning_reserved" delivery="ordered" receiver="connection" check="server_to_client">
-			<param type="string" />               <!-- type / plan -->
-			<param type="int" min="0" />          <!-- Mission element id -->
-			<param type="int" min="0" max="2" />  <!-- 0=reserve, 1=unreserve, 2=vote -->
+			<param type="string" />                <!-- type / plan -->
+			<param type="int" min="0" />           <!-- Mission element id -->
 			<param type="int" min="1" max ="15" /> <!-- peer_id -->
+			<param type="int" min="0" max="2" />   <!-- 0=reserve, 1=unreserve, 2=vote -->
 		</message>
 
 		<message name="reserve_preplanning" delivery="ordered" receiver="connection" check="client_to_server">
@@ -1501,10 +1501,10 @@
 		</message>
 
 		<message name="mark_minion" delivery="reliable" receiver="unit" check="server_to_client">
-			<param type="unit" />                 <!-- converted minion -->
-			<param type="int" min="0" max="3" />  <!-- convert_enemies_health_multiplier -->
-			<param type="int" min="0" max="3" />  <!-- passive_convert_enemies_health_multiplier -->
+			<param type="unit" />                  <!-- converted minion -->
 			<param type="int"  min="1" max="15" /> <!-- minion_owner_peer_id -->
+			<param type="int" min="0" max="3" />   <!-- convert_enemies_health_multiplier -->
+			<param type="int" min="0" max="3" />   <!-- passive_convert_enemies_health_multiplier -->
 		</message>
 
 		<message name="remove_minion" delivery="reliable" receiver="unit" check="server_to_client">
@@ -1630,8 +1630,8 @@
 		</message>
 
 		<message name="suspicion" delivery="ordered" receiver="unit" check="server_to_client">
-			<param type="int" min="0" max="255" /> <!-- suspicion ratio. 0 means no suspicion, 255 means uncovered. values in between mean suspicion in progress -->
 			<param type="int" min="1" max="15" />   <!-- peer ID of the player under suspicion -->
+			<param type="int" min="0" max="255" />  <!-- suspicion ratio. 0 means no suspicion, 255 means uncovered. values in between mean suspicion in progress -->
 		</message>
 
 		<message name="suspicion_hud" delivery="ordered" receiver="unit" check="server_to_client">
@@ -1748,23 +1748,23 @@
 		</message>
 
 		<message name="sync_enter_vehicle_host" delivery="ordered" receiver="unit">
-			<param type="unit" />                <!-- the vehicle -->
-			<param type="string" />              <!-- seat -->
-			<param type="unit" />                <!-- player -->
+			<param type="unit" />                 <!-- the vehicle -->
+			<param type="string" />               <!-- seat -->
 			<param type="int" min="0" max="15" /> <!-- Peer id ~=0 when accepted -->
+			<param type="unit" />                 <!-- player -->
 		</message>
 
 		<message name="sync_vehicle_player" delivery="ordered" receiver="unit">
-			<param type="string" />              <!-- action (enter/exit) -->
-			<param type="unit" />                <!-- the vehicle -->
-			<param type="unit" />                <!-- player -->
-			<param type="string" />              <!-- seat name -->
+			<param type="string" />               <!-- action (enter/exit) -->
+			<param type="unit" />                 <!-- the vehicle -->
 			<param type="int" min="0" max="15" /> <!-- Peer id ~=0 when accepted -->
+			<param type="unit" />                 <!-- player -->
+			<param type="string" />               <!-- seat name -->
 		</message>
 
 		<message name="sync_exit_vehicle" delivery="ordered" receiver="unit">
-			<param type="unit" />                <!-- the player -->
 			<param type="int" min="0" max="15" /> <!-- Peer id ~=0 when accepted -->
+			<param type="unit" />                 <!-- the player -->
 		</message>
 
 		<message name="sync_vehicle_state" delivery="ordered" receiver="unit">
@@ -1825,9 +1825,9 @@
 		</message>
 
 		<message name="sync_give_vehicle_loot_to_player" delivery="ordered" receiver="unit" check="server_to_client">
-			<param type="unit" />                 <!-- vehicle -->
-			<param type="string" />               <!-- Carry id -->
-			<param type="int" min="0" max="2" />  <!-- multiplier upgrade level for small loot -->
+			<param type="unit" />                  <!-- vehicle -->
+			<param type="string" />                <!-- Carry id -->
+			<param type="int" min="0" max="2" />   <!-- multiplier upgrade level for small loot -->
 			<param type="int" min="1" max ="15" /> <!-- peer_id -->
 		</message>
 
@@ -1837,7 +1837,7 @@
 		</message>
 
 		<message name="sync_vehicle_interact_trunk" delivery="ordered" receiver="unit">
-			<param type="unit" />                 <!-- vehicle -->
+			<param type="unit" />                  <!-- vehicle -->
 			<param type="int" min="1" max ="15" /> <!-- peer_id -->
 		</message>
 
@@ -2080,9 +2080,9 @@
 		<!-- Crime Spree Networking -->
 		<!-- We use ordered for a lot of things as we want to make sure they arrive after connection info, if the connection info has to be resent -->
 		<message name="sync_crime_spree_level" receiver="connection" delivery="ordered">
-			<param type="int" />                 <!-- Crime Spree Level -->
-			<param type="bool" />                <!-- Has failed, host only -->
 			<param type="int" min="0" max="15" /> <!-- Peer ID -->
+			<param type="int" />                  <!-- Crime Spree Level -->
+			<param type="bool" />                 <!-- Has failed, host only -->
 		</message>
 
 		<message name="sync_crime_spree_mission" receiver="connection" delivery="ordered" check="server_to_client">
