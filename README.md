@@ -1,6 +1,7 @@
 ## BigLobby
 This mod makes it possible to have more than 4 players in a map. The search_key which affects what lobbies you can see on Crime.net is changed. Doing so prevents regular players without the mod joining and only shows you lobbies hosted with this mod.
 
+[**NO LONGER MAINTAINED**](https://github.com/polarathene/biglobby/issues/63) - Please show support if you'd like updates by contributing to bounties on BountySource. Either I or someone else may claim it. In future I may write a tool to automate sync updates with bounties encouraging the community to maintain the mod for any other breakage.
 
 # How to install
 
