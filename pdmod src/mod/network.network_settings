@@ -13,7 +13,7 @@
 
 		<message name="kick_peer" delivery="ordered" receiver="connection" check="server_to_client">
 			<param type="int" min="1" max="15" /> <!-- Peer id -->
-			<param type="int" min="0" max="2" />  <!-- Message id -->
+			<param type="int" min="0" max="15" /> <!-- Message id -->
 		</message>
 
 		<message name="remove_peer_confirmation" delivery="ordered" receiver="connection" check="client_to_server">
@@ -41,7 +41,7 @@
 		</message>
 
 		<message name="join_request_reply" delivery="ordered" receiver="connection">
-			<param type="int" min="0" max="9" />   <!-- Reply info 0 == may not join, 1 == ok, 2 == kicked, 3 == game started, 4 = map not owned, 5 = full, 6 = low lvl, 7 = wrong game version, 8 = authentication failed, 9 = banned -->
+			<param type="int" min="0" max="15" />   <!-- Reply info 0 == may not join, 1 == ok, 2 == kicked, 3 == game started, 4 = map not owned, 5 = full, 6 = low lvl, 7 = wrong game version, 8 = authentication failed, 9 = banned, 10 == modded -->
 			<param type="int" min="0" max="15" />  <!-- Peer id ~=0 when accepted -->
 			<param type="string" />                <!-- My character -->
 			<param type="int" min="1" max="127" /> <!-- level index -->
@@ -282,7 +282,7 @@
 
 		<!-- LOOT DROP -->
 		<message name="feed_lootdrop" delivery="ordered" receiver="connection">
-			<param type="int" min="1" max="64" /> <!-- global value -->
+			<param type="int" min="1" max="128" /> <!-- global value -->
 			<param type="string" />               <!-- item category -->
 			<param type="string" />               <!-- item id -->
 			<param type="int" min="1" max="10" /> <!-- max pc -->
@@ -434,6 +434,15 @@
 			<param type="unit" />
 			<param type="int" min="0" max="4" />
 		</message>
+		
+		
+		<message name="set_weapon_gadget_color" delivery="ordered" receiver="unit">
+			<param type="unit" />
+			<param type="int" min="0" max="255" /> <!-- r -->
+			<param type="int" min="0" max="255" /> <!-- g -->
+			<param type="int" min="0" max="255" /> <!-- b -->
+		</message>
+		
 
 		<message name="set_look_dir" delivery="unreliable" receiver="unit">
 			<param type="unit" />
@@ -611,6 +620,13 @@
 			<param type="unit" />
 			<param type="vector3" />
 		</message>
+
+		<message name="player_action_walk_nav_point" delivery="ordered" receiver="unit">
+			<param type="unit" />
+			<param type="vector3" />
+			<param type="float" min="0" max="1" step="0.01" exact="false" />
+		</message>
+
 
 		<message name="action_change_speed" delivery="ordered" receiver="unit">
 			<param type="unit" />
@@ -1311,6 +1327,11 @@
 			<param type="int" min="0" max="31" /> <!-- Amount of grenades  -->
 			<param type="int" min="0" max="15" /> <!-- Peer id -->
 		</message>
+		
+		<message name="sync_grenades_cooldown" delivery="ordered" receiver="unit">
+			<param type="float" step="0.001"/> <!-- end time -->
+			<param type="float" step="0.001"/> <!-- duration -->
+		</message>
 
 		<message name="sync_ammo_amount" delivery="ordered" receiver="unit">
 			<param type="int" min="1" max="3" />    <!-- Selection index -->
@@ -1438,6 +1459,7 @@
 
 		<message name="server_unlock_asset" delivery="ordered" receiver="unit" check="client_to_server">
 			<param type="string" /> <!-- Asset id -->
+			<param type="bool"/>	<!-- show chat notification -->
 		</message>
 
 		<message name="sync_unlock_asset" delivery="ordered" receiver="unit" check="server_to_client">
@@ -1446,7 +1468,7 @@
 		</message>
 
 		<message name="sync_heist_time" delivery="ordered" receiver="unit" check="server_to_client">
-			<param type="float" min="0" step="0.1" exact="false" />
+			<param type="float" min="-1800" step="0.1" exact="false"/>
 		</message>
 
 		<message name="run_mission_door_sequence" delivery="ordered" receiver="unit" check="server_to_client">
@@ -2050,15 +2072,11 @@
 		</message>
 
 		<message name="sync_ability_hud" receiver="unit" delivery="ordered">
-			<param type="int" /> <!-- the id of the temporary ability -->
-			<param type="int" /> <!-- how long the ability should be active -->
+			<param type="float" step="0.001" /> <!-- end time -->
+			<param type="float" step="0.001" /> <!-- duration -->
 		</message>
 
-		<message name="sync_ability_hud_cooldown" receiver="unit" delivery="ordered">
-			<param type="int" /> <!-- the id of the temporary ability -->
-			<param type="int" /> <!-- cooldown left -->
-		</message>
-
+		
 		<message name="sync_underbarrel_switch" receiver="unit" delivery="reliable">
 			<param type="int" />    <!-- Weapon slot -->
 			<param type="string" /> <!-- Underbarrel weapon id -->
@@ -2192,6 +2210,56 @@
 			<param type="int" />                 <!-- distance -->
 			<param type="unit" />                <!-- attacker -->
 		</message>
+		
+
+		<message name="sync_carry_set_position_and_throw" delivery="ordered" receiver="unit" check="server_to_client">
+			<param type="unit" /> <!-- Unit -->
+			<param type="vector3" step="0.01" /> <!-- pos -->
+			<param type="vector3" step="0.01" /> <!-- dir -->
+			<param type="float" step="0.1" /> <!-- force -->
+		</message>
+
+
+
+		<message name="sync_player_installed_mod" delivery="reliable" receiver="connection">
+			<param type="int" min="0" max="15" /> <!-- Player -->
+			<param type="string" step="0.01" /> <!-- Mod id -->
+			<param type="longstring" step="0.01" /> <!-- Mod friendly name -->
+		</message>
+
+
+
+		<message name="sync_phalanx_vip_achievement_unlocked" delivery="reliable" receiver="connection" check="server_to_client">
+			<param type="string" /> <!-- achievement id -->
+		</message>
+
+
+
+
+
+
+
+
+
+
+		<message name="sync_tag_team" receiver="unit">
+			<param type="unit" /> <!-- tagged unit -->
+			<param type="unit" /> <!-- owner unit -->
+		</message>
+		<message name="end_tag_team" receiver="unit">
+			<param type="unit" /> <!-- tagged unit -->
+			<param type="unit" /> <!-- owner unit -->
+		</message>
+
+
+
+		<message name="sync_delayed_damage_hud" receiver="unit">
+			<param type="float" step="0.001" /> <!-- delayed damage -->
+		</message>
+
+		<message name="sync_damage_absorption_hud" receiver="unit">
+			<param type="float" step="0.001" /> <!-- damage absorption amount -->
+		</message>
 	</rpc>
 
 
@@ -2202,7 +2270,7 @@
 	<rpc>
 		<message name="biglobby__kick_peer" delivery="ordered" receiver="biglobby__connection" check="server_to_client">
 			<param type="int" min="1" max="128" /> <!-- Peer id -->
-			<param type="int" min="0" max="2" />   <!-- Message id -->
+			<param type="int" min="0" max="15" />   <!-- Message id -->
 		</message>
 
 		<message name="biglobby__remove_peer_confirmation" delivery="ordered" receiver="biglobby__connection" check="client_to_server">
@@ -2210,7 +2278,7 @@
 		</message>
 
 		<message name="biglobby__join_request_reply" delivery="ordered" receiver="biglobby__connection">
-			<param type="int" min="0" max="9" />   <!-- Reply info 0 == may not join, 1 == ok, 2 == kicked, 3 == game started, 4 = map not owned, 5 = full, 6 = low lvl, 7 = wrong game version, 8 = authentication failed, 9 = banned -->
+			<param type="int" min="0" max="15" />   <!-- Reply info 0 == may not join, 1 == ok, 2 == kicked, 3 == game started, 4 = map not owned, 5 = full, 6 = low lvl, 7 = wrong game version, 8 = authentication failed, 9 = banned, 10 == modded -->
 			<param type="int" min="0" max="128" /> <!-- Peer id ~=0 when accepted -->
 			<param type="string" />                <!-- My character -->
 			<param type="int" min="1" max="127" /> <!-- level index -->
@@ -2311,6 +2379,12 @@
 			<param type="vector3" />                 <!-- Normal -->
 			<param type="int" min="0" max="16384" /> <!-- Damage -->
 			<param type="int" min="1" max="128" />   <!-- server_to_client: Peer ID | client_to_server: Player weapon selection index -->
+		</message>
+		
+		<message name="biglobby__sync_player_installed_mod" delivery="reliable" receiver="biglobby__connection">
+			<param type="int" min="0" max="128" /> <!-- Player -->
+			<param type="string" step="0.01" /> <!-- Mod id -->
+			<param type="longstring" step="0.01" /> <!-- Mod friendly name -->
 		</message>
 	</rpc>
 
