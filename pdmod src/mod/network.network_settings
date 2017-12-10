@@ -41,7 +41,20 @@
 		</message>
 
 		<message name="join_request_reply" delivery="ordered" receiver="connection">
-			<param type="int" min="0" max="15" />   <!-- Reply info 0 == may not join, 1 == ok, 2 == kicked, 3 == game started, 4 = map not owned, 5 = full, 6 = low lvl, 7 = wrong game version, 8 = authentication failed, 9 = banned, 10 == modded -->
+			<!-- Reply info
+				0 == may not join,
+				1 == ok,
+				2 == kicked,
+				3 == game started,
+				4 = map not owned,
+				5 = full,
+				6 = low lvl,
+				7 = wrong game version,
+				8 = authentication failed,
+				9 = banned,
+				10 = modded
+			-->
+			<param type="int" min="0" max="15" />
 			<param type="int" min="0" max="15" />  <!-- Peer id ~=0 when accepted -->
 			<param type="string" />                <!-- My character -->
 			<param type="int" min="1" max="127" /> <!-- level index -->
@@ -158,7 +171,7 @@
 		</message>
 
 		<message name="set_auto_assault_ai_trade" delivery="ordered" receiver="connection" check="server_to_client">
-			<param type="string" /> <!-- Criminal name -->
+			<param type="string" />                                           <!-- Criminal name -->
 			<param type="float" min="0" max="180" step="0.1" exact="false" /> <!-- time -->
 		</message>
 
@@ -283,12 +296,12 @@
 		<!-- LOOT DROP -->
 		<message name="feed_lootdrop" delivery="ordered" receiver="connection">
 			<param type="int" min="1" max="128" /> <!-- global value -->
-			<param type="string" />               <!-- item category -->
-			<param type="string" />               <!-- item id -->
-			<param type="int" min="1" max="10" /> <!-- max pc -->
-			<param type="int" min="0" max="10" /> <!-- item pc, 0=INITIALIZE -->
-			<param type="int" min="0" max="10" /> <!-- left card pc, 0=JOKER -->
-			<param type="int" min="0" max="10" /> <!-- right card pc, 0=JOKER -->
+			<param type="string" />                <!-- item category -->
+			<param type="string" />                <!-- item id -->
+			<param type="int" min="1" max="10" />  <!-- max pc -->
+			<param type="int" min="0" max="10" />  <!-- item pc, 0=INITIALIZE -->
+			<param type="int" min="0" max="10" />  <!-- left card pc, 0=JOKER -->
+			<param type="int" min="0" max="10" />  <!-- right card pc, 0=JOKER -->
 		</message>
 
 		<message name="set_selected_lootcard" delivery="ordered" receiver="connection">
@@ -425,7 +438,7 @@
 
 		<message name="set_equipped_weapon" delivery="ordered" receiver="unit">
 			<param type="unit" />                  <!-- user unit -->
-			<param type="int" min="1" max="512"/>	<!-- weapon type index -->
+			<param type="int" min="1" max="512"/>  <!-- weapon type index -->
 			<param type="string" />                <!-- blueprint_string -->
 			<param type="string" />                <!-- cosmetic id -->
 		</message>
@@ -1459,11 +1472,12 @@
 
 		<message name="server_unlock_asset" delivery="ordered" receiver="unit" check="client_to_server">
 			<param type="string" /> <!-- Asset id -->
-			<param type="bool"/>	<!-- show chat notification -->
+			<param type="bool"/>    <!-- show chat notification -->
 		</message>
 
 		<message name="sync_unlock_asset" delivery="ordered" receiver="unit" check="server_to_client">
-			<param type="string" />              <!-- Asset id -->
+			<param type="string" />               <!-- Asset id -->
+			<param type="bool"/>                  <!-- show chat notification -->
 			<param type="int" min="0" max="15" /> <!-- Peer ID -->
 		</message>
 
@@ -2076,7 +2090,6 @@
 			<param type="float" step="0.001" /> <!-- duration -->
 		</message>
 
-		
 		<message name="sync_underbarrel_switch" receiver="unit" delivery="reliable">
 			<param type="int" />    <!-- Weapon slot -->
 			<param type="string" /> <!-- Underbarrel weapon id -->
@@ -2213,34 +2226,21 @@
 		
 
 		<message name="sync_carry_set_position_and_throw" delivery="ordered" receiver="unit" check="server_to_client">
-			<param type="unit" /> <!-- Unit -->
+			<param type="unit" />                <!-- Unit -->
 			<param type="vector3" step="0.01" /> <!-- pos -->
 			<param type="vector3" step="0.01" /> <!-- dir -->
-			<param type="float" step="0.1" /> <!-- force -->
+			<param type="float" step="0.1" />    <!-- force -->
 		</message>
-
-
 
 		<message name="sync_player_installed_mod" delivery="reliable" receiver="connection">
-			<param type="int" min="0" max="15" /> <!-- Player -->
-			<param type="string" step="0.01" /> <!-- Mod id -->
+			<param type="int" min="0" max="15" />   <!-- Player -->
+			<param type="string" step="0.01" />     <!-- Mod id -->
 			<param type="longstring" step="0.01" /> <!-- Mod friendly name -->
 		</message>
-
-
 
 		<message name="sync_phalanx_vip_achievement_unlocked" delivery="reliable" receiver="connection" check="server_to_client">
 			<param type="string" /> <!-- achievement id -->
 		</message>
-
-
-
-
-
-
-
-
-
 
 		<message name="sync_tag_team" receiver="unit">
 			<param type="unit" /> <!-- tagged unit -->
@@ -2250,8 +2250,6 @@
 			<param type="unit" /> <!-- tagged unit -->
 			<param type="unit" /> <!-- owner unit -->
 		</message>
-
-
 
 		<message name="sync_delayed_damage_hud" receiver="unit">
 			<param type="float" step="0.001" /> <!-- delayed damage -->
@@ -2270,7 +2268,7 @@
 	<rpc>
 		<message name="biglobby__kick_peer" delivery="ordered" receiver="biglobby__connection" check="server_to_client">
 			<param type="int" min="1" max="128" /> <!-- Peer id -->
-			<param type="int" min="0" max="15" />   <!-- Message id -->
+			<param type="int" min="0" max="15" />  <!-- Message id -->
 		</message>
 
 		<message name="biglobby__remove_peer_confirmation" delivery="ordered" receiver="biglobby__connection" check="client_to_server">
@@ -2278,7 +2276,7 @@
 		</message>
 
 		<message name="biglobby__join_request_reply" delivery="ordered" receiver="biglobby__connection">
-			<param type="int" min="0" max="15" />   <!-- Reply info 0 == may not join, 1 == ok, 2 == kicked, 3 == game started, 4 = map not owned, 5 = full, 6 = low lvl, 7 = wrong game version, 8 = authentication failed, 9 = banned, 10 == modded -->
+			<param type="int" min="0" max="15" />  <!-- Reply info 0 == may not join, 1 == ok, 2 == kicked, 3 == game started, 4 = map not owned, 5 = full, 6 = low lvl, 7 = wrong game version, 8 = authentication failed, 9 = banned, 10 == modded -->
 			<param type="int" min="0" max="128" /> <!-- Peer id ~=0 when accepted -->
 			<param type="string" />                <!-- My character -->
 			<param type="int" min="1" max="127" /> <!-- level index -->
@@ -2382,8 +2380,8 @@
 		</message>
 		
 		<message name="biglobby__sync_player_installed_mod" delivery="reliable" receiver="biglobby__connection">
-			<param type="int" min="0" max="128" /> <!-- Player -->
-			<param type="string" step="0.01" /> <!-- Mod id -->
+			<param type="int" min="0" max="128" />  <!-- Player -->
+			<param type="string" step="0.01" />     <!-- Mod id -->
 			<param type="longstring" step="0.01" /> <!-- Mod friendly name -->
 		</message>
 	</rpc>
