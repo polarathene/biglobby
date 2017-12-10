@@ -90,7 +90,7 @@ if not _G.BigLobbyGlobals then
 		'sync_explode_bullet',
 		'sync_flame_bullet',
         'sync_crime_spree_level',
-		"sync_player_installed_mod"
+		'sync_player_installed_mod'
 	}
 
 	local unit_network_handler_funcs = {
