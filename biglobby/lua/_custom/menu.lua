@@ -123,7 +123,7 @@ function bkin_bl__menu:RegisterHooks()
 			desc       = "bkin_bl__set_num_bots__desc",
 			callback   = "bkin_bl__set_num_bots__clbk",
 			value      = self._data.num_bots,
-			min        = 4,
+			min        = 3,
 			max        = 128,
 			step       = 1,
 			show_value = true,
@@ -134,6 +134,6 @@ function bkin_bl__menu:RegisterHooks()
 
 	Hooks:Add("MenuManagerBuildCustomMenus", "MenuManagerBuildCustomMenus__bkin_bl", function(menu_manager, nodes)
 		nodes[self.menu_id] = MenuHelper:BuildMenu( self.menu_id )
-		MenuHelper:AddMenuItem( MenuHelper.menus.lua_mod_options_menu, self.menu_id, "bkin_bl__menu__title", "bkin_bl__menu__desc", 1 )
+		MenuHelper:AddMenuItem( nodes["blt_options"], self.menu_id, "bkin_bl__menu__title", "bkin_bl__menu__desc", 1 )
 	end)
 end

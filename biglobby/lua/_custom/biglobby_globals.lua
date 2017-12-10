@@ -59,13 +59,13 @@ if not _G.BigLobbyGlobals then
 
 	-- Semantic versioning
 	function BigLobbyGlobals:version()
-		return "2.45"
+		return "2.46"
 	end
 
 
 	-- GameVersion for matchmaking, integer is expected
 	function BigLobbyGlobals:gameversion()
-		return 245
+		return 246
 	end
 
 
@@ -89,7 +89,8 @@ if not _G.BigLobbyGlobals then
 		'draw_preplanning_event',
 		'sync_explode_bullet',
 		'sync_flame_bullet',
-        'sync_crime_spree_level'
+        'sync_crime_spree_level',
+		'sync_player_installed_mod'
 	}
 
 	local unit_network_handler_funcs = {

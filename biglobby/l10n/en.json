@@ -6,5 +6,5 @@
 	"bkin_bl__allow_more_bots__title" : "Allow more bots in lobby",
 	"bkin_bl__allow_more_bots__desc"  : "Allows additional bots up to the set lobby size.",
 	"bkin_bl__set_num_bots__title"    : "Set max bots",
-	"bkin_bl__set_num_bots__desc"     : "How many bots will you allow to spawn.",
+	"bkin_bl__set_num_bots__desc"     : "How many bots will you allow to spawn."
 }
