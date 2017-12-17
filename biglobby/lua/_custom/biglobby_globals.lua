@@ -59,13 +59,13 @@ if not _G.BigLobbyGlobals then
 
 	-- Semantic versioning
 	function BigLobbyGlobals:version()
-		return "2.47"
+		return "2.48"
 	end
 
 
 	-- GameVersion for matchmaking, integer is expected
 	function BigLobbyGlobals:gameversion()
-		return 247
+		return 248
 	end
 
 
@@ -116,7 +116,9 @@ if not _G.BigLobbyGlobals then
 		'sync_exit_vehicle',
 		'server_give_vehicle_loot_to_player',
 		'sync_give_vehicle_loot_to_player',
-		'sync_vehicle_interact_trunk'
+		'sync_vehicle_interact_trunk',
+		'server_secure_loot',
+		'sync_secure_loot'
 	}
 
 	-- Builds a single table from our two string based keys for each handler above
