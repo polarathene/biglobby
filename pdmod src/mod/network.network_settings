@@ -1412,12 +1412,14 @@
 		<message name="server_secure_loot" delivery="ordered" receiver="unit" check="client_to_server">
 			<param type="string" />              <!-- Carry id -->
 			<param type="int" min="0" max="2" /> <!-- multiplier upgrade level for small loot -->
+			<param type="int" min="0" max="15"/> <!-- peer_id -->
 		</message>
 
 		<message name="sync_secure_loot" delivery="ordered" receiver="unit" check="server_to_client">
 			<param type="string" />              <!-- Carry id -->
 			<param type="int" min="0" max="2" /> <!-- multiplier upgrade level for small loot -->
 			<param type="bool" />                <!-- silent, no presetation message -->
+			<param type="int" min="0" max="15"/> <!-- peer_id -->
 		</message>
 
 		<message name="request_throw_projectile" delivery="ordered" receiver="unit" check="client_to_server">
@@ -2242,6 +2244,12 @@
 			<param type="string" /> <!-- achievement id -->
 		</message>
 
+
+		<message name="action_teleport" delivery="ordered" receiver="unit">
+			<param type="unit" /><!-- player -->
+			<param type="vector3" /><!-- target position -->
+		</message>
+
 		<message name="sync_tag_team" receiver="unit">
 			<param type="unit" /> <!-- tagged unit -->
 			<param type="unit" /> <!-- owner unit -->
@@ -2480,6 +2488,7 @@
 
 		<message name="biglobby__sync_unlock_asset" delivery="ordered" receiver="biglobby__unit" check="server_to_client">
 			<param type="string" />                <!-- Asset id -->
+			<param type="bool"/>                   <!-- show chat notification -->
 			<param type="int" min="0" max="128" /> <!-- Peer ID -->
 		</message>
 
@@ -2565,6 +2574,19 @@
 			<param type="int" min="0" max="128" /> <!-- Peer ID -->
 			<param type="int" />                   <!-- Crime Spree Level -->
 			<param type="bool" />                  <!-- Has failed, host only -->
+		</message>
+
+		<message name="biglobby__server_secure_loot" delivery="ordered" receiver="biglobby__unit" check="client_to_server">
+			<param type="string" />               <!-- Carry id -->
+			<param type="int" min="0" max="2" />  <!-- multiplier upgrade level for small loot -->
+			<param type="int" min="0" max="128"/> <!-- peer_id -->
+		</message>
+
+		<message name="biglobby__sync_secure_loot" delivery="ordered" receiver="biglobby__unit" check="server_to_client">
+			<param type="string" />               <!-- Carry id -->
+			<param type="int" min="0" max="2" />  <!-- multiplier upgrade level for small loot -->
+			<param type="bool" />                 <!-- silent, no presetation message -->
+			<param type="int" min="0" max="128"/> <!-- peer_id -->
 		</message>
 	</rpc>
 
