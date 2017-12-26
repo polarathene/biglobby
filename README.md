@@ -45,6 +45,8 @@ A later update can provide a fix by allowing multiples of a character to join th
 
 **[I am not a spy...](https://github.com/antonpup)** - Huge help with testing and suggested the network issues fix via pdmod.
 
+**[Shad0wlife](https://github.com/Shad0wlife)** - Contributed several welcome bug fixes and improvements.
+
 **[steam-test1](https://github.com/steam-test1)** - Updated the mod to BLT 2.0, updated several months worth of network method changes. Fixed some bugs.
 
 **Luffy** - Helped with some testing and making some changes to support custom HUDs.
