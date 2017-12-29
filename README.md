@@ -3,6 +3,8 @@ This mod makes it possible to have more than 4 players in a map. The search_key 
 
 [**NO LONGER MAINTAINED**](https://github.com/polarathene/biglobby/issues/63) - Please show support if you'd like updates by contributing to bounties on BountySource. Either I or someone else may claim it. In future I may write a tool to automate sync updates with bounties encouraging the community to maintain the mod for any other breakage.
 
+**BigLobby3:** The community has made it possible to use this mod without requiring pdmod to use. Development of BigLobby is likely to continue at their new repo located [here](https://github.com/payday-restoration/BigLobby3). It includes all commits from 2017 in this repo, including unreleased fixes/improvements recently contributed. [ModWorkshop link](https://modworkshop.net/mydownloads.php?action=view_down&did=21582).
+
 # How to install
 
 [Video guide by B33croft](https://www.youtube.com/watch?v=rkxwfFdFXnI).
