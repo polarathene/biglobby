@@ -27,7 +27,7 @@ The same applies for enabling the BLT mod, switching it on needs to reload the B
 I don't know when I'll have time, but if someone wants to help with Crime.net, either by making BigLobbies display differently or adding a filter/toggle option, then I can enable seamless switch between normal and big lobbies without having to enable/disable BLT mod :)
 
 ### Crashing
-If the game has updated, you may need to verify cache to restore original code and apply the pdmod again. If you still crash, chances are the game added/changed new code and BigLobby needs to update, create a Github Issue or notify Kwhali on reddit. **Please submit a crashlog**(you can use a web service like pastebin). This will help me identify where the crash is coming from.
+If the game has updated, you may need to verify cache to restore original code and apply the pdmod again. If you still crash, chances are the game added/changed new code and BigLobby needs to update, create a Github Issue. **Please submit a crashlog**(you can use a web service like pastebin). This will help me identify where the crash is coming from.
 
 
 # Development Status
